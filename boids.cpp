@@ -1,6 +1,17 @@
 #include "boids.hpp"
 #include <algorithm>
 #include <cmath>
+
+std::vector<double> bds::boid::position() const
+{
+  return position_;
+}
+
+std::vector<double> bds::boid::velocity() const
+{
+  return velocity_;
+}
+
 // Funzione distanza tra due boids
 double bds::dist(boid const& b1, boid const& b2)
 {
@@ -17,5 +28,5 @@ std::vector<bds::boid> bds::neighbours(boid const& b1,
   std::vector<bds::boid> neighbours;
   std::copy_if(flock.begin(), flock.end(), std::back_inserter(neighbours),
                [&b1, d](bds::boid const& b2) { return dist(b1, b2) < d; });
-               return neighbours;
+  return neighbours;
 }
