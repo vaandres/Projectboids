@@ -1,7 +1,7 @@
 #include "boids.hpp"
 #include <cmath>
 
-double bds::dist(boids b1, boids b2)
+double bds::dist(boids const& b1, boids const& b2)
 {
   auto pos1 = b1.position();
   auto pos2 = b2.position();

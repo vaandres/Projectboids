@@ -17,14 +17,14 @@ class boids
       , velocity_{vx, vy}
   {}
 
-  std::vector<double> position();
+  std::vector<double> position() const;
 
-  std::vector<double> velocity();
+  std::vector<double> velocity() const;
 
   void update_position(double x, double y);
 };
 
-double dist(boids const& b1, boids const& b2);
+double dist(boids const&, boids const&);
 
 } // namespace bds
 
