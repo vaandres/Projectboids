@@ -9,6 +9,7 @@ double bds::dist(boid const& b1, boid const& b2)
   return std::sqrt(std::pow(pos1[0] - pos2[0], 2)
                    + std::pow(pos1[1] - pos2[1], 2));
 }
+
 // Funzione per trovare i vicini di un boid
 std::vector<bds::boid> bds::neighbours(boid const& b1,
                                        std::vector<boid> const& flock, double d)
