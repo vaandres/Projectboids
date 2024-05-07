@@ -10,15 +10,10 @@ class boids
  private:
   std::vector<double> position_{0, 0};
   std::vector<double> velocity_{0, 0};
-
- public:
+// Costruttore della classe boids
+public:
   boids(double x, double y, double vx, double vy)
-  { // Guarda se va bene costruttore così e se c'è algoritmo
-    position_[0] = x;
-    position_[1] = y;
-    velocity_[0] = vx;
-    velocity_[1] = vy;
-  }
+      : position_{x, y}, velocity_{vx, vy} {}
 
   std::vector<double> position();
 
