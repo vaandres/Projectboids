@@ -10,10 +10,12 @@ class boids
  private:
   std::vector<double> position_{0, 0};
   std::vector<double> velocity_{0, 0};
-// Costruttore della classe boids
-public:
+  // Costruttore della classe boids
+ public:
   boids(double x, double y, double vx, double vy)
-      : position_{x, y}, velocity_{vx, vy} {}
+      : position_{x, y}
+      , velocity_{vx, vy}
+  {}
 
   std::vector<double> position();
 
@@ -22,7 +24,7 @@ public:
   void update_position(double x, double y);
 };
 
-double abs(boids const& b1, boids const& b2);
+double dist(boids const& b1, boids const& b2);
 
 } // namespace bds
 
