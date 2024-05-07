@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+      cmake_minimum_required(VERSION 3.16)
 project(progettopf VERSION 0.1.0)
 
 # abilita il supporto per i test, tra cui l'opzione BUILD_TESTING usata sotto
@@ -24,8 +24,8 @@ string(APPEND CMAKE_EXE_LINKER_FLAGS_DEBUG " -fsanitize=address,undefined -fno-o
 #   le dipendenze vengono identificate automaticamente
 find_package(SFML 2.5 COMPONENTS graphics REQUIRED)
 
-# add_executable(mandelbrot main_sfml.cpp image.cpp mandelbrot.cpp)
-# target_link_libraries(mandelbrot PRIVATE sfml-graphics)
+ add_executable(boids.out pboid.cpp boids.cpp)
+ target_link_libraries(boids.out PRIVATE sfml-graphics)
 
 # se il testing e' abilitato...
 #   per disabilitare il testing, passare -DBUILD_TESTING=OFF a cmake durante la fase di configurazione
