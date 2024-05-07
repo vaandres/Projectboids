@@ -1,0 +1,4 @@
+#esclude build directory
+build/
+#esclude .out files
+*.out
