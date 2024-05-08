@@ -99,6 +99,12 @@ int main() {
   double a = 2;
   double c = 1;
   double Vmax = 25;
+  sf::Font font;
+  font.loadFromFile("./Nexa-Heavy.ttf");
+  /*if (!font.loadFromFile("arial.ttf")) {   "catch error" suggeritoda copilot
+    std::cerr << "Could not load font\n";
+    return 1;
+  }*/
   /* std::cout
         << "inserire nuemero boids, distanza, distanza di separazione, s, a, c.
     "; std::cin >> n >> d >> ds >> s >> a >> c;*/
@@ -106,8 +112,12 @@ int main() {
   int windowHeight = (1) * sf::VideoMode::getDesktopMode().height - 75;
   sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight),
                           "Boids Simulation");
-  window.setFramerateLimit(144);
+  window.setFramerateLimit(60);
   window.setPosition(sf::Vector2i(0, 0));
+  //finestra statistiche
+  sf::RenderWindow window2(sf::VideoMode(200, 200), "Statistics");
+  window2.setFramerateLimit(30);
+  window2.setPosition(sf::Vector2i(windowWidth-220, windowHeight-200));
   // adegurare a framerate tempo e a grandezza boid
   // Assegnazione delle caratteristiche allo spawn dei boid*/
   std::vector<boid> boids;
@@ -128,17 +138,21 @@ int main() {
     boids.push_back(bi);
   }
  
-  double sum_dis;
-
-  while (window.isOpen()) {  // un po' buggato sia con opzione schermo intero
+  
+  while (window.isOpen() | window2.isOpen()) {  // un po' buggato sia con opzione schermo intero
                              // che se messo schermo intero dopo
     sf::Event event;
-    while (window.pollEvent(event)) {
+     sf::Event event2;
+    while (window.pollEvent(event) | window2.pollEvent(event2)) {
       if (event.type == sf::Event::Closed) {
         window.close();
       }
+      if (event2.type == sf::Event::Closed) {
+        window2.close();
+      }
     }
     // update position
+    double sum_dis{0};
     for (boid& b1 : boids) {  // passare const ref
       alignment(b1, boids, d);
       //cohesion(b1, boids, d);
@@ -153,7 +167,8 @@ int main() {
         sum_dis += dist(b1, b2);
       }
    }
-    std::cout << sum_dis / 2 * n << " ";
+       
+   // std::cout << sum_dis / 2 * n << " ";
     window.clear(sf::Color::White);
     for (boid b : boids) {  // passato const& boid
       sf::CircleShape boid_point(1);
@@ -161,8 +176,18 @@ int main() {
       auto xy = b.position();
       boid_point.setPosition(xy[0], xy[1]);  // frecce
       window.draw(boid_point);
-      sf::Text text;
     }
+    window.display();
+
+    window2.clear(sf::Color::White);
+    sf::Text text;
+    text.setFont(font);
+    text.setString("Average distance: " + std::to_string(0.0264583333*sum_dis / 2 * n));
+    text.setCharacterSize(7);
+    text.setFillColor(sf::Color::Black);
+    text.setPosition(5, 5);
+    window2.draw(text);
+      window2.display();
     // text.setFont(font);
     /*const sf::Color AXIS_COLOR(sf::Color::Black);
     sf::Vertex boid_line[] = {
@@ -173,8 +198,10 @@ int main() {
     boid_line.setPosition(xy[0], xy[1]);
     window.draw(boid_line, 2, sf::Lines);
   }*/
-    window.display();
+
+ 
   }
+    
   /*for (boid b : boids) {
     auto velx = b.velocity();
     std::cout << velx[0] << " " << velx[1] << "\n";
