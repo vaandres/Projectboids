@@ -128,6 +128,27 @@ std::vector<double> edgeforce(boid const& b, int width, int height)
   std::vector<double> v = {ax, ay};
   return v;
 }
+void velocitylimit(boid & b, double Vmax)
+{
+  if (b.velocity()[0]>Vmax/std::sqrt(2))
+  { std::vector<double> vel{Vmax/std::sqrt(2),vel[1]};
+    b.setVelocity(vel);
+  }
+  if (b.velocity()[1]>Vmax/std::sqrt(2))
+  { std::vector<double> vel{vel[0],Vmax/std::sqrt(2)};    //fare meglio
+    b.setVelocity(vel);
+  }
+  if(b.velocity()[0]<-Vmax/std::sqrt(2))
+  { std::vector<double> vel{-Vmax/std::sqrt(2),vel[1]};
+    b.setVelocity(vel);
+  }
+  if(b.velocity()[1]<-Vmax/std::sqrt(2))
+  { std::vector<double> vel{vel[0],-Vmax/std::sqrt(2)};
+    b.setVelocity(vel);
+  }
+  
+}
+
 int main()
 {
   const int n = 100;
@@ -136,7 +157,7 @@ int main()
   double s    = 3; // max vel?
   double a    = 2;
   double c    = 1;
-  double Vmax = 25;
+  double Vmax = 2; //idealmente componenti sqrt(vmax^2/2) = vmax/sqrt2
   sf::Font font;
   font.loadFromFile("./Nexa-Heavy.ttf");
   /*if (!font.loadFromFile("arial.ttf")) {   "catch error" suggeritoda copilot
@@ -168,9 +189,9 @@ int main()
     int rand_x = roll_dice1(e1);
     std::uniform_int_distribution<> roll_dice2(20, windowHeight - 20);
     int rand_y = roll_dice2(e1);
-    std::normal_distribution<> gauss1(0, 0.75);
+    std::normal_distribution<> gauss1(0, 1.25);
     int rand_vx = gauss1(e1);
-    std::normal_distribution<> gauss2(0, 0.75);
+    std::normal_distribution<> gauss2(0, 1.25);
     int rand_vy = gauss2(e1);
     boid bi{rand_x, rand_y, rand_vx, rand_vy}; // implicita conv double int
     boids.push_back(bi);
@@ -195,20 +216,17 @@ int main()
       alignment(b1, boids, d);
       // cohesion(b1, boids, d);
       // separation(b1, boids, ds);
-      std::vector<double> lim_vel{0, 0};
-      // if (b1.position()[0]- windowWidth < 20 ) {
-      // lim_vel[0] = exp(3-0.25*(b1.position()[0]- windowWidth));}
-      // sep_vel[0] = exp(10-0.5*(unsig(b1.position()[], windowWidth)));}
       b1.setVelocity(b1.velocity()+edgeforce(b1,windowWidth,windowHeight));
       std::vector<double> s =
-          b1.position() + alignment(b1, boids, d) + b1.velocity() + lim_vel;
+          b1.position() + alignment(b1, boids, d) + b1.velocity();
+      velocitylimit(b1,Vmax);
       b1.setPosition(s);
-      for (boid& b2 : boids) {
+     for (boid& b2 : boids) {
         sum_dis += dist(b1, b2);
       }
     }
 
-    // std::cout << sum_dis / 2 * n << " ";
+    //std::cout << sum_dis / 2 * n << " ";
     window.clear(sf::Color::White);
     for (boid b : boids) { // passato const& boid
       sf::CircleShape boid_point(1);
