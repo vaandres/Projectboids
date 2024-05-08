@@ -5,14 +5,14 @@
 #include <vector>
 namespace bds {
 // Classe principale dei boids
-class boids
+class boid
 {
  private:
   std::vector<double> position_{0, 0};
   std::vector<double> velocity_{0, 0};
   // Costruttore della classe boids
  public:
-  boids(double x, double y, double vx, double vy)
+  boid(double x, double y, double vx, double vy)
       : position_{x, y}
       , velocity_{vx, vy}
   {}
@@ -24,8 +24,11 @@ class boids
   void update_position(double x, double y);
 };
 
-double dist(boids const&, boids const&);
+double dist(boid const&, boid const&);
 
+std::vector<boid> neighbours(boid const&,
+                                       std::vector<boid> const&,
+                                       double);
 } // namespace bds
 
 #endif
