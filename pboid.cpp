@@ -128,25 +128,24 @@ std::vector<double> edgeforce(boid const& b, int width, int height)
   std::vector<double> v = {ax, ay};
   return v;
 }
-void velocitylimit(boid & b, double Vmax)
+void velocitylimit(boid& b, double Vmax)
 {
-  if (b.velocity()[0]>Vmax/std::sqrt(2))
-  { std::vector<double> vel{Vmax/std::sqrt(2),vel[1]};
+  if (b.velocity()[0] > Vmax / std::sqrt(2)) {
+    std::vector<double> vel{Vmax / std::sqrt(2), b.velocity()[1]};
     b.setVelocity(vel);
   }
-  if (b.velocity()[1]>Vmax/std::sqrt(2))
-  { std::vector<double> vel{vel[0],Vmax/std::sqrt(2)};    //fare meglio
+  if (b.velocity()[1] > Vmax / std::sqrt(2)) {
+    std::vector<double> vel{b.velocity()[0], Vmax / std::sqrt(2)}; // fare meglio
     b.setVelocity(vel);
   }
-  if(b.velocity()[0]<-Vmax/std::sqrt(2))
-  { std::vector<double> vel{-Vmax/std::sqrt(2),vel[1]};
+  if (b.velocity()[0] < -Vmax / std::sqrt(2)) {
+    std::vector<double> vel{-Vmax / std::sqrt(2), b.velocity()[1]};
     b.setVelocity(vel);
   }
-  if(b.velocity()[1]<-Vmax/std::sqrt(2))
-  { std::vector<double> vel{vel[0],-Vmax/std::sqrt(2)};
+  if (b.velocity()[1] < -Vmax / std::sqrt(2)) {
+    std::vector<double> vel{b.velocity()[0], -Vmax / std::sqrt(2)};
     b.setVelocity(vel);
   }
-  
 }
 
 int main()
@@ -157,7 +156,7 @@ int main()
   double s    = 3; // max vel?
   double a    = 2;
   double c    = 1;
-  double Vmax = 2; //idealmente componenti sqrt(vmax^2/2) = vmax/sqrt2
+  double Vmax = 2; // idealmente componenti sqrt(vmax^2/2) = vmax/sqrt2
   sf::Font font;
   font.loadFromFile("./Nexa-Heavy.ttf");
   /*if (!font.loadFromFile("arial.ttf")) {   "catch error" suggeritoda copilot
@@ -216,17 +215,17 @@ int main()
       alignment(b1, boids, d);
       // cohesion(b1, boids, d);
       // separation(b1, boids, ds);
-      b1.setVelocity(b1.velocity()+edgeforce(b1,windowWidth,windowHeight));
+      b1.setVelocity(b1.velocity() + edgeforce(b1, windowWidth, windowHeight));
+      velocitylimit(b1, Vmax);
       std::vector<double> s =
           b1.position() + alignment(b1, boids, d) + b1.velocity();
-      velocitylimit(b1,Vmax);
       b1.setPosition(s);
-     for (boid& b2 : boids) {
+      for (boid& b2 : boids) {
         sum_dis += dist(b1, b2);
       }
     }
 
-    //std::cout << sum_dis / 2 * n << " ";
+    // std::cout << sum_dis / 2 * n << " ";
     window.clear(sf::Color::White);
     for (boid b : boids) { // passato const& boid
       sf::CircleShape boid_point(1);
