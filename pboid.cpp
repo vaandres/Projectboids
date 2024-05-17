@@ -113,21 +113,32 @@ std::vector<double> separation(boid const& b1, std::vector<boid> const& flock,
     return {0, 0};
   }
 }*/
-// forza di repulsione dal bordo; è del tipo sgn(x-a)/(abs(x^2-a)-a)^2 dal
-// grafico si capisce perché
+
+// forza di repulsione dal bordo
 std::vector<double> edgeforce(boid const& b, int width, int height)
 {
   double x{b.position()[0]};
-  double y    = {b.position()[1]};
-  double or_x = width / 2;
-  double or_y = height / 2;
-  double ax =
-      -1 / std::pow(std::abs(x - or_x) - or_x, 2) * abs(x - or_x) / (x - or_x);
-  double ay =
-      -1 / std::pow(std::abs(y - or_y) - or_y, 2) * abs(y - or_y) / (y - or_y);
-  std::vector<double> v = {ax, ay};
-  return v;
+  double y{b.position()[1]};
+
+  double vx{0};
+  double vy{0};
+
+  if (x <= 1) {
+    vx = 1;
+  } else if (x >= width - 1) {
+    vx = -1;
+  }
+
+  if (y <= 1) {
+    vy = 1;
+  } else if (y >= height - 1) {
+    vy = -1;
+  }
+
+  std::vector<double> a{vx, vy};
+  return a;
 }
+
 void velocitylimit(boid& b, double Vmax)
 {
   if (b.velocity()[0] > Vmax / std::sqrt(2)) {
@@ -135,7 +146,8 @@ void velocitylimit(boid& b, double Vmax)
     b.setVelocity(vel);
   }
   if (b.velocity()[1] > Vmax / std::sqrt(2)) {
-    std::vector<double> vel{b.velocity()[0], Vmax / std::sqrt(2)}; // fare meglio
+    std::vector<double> vel{b.velocity()[0],
+                            Vmax / std::sqrt(2)}; // fare meglio
     b.setVelocity(vel);
   }
   if (b.velocity()[0] < -Vmax / std::sqrt(2)) {
@@ -216,7 +228,7 @@ int main()
       // cohesion(b1, boids, d);
       // separation(b1, boids, ds);
       b1.setVelocity(b1.velocity() + edgeforce(b1, windowWidth, windowHeight));
-      velocitylimit(b1, Vmax);
+     // velocitylimit(b1, Vmax);
       std::vector<double> s =
           b1.position() + alignment(b1, boids, d) + b1.velocity();
       b1.setPosition(s);
