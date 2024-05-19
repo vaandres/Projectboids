@@ -23,6 +23,9 @@ class boid
 
   void update_position(double x, double y);
 };
+std::vector<double> operator+(std::vector<double> , std::vector<double>);
+
+std::vector<double> operator*(std::vector<double> v1, double k);
 
 double dist(boid const&, boid const&);
 
