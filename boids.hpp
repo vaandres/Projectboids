@@ -26,9 +26,11 @@ class boid
 
 double dist(boid const&, boid const&);
 
-std::vector<boid> neighbours(boid const&,
-                                       std::vector<boid> const&,
-                                       double);
+std::vector<boid> neighbours(boid const&, std::vector<boid> const&, double);
+
+std::vector<double> alignment(boid const&, std::vector<boid> const&, double,
+                              double);
+
 } // namespace bds
 
 #endif
