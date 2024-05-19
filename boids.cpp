@@ -38,8 +38,9 @@ double bds::dist(boid const& b1, boid const& b2)
 }
 
 // Funzione per trovare i vicini di un boid
-std::vector<bds::boid> bds::neighbours(boid const& b1,
-                                       std::vector<boid> const& flock, double d)
+std::vector<bds::boid> bds::neighbours(
+    boid const& b1, std::vector<boid> const& flock,
+    double d) // verifica che il boid in questione non sia nei vicini
 {
   std::vector<bds::boid> neighbours;
   std::copy_if(flock.begin(), flock.end(), std::back_inserter(neighbours),
@@ -57,5 +58,6 @@ std::vector<double> bds::alignment(boid const& b1,
   std::vector<double> v = std::accumulate(
       neighbours.begin(), neighbours.end(), std::vector<double>{0, 0},
       [](std::vector<double> v, boid const& b) { return v + b.velocity(); });
-  return (v * (1.0 / neighbours.size()) + b1.velocity() * -1) * a;   //vedi se implementare anche operatore - per vettori velocità
+  return (v * (1.0 / neighbours.size()) + b1.velocity() * -1)
+       * a; // vedi se implementare anche operatore - per vettori velocità
 };
