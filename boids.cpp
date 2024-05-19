@@ -47,7 +47,7 @@ std::vector<bds::boid> bds::neighbours(
                [&b1, d](bds::boid const& b2) { return dist(b1, b2) < d; });
   return neighbours;
 }
-//Funzione per allineare i boids
+// Funzione per allineare i boids
 std::vector<double> bds::alignment(boid const& b1,
                                    std::vector<boid> const& flock, double d,
                                    double a)
