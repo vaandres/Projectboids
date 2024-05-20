@@ -63,8 +63,8 @@ std::vector<double> bds::separation(bds::boid const& b1,
       [&b1, ds, s](std::vector<double> acc, bds::boid const& b) {
         if (dist(b1, b) < ds) {
           auto pos = b.position();
-          acc[0] += s * (pos[0] - b1.position()[0]);
-          acc[1] += s * (pos[1] - b1.position()[1]);
+          acc[0] -= s * (pos[0] - b1.position()[0]);
+          acc[1] -= s * (pos[1] - b1.position()[1]);
         }
         return acc;
       });
