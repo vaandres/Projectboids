@@ -31,9 +31,14 @@ double dist(boid const&, boid const&);
 
 std::vector<boid> neighbours(boid const&, std::vector<boid> const&, double);
 
+std::vector<double> separation(boid const&, std::vector<boid> const&, double,
+                               double, double);
+
 std::vector<double> alignment(boid const&, std::vector<boid> const&, double,
                               double);
 
+std::vector<double> cohesion(boid const&, std::vector<boid> const&, double,
+                             double);
 } // namespace bds
 
 #endif
