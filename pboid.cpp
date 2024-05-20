@@ -1,5 +1,5 @@
 #include <SFML/Graphics.hpp>
-#include <cmath>  //libreria usata solitamente?
+#include <cmath>  
 #include <iostream>
 #include <vector>
 
