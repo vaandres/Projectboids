@@ -52,14 +52,14 @@ std::vector<double> bds::separation(bds::boid const& b1,
                                     std::vector<bds::boid> const& flock,
                                     double d, double ds, double s)
 {
-  std::vector<bds::boid> n = neighbours(b1, flock, d);
+  auto neighbours = bds::neighbours(b1, flock, d);
 
-  if (n.empty()) {
+  if (neighbours.empty()) {
     return std::vector<double>{0, 0};
   }
 
   std::vector<double> sep_vel = std::accumulate(
-      n.begin(), n.end(), std::vector<double>{0, 0},
+      neighbours.begin(), neighbours.end(), std::vector<double>{0, 0},
       [&b1, ds, s](std::vector<double> acc, bds::boid const& b) {
         if (dist(b1, b) < ds) {
           auto pos = b.position();
@@ -91,9 +91,9 @@ std::vector<double> bds::cohesion(bds::boid const& b1,
                                   double c)
 {
   std::vector<double> coh_vel{0, 0};
-  std::vector<bds::boid> n = neighbours(b1, flock, d);
+  auto neighbours = bds::neighbours(b1, flock, d);
   coh_vel =
-      std::accumulate(n.begin(), n.end(), coh_vel,
+      std::accumulate(neighbours.begin(), neighbours.end(), coh_vel,
                       [&b1, c](std::vector<double> acc, bds::boid const& b) {
                         auto pos = b.position();
                         acc[0] += c * pos[0];
@@ -101,7 +101,7 @@ std::vector<double> bds::cohesion(bds::boid const& b1,
                         return acc;
                       });
 
-  auto size = n.size();
+  auto size = neighbours.size();
   if (size != 0) {
     coh_vel[0] /= size;
     coh_vel[1] /= size;
