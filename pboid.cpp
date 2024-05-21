@@ -4,52 +4,52 @@
 #include <cmath>
 #include <iostream>
 #include <random>
-#include <vector>
+#include <array>
 
 class boid {  // Costruttore della classe boids
  private:
-  std::vector<double> position_{0, 0};  // struct personalizzata
-  std::vector<double> velocity_{0, 0};
+  std::array<double,2> position_{0, 0};  // struct personalizzata
+  std::array<double,2> velocity_{0, 0};
 
  public:
   boid(double x, double y, double vx, double vy)
       : position_{x, y}, velocity_{vx, vy} {}
 
-  std::vector<double> position() const { return position_; };
+  std::array<double,2> position() const { return position_; };
 
-  std::vector<double> velocity() const { return velocity_; };
-  void setPosition(const std::vector<double>& newPos) { position_ = newPos; }
-  void setVelocity(const std::vector<double>& newVel) { velocity_ = newVel; }
+  std::array<double,2> velocity() const { return velocity_; };
+  void setPosition(const std::array<double,2>& newPos) { position_ = newPos; }
+  void setVelocity(const std::array<double,2>& newVel) { velocity_ = newVel; }
 };
 
 struct statistics {
   double dis_mean;
   double dis_sigma;
-  std::vector<double> vel_mean;
-  std::vector<double> vel_sigma;
+  std::array<double,2> vel_mean;
+  std::array<double,2> vel_sigma;
 };
-std::vector<double> operator+(std::vector<double> v1, std::vector<double> v2) {
+std::array<double,2> operator+(std::array<double,2> v1, std::array<double,2> v2) {
   auto vxf = v1[0] + v2[0];
   auto vyf = v1[1] + v2[1];
-  std::vector<double> vf = {vxf, vyf};
+  std::array<double,2> vf = {vxf, vyf};
   return vf;
 }
-std::vector<double> operator-(std::vector<double> v1, std::vector<double> v2) {
+std::array<double,2> operator-(std::array<double,2> v1, std::array<double,2> v2) {
   auto vxf = v1[0] - v2[0];
   auto vyf = v1[1] - v2[1];
-  std::vector<double> vf = {vxf, vyf};
+  std::array<double,2> vf = {vxf, vyf};
   return vf;
 }
-std::vector<double> operator/(std::vector<double> v1, double k) {
+std::array<double,2> operator/(std::array<double,2> v1, double k) {
   auto vxf = v1[0] / k;
   auto vyf = v1[1] / k;
-  std::vector<double> vf = {vxf, vyf};
+  std::array<double,2> vf = {vxf, vyf};
   return vf;
 }
-std::vector<double> operator*(std::vector<double> v1, std::vector<double> v2) {
+std::array<double,2> operator*(std::array<double,2> v1, std::array<double,2> v2) {
   auto vxf = v2[0] * v1[1];
   auto vyf = v2[0] * v1[1];
-  std::vector<double> vf = {vxf, vyf};
+  std::array<double,2> vf = {vxf, vyf};
   return vf;
 }
 
@@ -65,8 +65,8 @@ statistics stats(std::vector<boid> const& flock) {
   double dis_mean{0.0};
   double dis_sigma{0.0};
   int n = flock.size();
-  std::vector<double> vel_mean{0.0, 0.0};
-  std::vector<double> vel_sigma{0.0, 0.0};
+  std::array<double,2> vel_mean;
+  std::array<double,2> vel_sigma;
 
   for (boid const& b1 : flock) {
     // pos_mean = ;
@@ -94,17 +94,17 @@ statistics stats(std::vector<boid> const& flock) {
   return {dis_mean, dis_sigma, vel_mean, vel_sigma};
 }
 
-std::vector<double> operator/(std::vector<double> v1, std::vector<double> v2) {
+std::array<double,2> operator/(std::array<double,2> v1, std::array<double,2> v2) {
   auto vxf = v1[0] / v2[0];  // errore se v2[0] = 0 ecc
   auto vyf = v1[1] / v2[1];
-  std::vector<double> vf = {vxf, vyf};
+  std::array<double,2> vf = {vxf, vyf};
   return vf;
 }
 
-std::vector<double> operator*(std::vector<double> v1, double k) {
+std::array<double,2> operator*(std::array<double,2> v1, double k) {
   auto vxf = k * v1[0];
   auto vyf = k * v1[1];
-  std::vector<double> vf = {vxf, vyf};
+  std::array<double,2> vf = {vxf, vyf};
   return vf;
 }
 
@@ -115,10 +115,10 @@ std::vector<boid> neighbours(boid const& b1, std::vector<boid> const& flock,
                [&b1, d](boid const& b2) { return dist(b1, b2) < d; });
   return neighbours;
 }
-std::vector<double> alignment(boid const& b1, std::vector<boid> const& flock,
+std::array<double,2> alignment(boid const& b1, std::vector<boid> const& flock,
                               double d) {
   std::vector<boid> n = neighbours(b1, flock, d);
-  std::vector<double> avg_vel{0, 0};
+  std::array<double,2> avg_vel{0, 0};
   for (boid const& b : n) {
     auto vel = b.velocity();
     avg_vel = avg_vel + vel;
@@ -133,9 +133,9 @@ std::vector<double> alignment(boid const& b1, std::vector<boid> const& flock,
   }
 }
 
-std::vector<double> separation(boid const& b1, std::vector<boid> const& flock,
+std::array<double,2> separation(boid const& b1, std::vector<boid> const& flock,
                                double ds) {
-  std::vector<double> sep_vel{0, 0};
+  std::array<double,2> sep_vel{0, 0};
   for (boid const& b : flock) {
     if (dist(b1, b) < ds) {
       auto pos = b.position();
@@ -146,10 +146,10 @@ std::vector<double> separation(boid const& b1, std::vector<boid> const& flock,
   }
   return sep_vel;
 }
-std::vector<double> cohesion(boid const& b1, std::vector<boid> const& flock,
+std::array<double,2> cohesion(boid const& b1, std::vector<boid> const& flock,
                              double d) {
   std::vector<boid> n = neighbours(b1, flock, d);
-  std::vector<double> avg_pos{0, 0};
+  std::array<double,2> avg_pos{0, 0};
   for (boid const& b : n) {
     auto pos = b.position();
     avg_pos = avg_pos + pos;
@@ -165,7 +165,7 @@ std::vector<double> cohesion(boid const& b1, std::vector<boid> const& flock,
 }
 // forza di repulsione dal bordo; è del tipo sgn(x-a)/(abs(x^2-a)-a)^2 dal
 // grafico si capisce perché
-std::vector<double> edgeforce(boid const& b, int width, int height) {
+std::array<double,2> edgeforce(boid const& b, int width, int height) {
   double x{b.position()[0]};
   double y = {b.position()[1]};
   double or_x = width / 2;
@@ -174,24 +174,24 @@ std::vector<double> edgeforce(boid const& b, int width, int height) {
       -1 / std::pow(std::abs(x - or_x) - or_x, 2) * abs(x - or_x) / (x - or_x);
   double ay =
       -1 / std::pow(std::abs(y - or_y) - or_y, 2) * abs(y - or_y) / (y - or_y);
-  std::vector<double> v = {ax, ay};
+  std::array<double,2> v = {ax, ay};
   return v;
 }
 void velocitylimit(boid& b, double Vmax) {
   if (b.velocity()[0] > Vmax / std::sqrt(2)) {
-    std::vector<double> vel{Vmax / std::sqrt(2), vel[1]};
+    std::array<double,2> vel{Vmax / std::sqrt(2), vel[1]};
     b.setVelocity(vel);
   }
   if (b.velocity()[1] > Vmax / std::sqrt(2)) {
-    std::vector<double> vel{vel[0], Vmax / std::sqrt(2)};  // fare meglio
+    std::array<double,2> vel{vel[0], Vmax / std::sqrt(2)};  // fare meglio
     b.setVelocity(vel);
   }
   if (b.velocity()[0] < -Vmax / std::sqrt(2)) {
-    std::vector<double> vel{-Vmax / std::sqrt(2), vel[1]};
+    std::array<double,2> vel{-Vmax / std::sqrt(2), vel[1]};
     b.setVelocity(vel);
   }
   if (b.velocity()[1] < -Vmax / std::sqrt(2)) {
-    std::vector<double> vel{vel[0], -Vmax / std::sqrt(2)};
+    std::array<double,2> vel{vel[0], -Vmax / std::sqrt(2)};
     b.setVelocity(vel);
   }
 }
@@ -282,7 +282,7 @@ int main() {
       b1.setVelocity(
           b1.velocity() +
           edgeforce(b1, windowWidth, windowHeight));  // edgeforce qui o sotto?
-      std::vector<double> s =
+      std::array<double,2> s =
           b1.position() + (alignment(b1, boids, d) * 5 + b1.velocity()) / 3 +
           (separation(b1, boids, ds) * 3 + cohesion(b1, boids, d)) / 2;
       velocitylimit(b1, Vmax);
@@ -323,8 +323,8 @@ int main() {
       // text.setFont(font);
       /*const sf::Color AXIS_COLOR(sf::Color::Black);
       sf::Vertex boid_line[] = {
-          sf::Vertex(sf::Vector2f(8, 4), AXIS_COLOR),
-          sf::Vertex(sf::Vector2f(150, 150), AXIS_COLOR),
+          sf::Vertex(sf::array2f(8, 4), AXIS_COLOR),
+          sf::Vertex(sf::array2f(150, 150), AXIS_COLOR),
       };
       boid_line.setFillColor(sf::Color::Black);
       boid_line.setPosition(xy[0], xy[1]);
