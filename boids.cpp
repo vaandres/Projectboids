@@ -18,6 +18,7 @@ std::vector<double> operator*(std::vector<double> v1, double k)
   return vf;
 }
 
+
 std::vector<double> bds::boid::position() const
 {
   return position_;
@@ -37,7 +38,7 @@ double bds::dist(boid const& b1, boid const& b2)
                    + std::pow(pos1[1] - pos2[1], 2));
 }
 
-//Funzione cambio velocità del boid
+// Funzione cambio velocità del boid
 void bds::boid::setVelocity(const std::vector<double>& newVel)
 {
   velocity_ = newVel;
@@ -50,7 +51,9 @@ std::vector<bds::boid> bds::neighbours(
 {
   std::vector<bds::boid> neighbours;
   std::copy_if(flock.begin(), flock.end(), std::back_inserter(neighbours),
-               [&b1, d](bds::boid const& b2) { return dist(b1, b2) < d; });
+               [&b1, d](bds::boid const& b2) {
+                 return dist(b1, b2) < d && dist(b1, b2) != 0;
+               });
   return neighbours;
 }
 // Regola di separazione
