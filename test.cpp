@@ -86,10 +86,10 @@ TEST_CASE("Testing alignment function")
   bds::boid b7{1, 0, 3.5, 3.5};
   std::vector<bds::boid> flock{b2, b3, b4, b5, b6, b7};
   double d{10};
-  double a{2};
+  double a{0.5};
   auto alignment_vel = bds::alignment(b1, flock, d, a);
-  CHECK(alignment_vel[0] == doctest::Approx(1.17).epsilon(0.01));
-  CHECK(alignment_vel[1] == doctest::Approx(3.50).epsilon(0.01));
+  CHECK(alignment_vel[0] == doctest::Approx(0.291).epsilon(0.01));
+  CHECK(alignment_vel[1] == doctest::Approx(0.88).epsilon(0.01));
 }
 
 TEST_CASE("Testing setVelocity method")
