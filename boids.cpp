@@ -3,21 +3,21 @@
 #include <cmath>
 #include <numeric>
 
-std::vector<double> operator+(std::vector<double> v1, std::vector<double> v2)
+std::vector<double> bds::operator+(std::vector<double> v1,
+                                   std::vector<double> v2)
 {
   auto vxf               = v1[0] + v2[0];
   auto vyf               = v1[1] + v2[1];
   std::vector<double> vf = {vxf, vyf};
   return vf;
 }
-std::vector<double> operator*(std::vector<double> v1, double k)
+std::vector<double> bds::operator*(std::vector<double> v1, double k)
 {
   auto vxf               = k * v1[0];
   auto vyf               = k * v1[1];
   std::vector<double> vf = {vxf, vyf};
   return vf;
 }
-
 
 std::vector<double> bds::boid::position() const
 {
