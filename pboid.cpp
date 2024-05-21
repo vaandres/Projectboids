@@ -6,7 +6,7 @@
 
 class boid {  // Costruttore della classe boids
  private:
-  std::vector<double> position_{0, 0};
+  std::vector<double> position_{0, 0};  // struct personalizzata
   std::vector<double> velocity_{0, 0};
 
  public:
@@ -19,13 +19,13 @@ class boid {  // Costruttore della classe boids
   void setPosition(const std::vector<double>& newPos) { position_ = newPos; }
   void setVelocity(const std::vector<double>& newVel) { velocity_ = newVel; }
 };
-double dist(boid const& b1, boid const& b2) {
-  auto pos1 = b1.position();
-  auto pos2 = b2.position();
-  return std::sqrt(
-      std::pow(pos1[0] - pos2[0], 2) +  // conservare velocità totale
-      std::pow(pos1[1] - pos2[1], 2));
-}
+
+struct statistics {
+  double dis_mean;
+  double dis_sigma;
+  std::vector<double> vel_mean;
+  std::vector<double> vel_sigma;
+};
 std::vector<double> operator+(std::vector<double> v1, std::vector<double> v2) {
   auto vxf = v1[0] + v2[0];
   auto vyf = v1[1] + v2[1];
@@ -38,24 +38,63 @@ std::vector<double> operator-(std::vector<double> v1, std::vector<double> v2) {
   std::vector<double> vf = {vxf, vyf};
   return vf;
 }
-std::vector<double> operator/(std::vector<double> v1, std::vector<double> v2) {
-  auto vxf = v1[0] / v2[0];                                                    //errore se v2[0] = 0 ecc
-  auto vyf = v1[1] / v2[1];
-  std::vector<double> vf = {vxf, vyf};
-  return vf;
-}
-std::vector<double> operator*(std::vector<double> v1, double k) {
-  auto vxf = k * v1[0];
-  auto vyf = k * v1[1];
-  std::vector<double> vf = {vxf, vyf};
-  return vf;
-}
 std::vector<double> operator/(std::vector<double> v1, double k) {
   auto vxf = v1[0] / k;
   auto vyf = v1[1] / k;
   std::vector<double> vf = {vxf, vyf};
   return vf;
 }
+std::vector<double> operator*(std::vector<double> v1, std::vector<double> v2) {
+  auto vxf = v2[0] * v1[1];
+  auto vyf = v2[0] * v1[1];
+  std::vector<double> vf = {vxf, vyf};
+  return vf;
+}
+
+statistics stats(std::vector<boid> const& flock) {
+  double dis_mean{};
+  double dis_sigma{};
+  int n = flock.size();
+  std::vector<double> vel_mean{0.0, 0.0};
+  std::vector<double> vel_sigma{0.0, 0.0};
+
+  for (boid const& b : flock) {
+    // pos_mean = ;
+    vel_mean = vel_mean + b.velocity();
+  }
+
+  vel_mean = vel_mean / n;
+  for (boid const& b : flock) {
+    vel_sigma =
+        vel_sigma + (vel_mean - b.velocity()) * (vel_mean - b.velocity());
+  }
+  vel_sigma[0] = std::sqrt(vel_sigma[0] / (n - 1));
+  vel_sigma[1] = std::sqrt(vel_sigma[1] / (n - 1));
+  return {dis_mean, dis_sigma, vel_mean, vel_sigma};
+}
+
+double dist(boid const& b1, boid const& b2) {
+  auto pos1 = b1.position();
+  auto pos2 = b2.position();
+  return std::sqrt(
+      std::pow(pos1[0] - pos2[0], 2) +  // conservare velocità totale
+      std::pow(pos1[1] - pos2[1], 2));
+}
+
+std::vector<double> operator/(std::vector<double> v1, std::vector<double> v2) {
+  auto vxf = v1[0] / v2[0];  // errore se v2[0] = 0 ecc
+  auto vyf = v1[1] / v2[1];
+  std::vector<double> vf = {vxf, vyf};
+  return vf;
+}
+
+std::vector<double> operator*(std::vector<double> v1, double k) {
+  auto vxf = k * v1[0];
+  auto vyf = k * v1[1];
+  std::vector<double> vf = {vxf, vyf};
+  return vf;
+}
+
 std::vector<boid> neighbours(boid const& b1, std::vector<boid> const& flock,
                              double d) {
   std::vector<boid> neighbours;
@@ -87,8 +126,9 @@ std::vector<double> separation(boid const& b1, std::vector<boid> const& flock,
   for (boid const& b : flock) {
     if (dist(b1, b) < ds) {
       auto pos = b.position();
-      sep_vel[0] = sep_vel[0] - (pos[0] - b1.position()[0]) / ds;   //numero da 0 a 1
-      sep_vel[1] = sep_vel[1] - (pos[1] - b1.position()[1]) / ds;   
+      sep_vel[0] =
+          sep_vel[0] - (pos[0] - b1.position()[0]) / ds;  // numero da 0 a 1
+      sep_vel[1] = sep_vel[1] - (pos[1] - b1.position()[1]) / ds;
     }
   }
   return sep_vel;
@@ -102,9 +142,9 @@ std::vector<double> cohesion(boid const& b1, std::vector<boid> const& flock,
     avg_pos = avg_pos + pos;
   }
   auto size = n.size();
-  if (size != 0) {           
+  if (size != 0) {
     avg_pos = avg_pos / size;
-    avg_pos = (avg_pos - b1.position())*0.02;
+    avg_pos = (avg_pos - b1.position()) * 0.02;
     return avg_pos;
   } else {
     return {0, 0};
@@ -144,13 +184,16 @@ void velocitylimit(boid& b, double Vmax) {
 }
 
 int main() {
-  const int n = 60;
+  std::cout << "inserire nuemero boids, distanza, distanza di separazione, s, "    //mettere slider per cambiare in tempo reale
+               "a, c,Vmax.";
+  int n = 60;
   double d = 150;
   double ds = 10;  // gestire errori di input (mettere catch error)
   double s = 3;    // max vel?
   double a = 2;
   double c = 1;
   double Vmax = 2;  // idealmente componenti sqrt(vmax^2/2) = vmax/sqrt2
+  std::cin >> n >> d >> ds >> s >> a >> c >> Vmax;
   sf::Font font;
   font.loadFromFile("./Nexa-Heavy.ttf");
   /*if (!font.loadFromFile("arial.ttf")) {   "catch error" suggeritoda copilot
@@ -209,16 +252,19 @@ int main() {
       alignment(b1, boids, d);
       cohesion(b1, boids, d);
       separation(b1, boids, ds);
-      b1.setVelocity(b1.velocity() + edgeforce(b1, windowWidth, windowHeight));  //edgeforce qui o sotto?
-      std::vector<double> s = b1.position() + (alignment(b1, boids, d)*5 +
-                              b1.velocity())/3 + (separation(b1, boids, ds)*3 + cohesion(b1,boids,d))/2;
+      b1.setVelocity(
+          b1.velocity() +
+          edgeforce(b1, windowWidth, windowHeight));  // edgeforce qui o sotto?
+      std::vector<double> s =
+          b1.position() + (alignment(b1, boids, d) * 5 + b1.velocity()) / 3 +
+          (separation(b1, boids, ds) * 3 + cohesion(b1, boids, d)) / 2;
       velocitylimit(b1, Vmax);
       b1.setPosition(s);
-     /* for (boid& b2 : boids) {
-        sum_dis += dist(b1, b2);
-      }*/
+      /* for (boid& b2 : boids) {
+         sum_dis += dist(b1, b2);
+       }*/
     }
-
+    statistics data = stats(boids);
     // std::cout << sum_dis / 2 * n << " ";
     window.clear(sf::Color::White);
     for (boid b : boids) {  // passato const& boid
@@ -229,12 +275,14 @@ int main() {
       window.draw(boid_point);
     }
     window.display();
-
+    // 0.0264583333 *
     window2.clear(sf::Color::White);
     sf::Text text;
     text.setFont(font);
-    text.setString("Average distance: " +
-                   std::to_string(0.0264583333 * sum_dis / 2 * n));
+    text.setString("Avarage velocity" + std::to_string(data.vel_mean[0]) +
+                   "   " + std::to_string(data.vel_mean[1]) + "\n\n" +
+                   "Standard deviation: " + std::to_string(data.vel_sigma[0]) +
+                   "   " + std::to_string(data.vel_sigma[1]));      //ogni tanto nan
     text.setCharacterSize(7);
     text.setFillColor(sf::Color::Black);
     text.setPosition(5, 5);
