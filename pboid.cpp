@@ -1,3 +1,5 @@
+#include <math.h>  //quale
+
 #include <SFML/Graphics.hpp>
 #include <cmath>
 #include <iostream>
@@ -51,34 +53,45 @@ std::vector<double> operator*(std::vector<double> v1, std::vector<double> v2) {
   return vf;
 }
 
-statistics stats(std::vector<boid> const& flock) {
-  double dis_mean{};
-  double dis_sigma{};
-  int n = flock.size();
-  std::vector<double> vel_mean{0.0, 0.0};
-  std::vector<double> vel_sigma{0.0, 0.0};
-
-  for (boid const& b : flock) {
-    // pos_mean = ;
-    vel_mean = vel_mean + b.velocity();
-  }
-
-  vel_mean = vel_mean / n;
-  for (boid const& b : flock) {
-    vel_sigma =
-        vel_sigma + (vel_mean - b.velocity()) * (vel_mean - b.velocity());
-  }
-  vel_sigma[0] = std::sqrt(vel_sigma[0] / (n - 1));
-  vel_sigma[1] = std::sqrt(vel_sigma[1] / (n - 1));
-  return {dis_mean, dis_sigma, vel_mean, vel_sigma};
-}
-
 double dist(boid const& b1, boid const& b2) {
   auto pos1 = b1.position();
   auto pos2 = b2.position();
   return std::sqrt(
       std::pow(pos1[0] - pos2[0], 2) +  // conservare velocità totale
       std::pow(pos1[1] - pos2[1], 2));
+}
+
+statistics stats(std::vector<boid> const& flock) {
+  double dis_mean{0.0};
+  double dis_sigma{0.0};
+  int n = flock.size();
+  std::vector<double> vel_mean{0.0, 0.0};
+  std::vector<double> vel_sigma{0.0, 0.0};
+
+  for (boid const& b1 : flock) {
+    // pos_mean = ;
+    vel_mean = vel_mean + b1.velocity();
+    for (boid const& b2 : flock) {
+      dis_mean = dis_mean + dist(b1, b2);
+    }
+  }
+
+  vel_mean = vel_mean / n;
+  dis_mean = 0.0264583333 * dis_mean / (2 * n);
+  for (boid const& b1 : flock) {
+    for (boid const& b2 : flock) {
+      dis_sigma = dis_sigma + (dis_mean - 0.0264583333 * dist(b1, b2)) *
+                                  (dis_mean - 0.0264583333 * dist(b1, b2));
+    }
+  }
+  for (boid const& b : flock) {
+    vel_sigma =
+        vel_sigma + (vel_mean - b.velocity()) * (vel_mean - b.velocity());
+  }
+  dis_sigma = std::sqrt(fabs(dis_sigma) / (n - 1));
+  vel_sigma[0] = std::sqrt(fabs(vel_sigma[0]) / (n - 1));
+  vel_sigma[1] = std::sqrt(fabs(vel_sigma[1]) / (n - 1));
+  return {dis_mean, dis_sigma, vel_mean, vel_sigma};
 }
 
 std::vector<double> operator/(std::vector<double> v1, std::vector<double> v2) {
@@ -184,16 +197,29 @@ void velocitylimit(boid& b, double Vmax) {
 }
 
 int main() {
-  std::cout << "inserire nuemero boids, distanza, distanza di separazione, s, "    //mettere slider per cambiare in tempo reale
-               "a, c,Vmax.";
-  int n = 60;
+  /* std::cout
+       << "inserire nuemero boids, distanza, distanza di separazione, s, "  //
+     mettere
+                                                                            //
+     slider
+                                                                            //
+     per
+                                                                            //
+     cambiare
+                                                                            //
+     in
+                                                                            //
+     tempo
+                                                                            //
+     reale "a, c,Vmax<."<<"/n";*/
+  int n = 160;
   double d = 150;
   double ds = 10;  // gestire errori di input (mettere catch error)
   double s = 3;    // max vel?
   double a = 2;
   double c = 1;
-  double Vmax = 2;  // idealmente componenti sqrt(vmax^2/2) = vmax/sqrt2
-  std::cin >> n >> d >> ds >> s >> a >> c >> Vmax;
+  double Vmax = 4;  // idealmente componenti sqrt(vmax^2/2) = vmax/sqrt2
+  /*std::cin >> n >> d >> ds >> s >> a >> c >> Vmax;*/
   sf::Font font;
   font.loadFromFile("./Nexa-Heavy.ttf");
   /*if (!font.loadFromFile("arial.ttf")) {   "catch error" suggeritoda copilot
@@ -225,9 +251,9 @@ int main() {
     int rand_x = roll_dice1(e1);
     std::uniform_int_distribution<> roll_dice2(20, windowHeight - 20);
     int rand_y = roll_dice2(e1);
-    std::normal_distribution<> gauss1(0, 1.25);
+    std::normal_distribution<> gauss1(0, 2);
     int rand_vx = gauss1(e1);
-    std::normal_distribution<> gauss2(0, 1.25);
+    std::normal_distribution<> gauss2(0, 2);
     int rand_vy = gauss2(e1);
     boid bi{rand_x, rand_y, rand_vx, rand_vy};  // implicita conv double int
     boids.push_back(bi);
@@ -236,6 +262,7 @@ int main() {
   while (window.isOpen() |
          window2.isOpen()) {  // un po' buggato sia con opzione schermo intero
                               // che se messo schermo intero dopo
+                              // dividere while per finestre
     sf::Event event;
     sf::Event event2;
     while (window.pollEvent(event) | window2.pollEvent(event2)) {
@@ -247,7 +274,7 @@ int main() {
       }
     }
     // update position
-    double sum_dis{0};
+    // double sum_dis{0};
     for (boid& b1 : boids) {  // passare const ref
       alignment(b1, boids, d);
       cohesion(b1, boids, d);
@@ -264,7 +291,6 @@ int main() {
          sum_dis += dist(b1, b2);
        }*/
     }
-    statistics data = stats(boids);
     // std::cout << sum_dis / 2 * n << " ";
     window.clear(sf::Color::White);
     for (boid b : boids) {  // passato const& boid
@@ -274,30 +300,37 @@ int main() {
       boid_point.setPosition(xy[0], xy[1]);  // frecce
       window.draw(boid_point);
     }
+
     window.display();
     // 0.0264583333 *
-    window2.clear(sf::Color::White);
-    sf::Text text;
-    text.setFont(font);
-    text.setString("Avarage velocity" + std::to_string(data.vel_mean[0]) +
-                   "   " + std::to_string(data.vel_mean[1]) + "\n\n" +
-                   "Standard deviation: " + std::to_string(data.vel_sigma[0]) +
-                   "   " + std::to_string(data.vel_sigma[1]));      //ogni tanto nan
-    text.setCharacterSize(7);
-    text.setFillColor(sf::Color::Black);
-    text.setPosition(5, 5);
-    window2.draw(text);
-    window2.display();
-    // text.setFont(font);
-    /*const sf::Color AXIS_COLOR(sf::Color::Black);
-    sf::Vertex boid_line[] = {
-        sf::Vertex(sf::Vector2f(8, 4), AXIS_COLOR),
-        sf::Vertex(sf::Vector2f(150, 150), AXIS_COLOR),
-    };
-    boid_line.setFillColor(sf::Color::Black);
-    boid_line.setPosition(xy[0], xy[1]);
-    window.draw(boid_line, 2, sf::Lines);
-  }*/
+    if (window2.isOpen()) {
+      statistics data = stats(boids);
+      window2.clear(sf::Color::White);
+      sf::Text text;
+      text.setFont(font);
+      text.setString(
+          "Avarage velocity" + std::to_string(data.vel_mean[0]) + "   " +
+          std::to_string(data.vel_mean[1]) + "\n\n" +
+          "Standard deviation: " + std::to_string(data.vel_sigma[0]) + "   " +
+          std::to_string(data.vel_sigma[1]) + "\n\n" +
+          "Avarage distance: " + std::to_string(data.dis_mean) + "\n\n" +
+          "Standard deviation: " + std::to_string(data.dis_sigma));
+      text.setCharacterSize(7);
+      text.setFillColor(sf::Color::Black);
+      text.setPosition(5, 5);
+      window2.draw(text);
+      window2.display();
+      // text.setFont(font);
+      /*const sf::Color AXIS_COLOR(sf::Color::Black);
+      sf::Vertex boid_line[] = {
+          sf::Vertex(sf::Vector2f(8, 4), AXIS_COLOR),
+          sf::Vertex(sf::Vector2f(150, 150), AXIS_COLOR),
+      };
+      boid_line.setFillColor(sf::Color::Black);
+      boid_line.setPosition(xy[0], xy[1]);
+      window.draw(boid_line, 2, sf::Lines);
+    }*/
+    }
   }
 
   /*for (boid b : boids) {
