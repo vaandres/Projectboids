@@ -30,10 +30,10 @@ il file .gitignore garantisce che la cartella di build sia ignorata e quindi non
 ## To do list
 -classe/i vettori (vector2f, vector2i?)
 
-- Classe statistiche
+- distanza media N
 - test
 - catch error e assert
-- input e gestione parametri
+- input e gestione parametri N
 - algoritmi
 - dividere pboid nei file del main
 - ottimizzazioni
