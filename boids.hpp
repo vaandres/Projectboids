@@ -26,9 +26,9 @@ class boid
 
   void setVelocity(const std::array<double,2>& newVel);
 };
-std::array<double,2> operator+(std::array<double,2>, std::array<double,2>);
+std::array<double,2> bds::operator+(std::array<double,2>, std::array<double,2>);
 
-std::array<double,2> operator*(std::array<double,2> v1, double k);
+std::array<double,2> bds::operator*(std::array<double,2> v1, double k);
 
 double dist(boid const&, boid const&);
 
