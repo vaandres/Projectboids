@@ -24,3 +24,20 @@ Nel caso ci fosse la necessità di eseguire il comando
 $ git add -all
 ```
 il file .gitignore garantisce che la cartella di build sia ignorata e quindi non mandata nella staging area.
+
+
+
+## To do list
+- Classe statistiche
+- test
+- catch error e assert
+- input e gestione parametri
+- algoritmi 
+- riguardare array e in caso sostituire + ottimizzazioni
+- boid triangolo
+- grafici std
+- predatore (sì/no)
+- segue cursore
+
+- ((angolo di visione??))
+
