@@ -49,21 +49,21 @@ TEST_CASE("Testing neighbours function")
 
 TEST_CASE("Testing velocity method")
 {
-  bds::boid b1{0, 70, 4, 5};
-  bds::boid b2{64, 21, -50, 100};
+  bds::boid b1{0, 70, 2.4, 2};
+  bds::boid b2{64, 21, -4, -2.1};
   bds::boid b3{0, 0, 0, 0};
-  CHECK(b1.velocity()[0] == 4);
-  CHECK(b1.velocity()[1] == 5);
-  CHECK(b2.velocity()[0] == -50);
-  CHECK(b2.velocity()[1] == 100);
+  CHECK(b1.velocity()[0] == 2.4);
+  CHECK(b1.velocity()[1] == 2);
+  CHECK(b2.velocity()[0] == -4);
+  CHECK(b2.velocity()[1] == -2.1);
   CHECK(b3.velocity()[0] == 0);
   CHECK(b3.velocity()[1] == 0);
 }
 
 TEST_CASE("Testing position method")
 {
-  bds::boid b1{0, 70, 4, 5};
-  bds::boid b2{64, 21, -50, 100};
+  bds::boid b1{0, 70, 2.4, 2};
+  bds::boid b2{64, 21, -4, -2.1};
   bds::boid b3{0, 0, 0, 0};
   CHECK(b1.position()[0] == 0);
   CHECK(b1.position()[1] == 70);
@@ -86,8 +86,65 @@ TEST_CASE("Testing alignment function")
   bds::boid b7{1, 0, 3.5, 3.5};
   std::vector<bds::boid> flock{b2, b3, b4, b5, b6, b7};
   double d{10};
-  double a{1};
+  double a{2};
   auto alignment_vel = bds::alignment(b1, flock, d, a);
-  CHECK(alignment_vel[0] == doctest::Approx(0.58).epsilon(0.01));
-  CHECK(alignment_vel[1] == doctest::Approx(1.75).epsilon(0.01));
+  CHECK(alignment_vel[0] == doctest::Approx(1.17).epsilon(0.01));
+  CHECK(alignment_vel[1] == doctest::Approx(3.50).epsilon(0.01));
+}
+
+TEST_CASE("Testing setVelocity method")
+{
+  bds::boid b1{0, 0, 0, 0};
+  std::array<double, 2> newVel{1, 1.5};
+  b1.setVelocity(newVel);
+  CHECK(b1.velocity()[0] == 1);
+  CHECK(b1.velocity()[1] == 1.5);
+  newVel = {0, 0};
+  b1.setVelocity(newVel);
+  CHECK(b1.velocity()[0] == 0);
+  CHECK(b1.velocity()[1] == 0);
+  newVel = {-1.5, -1};
+  b1.setVelocity(newVel);
+  CHECK(b1.velocity()[0] == -1.5);
+  CHECK(b1.velocity()[1] == -1);
+}
+
+TEST_CASE("Testing operator+ on array")
+{
+  std::array<double, 2> a{1, 1};
+  std::array<double, 2> b{2, 2};
+  auto c = bds::operator+(a, b);
+  CHECK(c[0] == 3);
+  CHECK(c[1] == 3);
+  a = {0, 0};
+  b = {0, 0};
+  c = bds::operator+(a, b);
+  CHECK(c[0] == 0);
+  CHECK(c[1] == 0);
+  a = {2.5, 1};
+  b = {-1, -1};
+  c = bds::operator+(a, b);
+  CHECK(c[0] == 1.5);
+  CHECK(c[1] == 0);
+}
+//test operator* on array
+TEST_CASE("Testing operator* on array")
+{
+  std::array<double, 2> a{1, 1};
+  double b{2};
+  auto c = bds::operator*(a, b);
+  CHECK(c[0] == 2);
+  CHECK(c[1] == 2);
+
+  a = {3, -2};
+  b = 0;
+  c = bds::operator*(a, b);
+  CHECK(c[0] == 0);
+  CHECK(c[1] == 0);
+
+  a = {2.5, 1};
+  b = -1;
+  c = bds::operator*(a, b);
+  CHECK(c[0] == -2.5);
+  CHECK(c[1] == -1);
 }

@@ -69,7 +69,7 @@ std::array<double,2> bds::separation(bds::boid const& b1,
       [&b1, ds, s](std::array<double,2> acc, bds::boid const& b) {
         if (dist(b1, b) < ds) {
           auto pos = b.position();
-          acc[0] -= s * (pos[0] - b1.position()[0]);
+          acc[0] -= s * (pos[0] - b1.position()[0]);  //usare operator+ e operator* per array
           acc[1] -= s * (pos[1] - b1.position()[1]);
         }
         return acc;
@@ -89,7 +89,7 @@ std::array<double,2> bds::alignment(boid const& b1,
       neighbours.begin(), neighbours.end(), std::array<double,2>{0, 0},
       [](std::array<double,2> v, boid const& b) { return v + b.velocity(); });
   return (v * (1.0 / neighbours.size()) + b1.velocity() * -1)
-       * a; // vedi se implementare anche operatore - per vettori velocità
+       * a; // vedi se implementare anche operatore - per array velocità
 }
 // Regola di coesione
 std::array<double,2> bds::cohesion(bds::boid const& b1,
