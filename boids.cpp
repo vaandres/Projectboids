@@ -3,14 +3,14 @@
 #include <cmath>
 #include <numeric>
 
-std::array<double,2> operator+(std::array<double,2> v1, std::array<double,2> v2)
+std::array<double,2> bds::operator+(std::array<double,2> v1, std::array<double,2> v2)
 {
   auto vxf               = v1[0] + v2[0];
   auto vyf               = v1[1] + v2[1];
   std::array<double,2> vf = {vxf, vyf};
   return vf;
 }
-std::array<double,2> operator*(std::array<double,2> v1, double k)
+std::array<double,2> bds::operator*(std::array<double,2> v1, double k)
 {
   auto vxf               = k * v1[0];
   auto vyf               = k * v1[1];
@@ -50,7 +50,7 @@ std::vector<bds::boid> bds::neighbours(
 {
   std::vector<bds::boid> neighbours;
   std::copy_if(flock.begin(), flock.end(), std::back_inserter(neighbours),
-               [&b1, d](bds::boid const& b2) { return dist(b1, b2) < d; });
+               [&b1, d](bds::boid const& b2) { return dist(b1, b2) < d && dist(b1, b2) != 0; });
   return neighbours;
 }
 // Regola di separazione
