@@ -3,28 +3,27 @@
 #include <cmath>
 #include <numeric>
 
-std::vector<double> bds::operator+(std::vector<double> v1,
-                                   std::vector<double> v2)
+std::array<double,2> bds::operator+(std::array<double,2> v1, std::array<double,2> v2)
 {
   auto vxf               = v1[0] + v2[0];
   auto vyf               = v1[1] + v2[1];
-  std::vector<double> vf = {vxf, vyf};
+  std::array<double,2> vf = {vxf, vyf};
   return vf;
 }
-std::vector<double> bds::operator*(std::vector<double> v1, double k)
+std::array<double,2> bds::operator*(std::array<double,2> v1, double k)
 {
   auto vxf               = k * v1[0];
   auto vyf               = k * v1[1];
-  std::vector<double> vf = {vxf, vyf};
+  std::array<double,2> vf = {vxf, vyf};
   return vf;
 }
 
-std::vector<double> bds::boid::position() const
+std::array<double,2> bds::boid::position() const
 {
   return position_;
 }
 
-std::vector<double> bds::boid::velocity() const
+std::array<double,2> bds::boid::velocity() const
 {
   return velocity_;
 }
@@ -38,8 +37,8 @@ double bds::dist(boid const& b1, boid const& b2)
                    + std::pow(pos1[1] - pos2[1], 2));
 }
 
-// Funzione cambio velocità del boid
-void bds::boid::setVelocity(const std::vector<double>& newVel)
+//Funzione cambio velocità del boid
+void bds::boid::setVelocity(const std::array<double,2>& newVel)
 {
   velocity_ = newVel;
 }
@@ -51,25 +50,23 @@ std::vector<bds::boid> bds::neighbours(
 {
   std::vector<bds::boid> neighbours;
   std::copy_if(flock.begin(), flock.end(), std::back_inserter(neighbours),
-               [&b1, d](bds::boid const& b2) {
-                 return dist(b1, b2) < d && dist(b1, b2) != 0;
-               });
+               [&b1, d](bds::boid const& b2) { return dist(b1, b2) < d; });
   return neighbours;
 }
 // Regola di separazione
-std::vector<double> bds::separation(bds::boid const& b1,
+std::array<double,2> bds::separation(bds::boid const& b1,
                                     std::vector<bds::boid> const& flock,
                                     double d, double ds, double s)
 {
   auto neighbours = bds::neighbours(b1, flock, d);
 
   if (neighbours.empty()) {
-    return std::vector<double>{0, 0};
+    return std::array<double,2>{0, 0};
   }
 
-  std::vector<double> sep_vel = std::accumulate(
-      neighbours.begin(), neighbours.end(), std::vector<double>{0, 0},
-      [&b1, ds, s](std::vector<double> acc, bds::boid const& b) {
+  std::array<double,2> sep_vel = std::accumulate(
+      neighbours.begin(), neighbours.end(), std::array<double,2>{0, 0},
+      [&b1, ds, s](std::array<double,2> acc, bds::boid const& b) {
         if (dist(b1, b) < ds) {
           auto pos = b.position();
           acc[0] -= s * (pos[0] - b1.position()[0]);
@@ -81,29 +78,29 @@ std::vector<double> bds::separation(bds::boid const& b1,
   return sep_vel;
 }
 // Funzione per allineare i boids
-std::vector<double> bds::alignment(boid const& b1,
+std::array<double,2> bds::alignment(boid const& b1,
                                    std::vector<boid> const& flock, double d,
                                    double a)
 {
   auto neighbours = bds::neighbours(b1, flock, d);
   if (neighbours.empty())
     return {0, 0};
-  std::vector<double> v = std::accumulate(
-      neighbours.begin(), neighbours.end(), std::vector<double>{0, 0},
-      [](std::vector<double> v, boid const& b) { return v + b.velocity(); });
+  std::array<double,2> v = std::accumulate(
+      neighbours.begin(), neighbours.end(), std::array<double,2>{0, 0},
+      [](std::array<double,2> v, boid const& b) { return v + b.velocity(); });
   return (v * (1.0 / neighbours.size()) + b1.velocity() * -1)
        * a; // vedi se implementare anche operatore - per vettori velocità
 }
 // Regola di coesione
-std::vector<double> bds::cohesion(bds::boid const& b1,
+std::array<double,2> bds::cohesion(bds::boid const& b1,
                                   std::vector<bds::boid> const& flock, double d,
                                   double c)
 {
-  std::vector<double> coh_vel{0, 0};
+  std::array<double,2> coh_vel{0, 0};
   auto neighbours = bds::neighbours(b1, flock, d);
   coh_vel =
       std::accumulate(neighbours.begin(), neighbours.end(), coh_vel,
-                      [&b1, c](std::vector<double> acc, bds::boid const& b) {
+                      [&b1, c](std::array<double,2> acc, bds::boid const& b) {
                         auto pos = b.position();
                         acc[0] += c * pos[0];
                         acc[1] += c * pos[1];
@@ -125,25 +122,25 @@ std::vector<double> bds::cohesion(bds::boid const& b1,
 void bds::velocitylimit(boid& b, double Vmax)
 {
   if (b.velocity()[0] > Vmax / std::sqrt(2)) {
-    std::vector<double> vel{Vmax / std::sqrt(2), b.velocity()[1]};
+    std::array<double,2> vel{Vmax / std::sqrt(2), b.velocity()[1]};
     b.setVelocity(vel);
   }
   if (b.velocity()[1] > Vmax / std::sqrt(2)) {
-    std::vector<double> vel{b.velocity()[0],
+    std::array<double,2> vel{b.velocity()[0],
                             Vmax / std::sqrt(2)}; // fare meglio
     b.setVelocity(vel);
   }
   if (b.velocity()[0] < -Vmax / std::sqrt(2)) {
-    std::vector<double> vel{-Vmax / std::sqrt(2), b.velocity()[1]};
+    std::array<double,2> vel{-Vmax / std::sqrt(2), b.velocity()[1]};
     b.setVelocity(vel);
   }
   if (b.velocity()[1] < -Vmax / std::sqrt(2)) {
-    std::vector<double> vel{b.velocity()[0], -Vmax / std::sqrt(2)};
+    std::array<double,2> vel{b.velocity()[0], -Vmax / std::sqrt(2)};
     b.setVelocity(vel);
   }
 }
 
-std::vector<double> bds::edgeforce(boid const& b, int width, int height)
+std::array<double,2> bds::edgeforce(boid const& b, int width, int height)
 {
   double x{b.position()[0]};
   double y{b.position()[1]};
@@ -163,6 +160,6 @@ std::vector<double> bds::edgeforce(boid const& b, int width, int height)
     vy = -1;
   }
 
-  std::vector<double> a{vx, vy};
+  std::array<double,2> a{vx, vy};
   return a;
 }
