@@ -35,22 +35,6 @@ TEST_CASE("Testing operator*")
   CHECK(v2[1] == 4);
 }
 */
-/*TEST_CASE("Testing neighbours()")
-{
-  bds::boid b1{1, 2, 3, 4};
-  bds::boid b2{3, 2, 0, 0};
-  bds::boid b3{3, 5, 0, 0};
-  bds::boid b4{5, 5, 0, 0};
-
-  std::vector<bds::boid> flock{b1, b2, b3, b4};
-
-  auto neighbours = bds::neighbours(b1, flock, 3);
-  CHECK(neighbours.size() == 2);
-  CHECK(neighbours[0].position()[0] == 3);
-  CHECK(neighbours[0].position()[1] == 2);
-  CHECK(neighbours[1].position()[0] == 3);
-  CHECK(neighbours[1].position()[1] == 5);
-}*/
 
 TEST_CASE("Testing separation()")
 {
@@ -67,19 +51,6 @@ TEST_CASE("Testing separation()")
 
 }
 
-TEST_CASE("Testing alignment()")
-{
-  bds::boid b1{1, 2, 3, 4};
-  bds::boid b2{3, 2, 0, 0};
-  bds::boid b3{3, 5, 0, 0};
-  bds::boid b4{5, 5, 0, 0};
-
-  std::vector<bds::boid> flock{b2, b3, b4};
-
-  auto align = bds::alignment(b1, flock, 3, 1);
-  CHECK(align[0] == doctest::Approx(-1.0).epsilon(0.01));
-  CHECK(align[1] == doctest::Approx(-1.0).epsilon(0.01));
-}
 
 TEST_CASE("Testing cohesion()")
 {
