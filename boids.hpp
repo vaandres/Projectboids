@@ -22,6 +22,8 @@ class boid
   std::vector<double> velocity() const;
 
   void update_position(double x, double y);
+
+  void setVelocity(const std::vector<double>& newVel);
 };
 std::vector<double> operator+(std::vector<double>, std::vector<double>);
 
@@ -39,6 +41,12 @@ std::vector<double> alignment(boid const&, std::vector<boid> const&, double,
 
 std::vector<double> cohesion(boid const&, std::vector<boid> const&, double,
                              double);
+
+std::vector<double> edgeforce(boid const& b, int width, int height);
+
+void velocitylimit(boid& b, double Vmax);
+
+std::vector<double> edgeforce(boid const& b, int width, int height);
 } // namespace bds
 
 #endif

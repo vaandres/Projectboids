@@ -2,3 +2,4 @@
 build/
 #esclude .out files
 *.out
+*.vscode

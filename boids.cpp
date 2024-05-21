@@ -37,6 +37,12 @@ double bds::dist(boid const& b1, boid const& b2)
                    + std::pow(pos1[1] - pos2[1], 2));
 }
 
+//Funzione cambio velocità del boid
+void bds::boid::setVelocity(const std::vector<double>& newVel)
+{
+  velocity_ = newVel;
+}
+
 // Funzione per trovare i vicini di un boid
 std::vector<bds::boid> bds::neighbours(
     boid const& b1, std::vector<boid> const& flock,
@@ -111,4 +117,49 @@ std::vector<double> bds::cohesion(bds::boid const& b1,
   } else {
     return {0, 0};
   }
+}
+
+void bds::velocitylimit(boid& b, double Vmax)
+{
+  if (b.velocity()[0] > Vmax / std::sqrt(2)) {
+    std::vector<double> vel{Vmax / std::sqrt(2), b.velocity()[1]};
+    b.setVelocity(vel);
+  }
+  if (b.velocity()[1] > Vmax / std::sqrt(2)) {
+    std::vector<double> vel{b.velocity()[0],
+                            Vmax / std::sqrt(2)}; // fare meglio
+    b.setVelocity(vel);
+  }
+  if (b.velocity()[0] < -Vmax / std::sqrt(2)) {
+    std::vector<double> vel{-Vmax / std::sqrt(2), b.velocity()[1]};
+    b.setVelocity(vel);
+  }
+  if (b.velocity()[1] < -Vmax / std::sqrt(2)) {
+    std::vector<double> vel{b.velocity()[0], -Vmax / std::sqrt(2)};
+    b.setVelocity(vel);
+  }
+}
+
+std::vector<double> bds::edgeforce(boid const& b, int width, int height)
+{
+  double x{b.position()[0]};
+  double y{b.position()[1]};
+
+  double vx{0};
+  double vy{0};
+
+  if (x <= 1) {
+    vx = 1;
+  } else if (x >= width - 1) {
+    vx = -1;
+  }
+
+  if (y <= 1) {
+    vy = 1;
+  } else if (y >= height - 1) {
+    vy = -1;
+  }
+
+  std::vector<double> a{vx, vy};
+  return a;
 }
