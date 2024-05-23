@@ -28,8 +28,7 @@ il file .gitignore garantisce che la cartella di build sia ignorata e quindi non
 
 
 ## To do list
--classe/i vettori (vector2f, vector2i?)
-
+- classe/i vettori (vector2f, vector2i?)
 - distanza media N
 - test
 - catch error e assert
@@ -41,6 +40,6 @@ il file .gitignore garantisce che la cartella di build sia ignorata e quindi non
 - grafici std
 - predatore (sì/no)
 - segue cursore
-
+- velocità limite V
 - ((angolo di visione??))
 
