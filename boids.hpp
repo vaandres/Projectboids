@@ -22,10 +22,14 @@ class boid
 
   std::array<double,2> velocity() const;
 
-  void update_position(double x, double y);
+  void setPosition(const std::array<double, 2>& newPos);
 
   void setVelocity(const std::array<double,2>& newVel);
-};
+
+  double absoluteVelocity();
+
+};//fine classe boid
+
 std::array<double,2> operator+(std::array<double,2>, std::array<double,2>);
 
 std::array<double,2> operator*(std::array<double,2> v1, double k);
