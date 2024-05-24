@@ -76,20 +76,34 @@ TEST_CASE("Testing position method")
 // testing alignment function
 TEST_CASE("Testing alignment function")
 {
-  // per semplicià tutti i boid sono vicini
-  bds::boid b1{0, 0, 0.5, 0.5};
-  bds::boid b2{1, 0, -1.0, 1.0};
-  bds::boid b3{1, 0, 1.5, 1.5};
-  bds::boid b4{1, 0, 2.0, 2.0};
-  bds::boid b5{1, 0, -2.5, 2.5};
-  bds::boid b6{1, 0, 3.0, 3.0};
-  bds::boid b7{1, 0, 3.5, 3.5};
-  std::vector<bds::boid> flock{b2, b3, b4, b5, b6, b7};
-  double d{10};
-  double a{0.5};
-  auto alignment_vel = bds::alignment(b1, flock, d, a);
-  CHECK(alignment_vel[0] == doctest::Approx(0.291).epsilon(0.01));
-  CHECK(alignment_vel[1] == doctest::Approx(0.88).epsilon(0.01));
+  SUBCASE("Testing alignment function with neighbours")
+  {
+    // per semplicià tutti i boid sono vicini
+    bds::boid b1{0, 0, 0.5, 0.5};
+    bds::boid b2{1, 0, -1.0, 1.0};
+    bds::boid b3{1, 0, 1.5, 1.5};
+    bds::boid b4{1, 0, 2.0, 2.0};
+    bds::boid b5{1, 0, -2.5, 2.5};
+    bds::boid b6{1, 0, 3.0, 3.0};
+    bds::boid b7{1, 0, 3.5, 3.5};
+    std::vector<bds::boid> flock{b2, b3, b4, b5, b6, b7};
+    double d{10};
+    double a{0.5};
+    auto alignment_vel = bds::alignment(b1, flock, d, a);
+    CHECK(alignment_vel[0] == doctest::Approx(0.291).epsilon(0.01));
+    CHECK(alignment_vel[1] == doctest::Approx(0.88).epsilon(0.01));
+
+    SUBCASE("Testing alignment function with no neighbours")
+    {
+      bds::boid b1{0, 0, 0.5, 0.5};
+      std::vector<bds::boid> flock;
+      double d{10};
+      double a{0.5};
+      auto alignment_vel = bds::alignment(b1, flock, d, a);
+      CHECK(alignment_vel[0] == 0);
+      CHECK(alignment_vel[1] == 0);
+    }
+  }
 }
 
 TEST_CASE("Testing setVelocity method")
@@ -127,7 +141,7 @@ TEST_CASE("Testing operator+ on array")
   CHECK(c[0] == 1.5);
   CHECK(c[1] == 0);
 }
-//test operator* on array
+// test operator* on array
 TEST_CASE("Testing operator* on array")
 {
   std::array<double, 2> a{1, 1};
