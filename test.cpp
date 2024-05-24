@@ -98,6 +98,53 @@ TEST_CASE("Testing position method")
   CHECK(b3.position()[1] == 0);
   // ricordati di verificare che la posizione sia positiva(assert o exception?)
 }
+
+TEST_CASE("Testing separation function")
+{
+  bds::boid b1{13., 11., 3., 4.};
+  bds::boid b2{12., 7., 0., 0.};
+  bds::boid b3{20., 10., 2., 0.};
+  bds::boid b4{15.5, 12., 1., 0.};
+  bds::boid b5{14., 12.2, 0., 5.};
+  bds::boid b6{33., 11.4, 4., 0.};
+
+  std::vector<bds::boid> flock{b2, b3, b4, b5, b6};
+
+  SUBCASE("Testing separation function with neighbours")
+
+  {
+    double d{11};
+    double ds{4};
+    double s{0.2};
+
+    auto sep_vel = bds::separation(b1, flock, d, ds, s);
+    CHECK(sep_vel[0] == doctest::Approx(-0.7));
+    CHECK(sep_vel[1] == doctest::Approx(-0.44));
+  }
+
+  SUBCASE("Testing separation function without neighbours")
+  {
+    double d{3};
+    double ds{1};
+    double s{0.4};
+
+    auto sep_vel = bds::separation(b1, flock, d, ds, s);
+    CHECK(sep_vel[0] == doctest::Approx(0.));
+    CHECK(sep_vel[1] == doctest::Approx(0.));
+  }
+
+  SUBCASE("Testing separation function with a low separation threshold")
+  {
+    double d{10};
+    double ds{1};
+    double s{0.7};
+
+    auto sep_vel = bds::separation(b1, flock, d, ds, s);
+    CHECK(sep_vel[0] == doctest::Approx(0.));
+    CHECK(sep_vel[1] == doctest::Approx(0.));
+  }
+}
+
 // testing alignment function
 TEST_CASE("Testing alignment function")
 {
@@ -129,6 +176,60 @@ TEST_CASE("Testing alignment function")
       CHECK(alignment_vel[1] == 0);
     }
   }
+}
+
+TEST_CASE("Testing cohesion function")
+{
+  bds::boid b1{13, 7., 3, 4};
+  bds::boid b2{10., 5., -2., 5.};
+  bds::boid b3{30., 5., 3., 2.};
+  bds::boid b4{11., 45., 0, 1.};
+  bds::boid b5{8., 6., 3, 4};
+  bds::boid b6{7., 6.5, 0, 0};
+  bds::boid b7{10.5, 7., 0, 0};
+  bds::boid b8{7.5, 15., 0, 0};
+  std::vector<bds::boid> flock{b2, b3, b4, b5, b6, b7, b8};
+
+  SUBCASE("Testing cohesion function with neighbours")
+  {
+    double d{7};
+    double c{0.5};
+    auto coh_vel = bds::cohesion(b1, flock, d, c);
+    CHECK(coh_vel[0] == doctest::Approx(-2.06).epsilon(0.01));
+    CHECK(coh_vel[1] == doctest::Approx(-0.44).epsilon(0.01));
+  }
+
+  SUBCASE("Testing cohesion function without neighbours")
+  {
+    double d{1};
+    double c{0.5};
+    auto coh_vel = bds::cohesion(b1, flock, d, c);
+    CHECK(coh_vel[0] == doctest::Approx(0.).epsilon(0.01));
+    CHECK(coh_vel[1] == doctest::Approx(0.).epsilon(0.01));
+  }
+}
+
+TEST_CASE("Testing edgeforce function")
+{
+  bds::boid b1{1., 2., 3., 4.};
+  std::array<double, 2> edge = bds::edgeforce(b1, 3, 10);
+  CHECK(edge[0] == doctest::Approx(1.));
+  CHECK(edge[1] == doctest::Approx(0.));
+
+  bds::boid b2{10., 8., 0., 0.};
+  std::array<double, 2> edge1 = bds::edgeforce(b2, 10, 10);
+  CHECK(edge1[0] == doctest::Approx(-1.));
+  CHECK(edge1[1] == doctest::Approx(0.));
+
+  bds::boid b3{10., 0., 0., 0.};
+  std::array<double, 2> edge2 = bds::edgeforce(b3, 10, 10);
+  CHECK(edge2[0] == doctest::Approx(-1.));
+  CHECK(edge2[1] == doctest::Approx(1.));
+
+  bds::boid b4{1., 10., 0., 0.};
+  std::array<double, 2> edge3 = bds::edgeforce(b4, 10, 10);
+  CHECK(edge3[0] == doctest::Approx(1.));
+  CHECK(edge3[1] == doctest::Approx(-1.));
 }
 
 TEST_CASE("Testing setVelocity method")
