@@ -3,8 +3,7 @@
 #include <cmath>
 #include <numeric>
 
-std::array<double, 2> bds::operator+(std::array<double, 2> v1,
-                                     std::array<double, 2> v2)
+
 std::array<double, 2> bds::operator+(std::array<double, 2> v1,
                                      std::array<double, 2> v2)
 {
