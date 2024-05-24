@@ -110,10 +110,6 @@ std::array<double, 2> bds::separation(bds::boid const& b1,
 std::array<double, 2> bds::alignment(boid const& b1,
                                      std::vector<boid> const& flock, double d,
                                      double a)
-
-std::array<double, 2> bds::alignment(boid const& b1,
-                                     std::vector<boid> const& flock, double d,
-                                     double a)
 {
   auto neighbours = bds::neighbours(b1, flock, d);
   if (neighbours.empty())
