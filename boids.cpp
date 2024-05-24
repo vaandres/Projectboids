@@ -38,11 +38,6 @@ double bds::boid::absoluteVelocity()
   return std::sqrt(std::pow(velocity_[0], 2) + std::pow(velocity_[1], 2));
 }
 
-// Metodo di cambio velocità del boid
-void bds::boid::setVelocity(const std::array<double, 2>& newVel){
-
-    velocity_ = newVel;
-}
 
 // Metodo di cambio di posizione del boid
 void bds::boid::setPosition(const std::array<double, 2>& newPos)
