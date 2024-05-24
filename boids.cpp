@@ -5,6 +5,8 @@
 
 std::array<double, 2> bds::operator+(std::array<double, 2> v1,
                                      std::array<double, 2> v2)
+std::array<double, 2> bds::operator+(std::array<double, 2> v1,
+                                     std::array<double, 2> v2)
 {
   auto vxf                 = v1[0] + v2[0];
   auto vyf                 = v1[1] + v2[1];
@@ -58,6 +60,12 @@ double bds::dist(boid const& b1, boid const& b2)
                    + std::pow(pos1[1] - pos2[1], 2));
 }
 
+// Funzione cambio velocità del boid
+void bds::boid::setVelocity(const std::array<double, 2>& newVel)
+{
+  velocity_ = newVel;
+}
+
 // Funzione per trovare i vicini di un boid
 std::vector<bds::boid> bds::neighbours(
     boid const& b1, std::vector<boid> const& flock,
@@ -87,7 +95,10 @@ std::array<double, 2> bds::separation(bds::boid const& b1,
       [&b1, ds, s](std::array<double, 2> acc, bds::boid const& b) {
         if (dist(b1, b) < ds) {
           auto pos = b.position();
-          acc[0] -= s * (pos[0] - b1.position()[0]);
+          acc[0] -=
+              s
+              * (pos[0]
+                 - b1.position()[0]); // usare operator+ e operator* per array
           acc[1] -= s * (pos[1] - b1.position()[1]);
         }
         return acc;
@@ -100,6 +111,10 @@ std::array<double, 2> bds::separation(bds::boid const& b1,
 std::array<double, 2> bds::alignment(boid const& b1,
                                      std::vector<boid> const& flock, double d,
                                      double a)
+
+std::array<double, 2> bds::alignment(boid const& b1,
+                                     std::vector<boid> const& flock, double d,
+                                     double a)
 {
   auto neighbours = bds::neighbours(b1, flock, d);
   if (neighbours.empty())
@@ -108,8 +123,9 @@ std::array<double, 2> bds::alignment(boid const& b1,
       neighbours.begin(), neighbours.end(), std::array<double, 2>{0, 0},
       [](std::array<double, 2> v, boid const& b) { return v + b.velocity(); });
   return (v * (1.0 / neighbours.size()) + b1.velocity() * -1)
-       * a; // vedi se implementare anche operatore - per vettori velocità
+       * a; // vedi se implementare anche operatore - per array velocità
 }
+
 
 // Regola di coesione
 std::array<double, 2> bds::cohesion(bds::boid const& b1,

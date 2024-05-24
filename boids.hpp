@@ -4,6 +4,7 @@
 #include <cassert>
 #include <vector>
 #include <array>
+#include <array>
 namespace bds {
 // Classe principale dei boids
 class boid
