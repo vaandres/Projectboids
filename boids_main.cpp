@@ -10,28 +10,22 @@ std::array<double, 2> operator+(std::array<double, 2> v1,
   std::array<double, 2> vf = {vxf, vyf};
   return vf;
 }
-std::array<double, 2> operator*(std::array<double, 2> v1, double k)
-{
-  auto vxf                 = k * v1[0];
-  auto vyf                 = k * v1[1];
-  std::array<double, 2> vf = {vxf, vyf};
-  return vf;
-}
+
 
 int main()
 {
   int n       = 160;
-  double d    = 150;
-  double ds   = 10; // gestire errori di input (mettere catch error), negativi
-  double s    = 0.001; // max vel?
-  double a    = 0.5;
-  double c    = 0.15;
+  double d    = 60;
+  double ds   = 50; // gestire errori di input (mettere catch error), negativi
+  double s    = 0.01; // max vel?
+  double a    = 0.05;//questa non è usata?
+  double c    = 0.5;
   double Vmax = 4; 
   sf::Font font;
   font.loadFromFile("./Nexa-Heavy.ttf");
 
-  int windowWidth  = (1) * sf::VideoMode::getDesktopMode().width - 40;
-  int windowHeight = (1) * sf::VideoMode::getDesktopMode().height - 75;
+  unsigned windowWidth  = (1) * sf::VideoMode::getDesktopMode().width - 40;
+  unsigned windowHeight = (1) * sf::VideoMode::getDesktopMode().height - 75;
   sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight),
                           "Boids Simulation");
   window.setFramerateLimit(60);
@@ -40,7 +34,9 @@ int main()
   // finestra statistiche
   sf::RenderWindow window2(sf::VideoMode(200, 200), "Statistics");
   window2.setFramerateLimit(30);
-  window2.setPosition(sf::Vector2i(windowWidth - 220, windowHeight - 200));
+  window2.setPosition(sf::Vector2i(static_cast<int> (windowWidth) - 220, static_cast<int> (windowHeight) - 200));
+  //????Esisite modo diverso invece di usare static cast.
+ 
   // adegurare a framerate tempo e a grandezza boid
 
   // Assegnazione delle caratteristiche allo spawn dei boid*/
@@ -48,17 +44,17 @@ int main()
   for (int i; i < n; i++) {
     std::random_device r;
     std::default_random_engine e1(r());
-    std::uniform_int_distribution<> roll_dice1(
+    std::uniform_real_distribution<> roll_dice1(
         20, windowWidth - 20); // non capisco perchè restituiscono tutti int
                                // (in caso satatic cast)
-    int rand_x = roll_dice1(e1);
-    std::uniform_int_distribution<> roll_dice2(20, windowHeight - 20);
-    int rand_y = roll_dice2(e1);
-    std::normal_distribution<> gauss1(0, 2);
-    int rand_vx = gauss1(e1);
-    std::normal_distribution<> gauss2(0, 2);
-    int rand_vy = gauss2(e1);
-    bds::boid bi{rand_x, rand_y, rand_vx, rand_vy}; // implicita conv double int
+    //int rand_x = roll_dice1(e1);
+    std::uniform_real_distribution<> roll_dice2(20, windowHeight - 20);
+    //int rand_y = roll_dice2(e1);
+    std::normal_distribution<double> gauss1(0, 2);
+   // int rand_vx = static_cast<int> (gauss1(e1));
+    std::normal_distribution<double> gauss2(0, 2);
+   // int rand_vy = static_cast<int> (gauss2(e1));
+    bds::boid bi{roll_dice1(e1), roll_dice2(e1) , gauss1(e1), gauss2(e1)}; // implicita conv double int
     boids.push_back(bi);
   }
 
@@ -80,20 +76,21 @@ int main()
     for (bds::boid& b1 : boids) { // passare const ref
 
       b1.setVelocity(b1.velocity() + bds::edgeforce(b1, windowWidth, windowHeight)
-                     + bds::alignment(b1, boids, d, c) + bds::separation(b1, boids, d, ds,s)
-                     + bds::cohesion(b1, boids, d, s)); // edgeforce qui o sotto?
+                     + bds::alignment(b1, boids, d, a) + bds::separation(b1, boids, d, ds,s)
+                     + bds::cohesion(b1, boids, d, c)); // edgeforce qui o sotto?
+      bds::velocitylimit(b1, Vmax);
       std::array<double, 2> p = b1.position() + b1.velocity();
-      velocitylimit(b1, Vmax);
       b1.setPosition(p);
 
     }
+
 
     window.clear(sf::Color::White);
     for (bds::boid b : boids) { // passato const& boid
       sf::CircleShape boid_point(1);
       boid_point.setFillColor(sf::Color::Black);
       auto xy = b.position();
-      boid_point.setPosition(xy[0], xy[1]); // frecce
+      boid_point.setPosition(static_cast<float> (xy[0]),static_cast<float> (xy[1])); // frecce /è necessari static cast?
       window.draw(boid_point);
     }
 

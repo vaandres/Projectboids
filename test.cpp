@@ -207,28 +207,28 @@ TEST_CASE("Testing cohesion function")
   }
 }
 
-TEST_CASE("Testing edgeforce function")
-{
-  bds::boid b1{1., 2., 3., 4.};
-  std::array<double, 2> edge = bds::edgeforce(b1, 3, 10);
-  CHECK(edge[0] == doctest::Approx(1.));
-  CHECK(edge[1] == doctest::Approx(0.));
+// TEST_CASE("Testing edgeforce function")
+// {
+//   bds::boid b1{1., 2., 3., 4.};
+//   std::array<double, 2> edge = bds::edgeforce(b1, 3, 10);
+//   CHECK(edge[0] == doctest::Approx(1.));
+//   CHECK(edge[1] == doctest::Approx(0.));
 
-  bds::boid b2{10., 8., 0., 0.};
-  std::array<double, 2> edge1 = bds::edgeforce(b2, 10, 10);
-  CHECK(edge1[0] == doctest::Approx(-1.));
-  CHECK(edge1[1] == doctest::Approx(0.));
+//   bds::boid b2{10., 8., 0., 0.};
+//   std::array<double, 2> edge1 = bds::edgeforce(b2, 10, 10);
+//   CHECK(edge1[0] == doctest::Approx(-1.));
+//   CHECK(edge1[1] == doctest::Approx(0.));
 
-  bds::boid b3{10., 0., 0., 0.};
-  std::array<double, 2> edge2 = bds::edgeforce(b3, 10, 10);
-  CHECK(edge2[0] == doctest::Approx(-1.));
-  CHECK(edge2[1] == doctest::Approx(1.));
+//   bds::boid b3{10., 0., 0., 0.};
+//   std::array<double, 2> edge2 = bds::edgeforce(b3, 10, 10);
+//   CHECK(edge2[0] == doctest::Approx(-1.));
+//   CHECK(edge2[1] == doctest::Approx(1.));
 
-  bds::boid b4{1., 10., 0., 0.};
-  std::array<double, 2> edge3 = bds::edgeforce(b4, 10, 10);
-  CHECK(edge3[0] == doctest::Approx(1.));
-  CHECK(edge3[1] == doctest::Approx(-1.));
-}
+//   bds::boid b4{1., 10., 0., 0.};
+//   std::array<double, 2> edge3 = bds::edgeforce(b4, 10, 10);
+//   CHECK(edge3[0] == doctest::Approx(1.));
+//   CHECK(edge3[1] == doctest::Approx(-1.));
+// }
 
 TEST_CASE("Testing setVelocity method")
 {

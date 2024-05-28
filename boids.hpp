@@ -52,7 +52,7 @@ std::array<double,2> edgeforce(boid const& b, int width, int height);
 
 void velocitylimit(boid& b, double Vmax);
 
-std::array<double,2> edgeforce(boid const& b, int width, int height);
+std::array<double,2> edgeforce(boid const& b, unsigned int width, unsigned int height);
 } // namespace bds
 
 #endif

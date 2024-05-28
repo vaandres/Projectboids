@@ -155,7 +155,7 @@ void bds::velocitylimit(boid& b, double Vmax)
 }
 
 // Funzione della forza di repulsione dei boids
-std::array<double, 2> bds::edgeforce(boid const& b, int width, int height)
+std::array<double, 2> bds::edgeforce(boid const& b, unsigned int width,unsigned int height)
 {
   double x{b.position()[0]};
   double y{b.position()[1]};
