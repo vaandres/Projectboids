@@ -21,7 +21,7 @@ $ cmake --build build --target test
 
 Nel caso ci fosse la necessità di eseguire il comando
 ```bash
-$ git add -all
+$ git add --all
 ```
 il file .gitignore garantisce che la cartella di build sia ignorata e quindi non mandata nella staging area.
 
@@ -34,12 +34,11 @@ il file .gitignore garantisce che la cartella di build sia ignorata e quindi non
 - catch error e assert
 - input e gestione parametri N
 - algoritmi G
-- dividere pboid nei file del main
+- dividere pboid nei file del main V
 - ottimizzazioni
 - boid triangolo
 - grafici std
 - predatore (sì/no)
 - segue cursore
-- velocità limite V
 - ((angolo di visione??))
 
