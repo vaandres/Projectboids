@@ -35,7 +35,9 @@ il file .gitignore garantisce che la cartella di build sia ignorata e quindi non
 - input e gestione parametri N
 - algoritmi G
 - dividere pboid nei file del main V
+- fix warinigs
 - ottimizzazioni
+- improve code readibility
 - boid triangolo
 - grafici std
 - predatore (sì/no)
