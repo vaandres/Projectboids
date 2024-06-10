@@ -3,7 +3,6 @@
 #include <cmath>
 #include <numeric>
 
-
 std::array<double, 2> bds::operator+(std::array<double, 2> v1,
                                      std::array<double, 2> v2)
 {
@@ -16,6 +15,21 @@ std::array<double, 2> bds::operator*(std::array<double, 2> v1, double k)
 {
   auto vxf                 = k * v1[0];
   auto vyf                 = k * v1[1];
+  std::array<double, 2> vf = {vxf, vyf};
+  return vf;
+}
+std::array<double, 2> bds::operator-(std::array<double, 2> v1,
+                                     std::array<double, 2> v2)
+{
+  auto vxf                 = v1[0] - v2[0];
+  auto vyf                 = v1[1] - v2[1];
+  std::array<double, 2> vf = {vxf, vyf};
+  return vf;
+}
+std::array<double, 2> bds::operator/(std::array<double, 2> v1, double k)
+{
+  auto vxf                 = v1[0] / k;
+  auto vyf                 = v1[1] / k;
   std::array<double, 2> vf = {vxf, vyf};
   return vf;
 }
@@ -37,7 +51,6 @@ double bds::boid::absoluteVelocity()
 {
   return std::sqrt(std::pow(velocity_[0], 2) + std::pow(velocity_[1], 2));
 }
-
 
 // Metodo di cambio di posizione del boid
 void bds::boid::setPosition(const std::array<double, 2>& newPos)
@@ -61,9 +74,8 @@ void bds::boid::setVelocity(const std::array<double, 2>& newVel)
 }
 
 // Funzione per trovare i vicini di un boid
-std::vector<bds::boid> bds::neighbours(
-    boid const& b1, std::vector<boid> const& flock,
-    double d) // verifica che il boid in questione non sia nei vicini
+std::vector<bds::boid> bds::neighbours(boid const& b1,
+                                       std::vector<boid> const& flock, double d)
 {
   std::vector<bds::boid> neighbours;
   std::copy_if(flock.begin(), flock.end(), std::back_inserter(neighbours),
@@ -88,17 +100,12 @@ std::array<double, 2> bds::separation(bds::boid const& b1,
       neighbours.begin(), neighbours.end(), std::array<double, 2>{0, 0},
       [&b1, ds, s](std::array<double, 2> acc, bds::boid const& b) {
         if (dist(b1, b) < ds) {
-          auto pos = b.position();
-          acc[0] -=
-              s
-              * (pos[0]
-                 - b1.position()[0]); // usare operator+ e operator* per array
-          acc[1] -= s * (pos[1] - b1.position()[1]);
+          return acc + (b.position() - b1.position());
         }
         return acc;
       });
 
-  return sep_vel;
+  return sep_vel * -s;
 }
 
 // Funzione per allineare i boids
@@ -112,37 +119,26 @@ std::array<double, 2> bds::alignment(boid const& b1,
   std::array<double, 2> v = std::accumulate(
       neighbours.begin(), neighbours.end(), std::array<double, 2>{0, 0},
       [](std::array<double, 2> v, boid const& b) { return v + b.velocity(); });
-  return (v * (1.0 / neighbours.size()) + b1.velocity() * -1)
-       * a; // vedi se implementare anche operatore - per array velocità
+  return (v / neighbours.size() - b1.velocity())
+       * a; 
 }
-
 
 // Regola di coesione
 std::array<double, 2> bds::cohesion(bds::boid const& b1,
                                     std::vector<bds::boid> const& flock,
                                     double d, double c)
 {
-  std::array<double, 2> coh_vel{0, 0};
   auto neighbours = bds::neighbours(b1, flock, d);
-  coh_vel =
-      std::accumulate(neighbours.begin(), neighbours.end(), coh_vel,
-                      [&b1, c](std::array<double, 2> acc, bds::boid const& b) {
-                        auto pos = b.position();
-                        acc[0] += c * pos[0];
-                        acc[1] += c * pos[1];
-                        return acc;
-                      });
-
-  auto size = neighbours.size();
-  if (size != 0) {
-    coh_vel[0] /= size;
-    coh_vel[1] /= size;
-    coh_vel[0] -= c * b1.position()[0];
-    coh_vel[1] -= c * b1.position()[1];
-    return coh_vel;
-  } else {
+  if (neighbours.empty())
     return {0, 0};
-  }
+  std::array<double, 2> mass_c =
+      std::accumulate(neighbours.begin(), neighbours.end(), mass_c,
+                      [&b1, c](std::array<double, 2> acc, bds::boid const& b) {
+                        return acc + b.position();
+                      })
+      / neighbours.size();
+
+    return (mass_c-b1.position())*c;
 }
 
 // Funzione che limita la velocità dei boids
