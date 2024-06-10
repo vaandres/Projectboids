@@ -13,7 +13,7 @@ class boid
   std::array<double, 2> velocity_{0, 0};
   // Costruttore della classe boids
  public:
-  boid(double x, double y, double vx, double vy)
+  boid(double x, double y, double vx, double vy) //aggiungere un assert per posizioni negative?
       : position_{x, y}
       , velocity_{vx, vy}
   {}
@@ -52,8 +52,6 @@ std::array<double, 2> cohesion(boid const&, std::vector<boid> const&, double,
 std::array<double, 2> edgeforce(boid const& b, int width, int height);
 
 void velocitylimit(boid& b, double Vmax);
-
-std::array<double, 2> edgeforce(boid const& b, int width, int height);
 } // namespace bds
 
 #endif

@@ -119,8 +119,8 @@ std::array<double, 2> bds::alignment(boid const& b1,
   std::array<double, 2> v = std::accumulate(
       neighbours.begin(), neighbours.end(), std::array<double, 2>{0, 0},
       [](std::array<double, 2> v, boid const& b) { return v + b.velocity(); });
-  return (v * (1.0 / neighbours.size()) + b1.velocity() * -1)
-       * a; // vedi se implementare anche operatore - per array velocità
+  return (v / neighbours.size() - b1.velocity())
+       * a; 
 }
 
 // Regola di coesione
