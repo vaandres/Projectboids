@@ -286,3 +286,45 @@ TEST_CASE("Testing operator* on array")
   CHECK(c[0] == -2.5);
   CHECK(c[1] == -1);
 }
+// test operator- on array
+TEST_CASE("Testing operator- on array")
+{
+  std::array<double, 2> a{1, 1};
+  std::array<double, 2> b{2, 2};
+  auto c = bds::operator-(a, b);
+  CHECK(c[0] == -1);
+  CHECK(c[1] == -1);
+
+  a = {0, 0};
+  b = {0, 0};
+  c = bds::operator-(a, b);
+  CHECK(c[0] == 0);
+  CHECK(c[1] == 0);
+
+  a = {2.5, 1};
+  b = {-1, -1};
+  c = bds::operator-(a, b);
+  CHECK(c[0] == 3.5);
+  CHECK(c[1] == 2);
+}
+// test operator/ on array
+TEST_CASE("Testing operator/ on array")
+{ //vedi se mettere check_throw per divisione per 0
+  std::array<double, 2> a{1, 1};
+  double b{2};
+  auto c = bds::operator/(a, b);
+  CHECK(c[0] == 0.5);
+  CHECK(c[1] == 0.5);
+
+  a = {3, -2};
+  b = 1;
+  c = bds::operator/(a, b);
+  CHECK(c[0] == 3);
+  CHECK(c[1] == -2);
+
+  a = {2.5, 1};
+  b = -1;
+  c = bds::operator/(a, b);
+  CHECK(c[0] == -2.5);
+  CHECK(c[1] == -1);
+}

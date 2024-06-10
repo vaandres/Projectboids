@@ -27,7 +27,7 @@ std::array<double, 2> bds::operator-(std::array<double, 2> v1,
   return vf;
 }
 std::array<double, 2> bds::operator/(std::array<double, 2> v1, double k)
-{
+{ assert(k != 0); //meglio un throw?
   auto vxf                 = v1[0] / k;
   auto vyf                 = v1[1] / k;
   std::array<double, 2> vf = {vxf, vyf};
