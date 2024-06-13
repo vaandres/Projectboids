@@ -2,7 +2,6 @@
 #include "boids.hpp"
 #include "doctest.h"
 
-
 TEST_CASE("Testing dist()")
 {
   bds::boid b1{1, 2, 3, 4};
@@ -113,11 +112,11 @@ TEST_CASE("Testing separation function")
   SUBCASE("Testing separation function with neighbours")
 
   {
-    double d{11};
+    double d{4};
     double ds{4};
     double s{0.2};
 
-    auto sep_vel = bds::separation(b1, flock, d, ds, s);
+    auto sep_vel = bds::separation(b1, flock, ds, s);
     CHECK(sep_vel[0] == doctest::Approx(-0.7));
     CHECK(sep_vel[1] == doctest::Approx(-0.44));
   }
@@ -128,7 +127,7 @@ TEST_CASE("Testing separation function")
     double ds{1};
     double s{0.4};
 
-    auto sep_vel = bds::separation(b1, flock, d, ds, s);
+    auto sep_vel = bds::separation(b1, flock, ds, s);
     CHECK(sep_vel[0] == doctest::Approx(0.));
     CHECK(sep_vel[1] == doctest::Approx(0.));
   }
@@ -139,7 +138,7 @@ TEST_CASE("Testing separation function")
     double ds{1};
     double s{0.7};
 
-    auto sep_vel = bds::separation(b1, flock, d, ds, s);
+    auto sep_vel = bds::separation(b1, flock, ds, s);
     CHECK(sep_vel[0] == doctest::Approx(0.));
     CHECK(sep_vel[1] == doctest::Approx(0.));
   }

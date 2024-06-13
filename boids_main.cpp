@@ -16,11 +16,11 @@ int main()
 {
   int n       = 160;
   double d    = 60;
-  double ds   = 50; // gestire errori di input (mettere catch error), negativi
-  double s    = 0.01; // max vel?
-  double a    = 0.05;//questa non è usata?
-  double c    = 0.5;
-  double Vmax = 4; 
+  double ds   = 20; // gestire errori di input (mettere catch error), negativi
+  double s    = 5; // max vel?
+  double a    = 1;//questa non è usata?
+  double c    = 5;
+  double Vmax = 1; 
   sf::Font font;
   font.loadFromFile("./Nexa-Heavy.ttf");
 
@@ -76,8 +76,8 @@ int main()
     for (bds::boid& b1 : boids) { // passare const ref
 
       b1.setVelocity(b1.velocity() + bds::edgeforce(b1, windowWidth, windowHeight)
-                     + bds::alignment(b1, boids, d, a) + bds::separation(b1, boids, d, ds,s)
-                     + bds::cohesion(b1, boids, d, c)); // edgeforce qui o sotto?
+                     + bds::alignment(b1, boids, d, a) + bds::separation(b1, boids, ds,s)
+                     + bds::cohesion(b1, boids, d, c));
       bds::velocitylimit(b1, Vmax);
       std::array<double, 2> p = b1.position() + b1.velocity();
       b1.setPosition(p);
