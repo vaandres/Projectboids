@@ -68,7 +68,6 @@ std::array<double, 2> bds::separation(bds::boid const& b1,
       neighbours.begin(), neighbours.end(), std::array<double, 2>{0, 0},
       [&b1, ds, s](std::array<double, 2> acc, bds::boid const& b) {
         if (dist(b1, b) < ds) {
-          auto pos = b.position();
           acc= acc+(b.position()-b1.position());
         }
         return acc;
@@ -87,8 +86,8 @@ std::array<double, 2> bds::alignment(boid const& b1,
     return {0, 0};
   std::array<double, 2> v = std::accumulate(
       neighbours.begin(), neighbours.end(), std::array<double, 2>{0, 0},
-      [](std::array<double, 2> v, boid const& b) { return v + b.velocity(); });
-  return (v / neighbours.size() - b1.velocity()) * a;
+      [](std::array<double, 2> s, boid const& b) { return s + b.velocity(); });
+  return (v / static_cast<double>(neighbours.size()) - b1.velocity()) * a;
 }
 
 // Regola di coesione
@@ -104,7 +103,7 @@ std::array<double, 2> bds::cohesion(bds::boid const& b1,
                       [&b1, c](std::array<double, 2> acc, bds::boid const& b) {
                         return acc + b.position();
                       })
-      / neighbours.size();
+      / static_cast<double>(neighbours.size());
 
   return (mass_c - b1.position()) * c;
 }
@@ -130,7 +129,7 @@ std::array<double, 2> bds::edgeforce(boid const& b, unsigned int width,
 
   vx = (std::pow(1 / x, 3) - std::pow(1 / (x - width), 3)) * 100;
 
-  vy = (std::pow(1 / y, 3) - std::pow(1 / (y - width), 3)) * 100;
+  vy = (std::pow(1 / y, 3) - std::pow(1 / (y - height), 3)) * 100;
 
   std::array<double, 2> a{vx, vy};
   return a;
