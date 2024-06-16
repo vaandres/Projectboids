@@ -15,6 +15,13 @@ std::array<double, 2> bds::operator*(std::array<double, 2> v1, double k)
   std::array<double, 2> vf = {vxf, vyf};
   return vf;
 }
+std::array<double, 2> bds::operator*(std::array<double, 2> v1,std::array<double, 2> v2 )
+{
+  auto vxf                 = v2[0] * v1[0];
+  auto vyf                 = v2[1] * v1[1];
+  std::array<double, 2> vf = {vxf, vyf};
+  return vf;
+}
 std::array<double, 2> bds::operator-(std::array<double, 2> v1,
                                      std::array<double, 2> v2)
 {

@@ -58,9 +58,9 @@ std::vector<bds::boid> bds::neighbours(boid const& b1,
 // Regola di separazione
 std::array<double, 2> bds::separation(bds::boid const& b1,
                                       std::vector<bds::boid> const& flock,
-                                      double d, double ds, double s)
+                                      double ds, double s)
 {
-  auto neighbours = bds::neighbours(b1, flock, d);
+  auto neighbours = bds::neighbours(b1, flock, ds);
 
   std::array<double, 2> sep_vel{0, 0};
 
@@ -68,7 +68,7 @@ std::array<double, 2> bds::separation(bds::boid const& b1,
       neighbours.begin(), neighbours.end(), std::array<double, 2>{0, 0},
       [&b1, ds, s](std::array<double, 2> acc, bds::boid const& b) {
         if (dist(b1, b) < ds) {
-          acc= acc+(b.position()-b1.position());
+          acc= acc+((b.position()-b1.position())*(b.position()-b1.position()));
         }
         return acc;
       });
@@ -127,9 +127,9 @@ std::array<double, 2> bds::edgeforce(boid const& b, unsigned int width,
   double vx{0};
   double vy{0};
 
-  vx = (std::pow(1 / x, 3) - std::pow(1 / (x - width), 3)) * 100;
+  vx = (std::pow(10 / x, 2) - std::pow(10 / (x - width), 2)) * 100;
 
-  vy = (std::pow(1 / y, 3) - std::pow(1 / (y - height), 3)) * 100;
+  vy = (std::pow(10 / y, 2) - std::pow(10 / (y - height), 2)) * 100;
 
   std::array<double, 2> a{vx, vy};
   return a;

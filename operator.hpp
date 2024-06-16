@@ -7,6 +7,7 @@
 namespace bds {
 std::array<double, 2> operator+(std::array<double, 2>, std::array<double, 2>);
 std::array<double, 2> operator*(std::array<double, 2>, double);
+std::array<double, 2> operator*(std::array<double, 2> v1,std::array<double, 2> v2 );
 std::array<double, 2> operator-(std::array<double, 2>, std::array<double, 2>);
 std::array<double, 2> operator/(std::array<double, 2>, double);
 } // namespace bds
