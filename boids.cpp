@@ -158,17 +158,9 @@ std::array<double, 2> bds::edgeforce(boid const& b, unsigned int width,
   double vx{0};
   double vy{0};
 
-  if (x <= 100) {
-    vx = 1;
-  } else if (x >= width - 10) {
-    vx = -1;
-  }
+  vx = (std::pow(1 / x, 3) - std::pow(1 / (x - width), 3))*100;
 
-  if (y <= 10) {
-    vy = 1;
-  } else if (y >= height - 10) {
-    vy = -1;
-  }
+  vy = (std::pow(1 / y, 3) - std::pow(1 / (y - width), 3))*100;
 
   std::array<double, 2> a{vx, vy};
   return a;
