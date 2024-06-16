@@ -58,19 +58,21 @@ std::vector<bds::boid> bds::neighbours(boid const& b1,
 // Regola di separazione
 std::array<double, 2> bds::separation(bds::boid const& b1,
                                       std::vector<bds::boid> const& flock,
-                                      double d, double ds, double s)
+                                      double ds, double s)
 {
-  auto neighbours = bds::neighbours(b1, flock, d);
+  auto neighbours = bds::neighbours(b1, flock, ds);
 
-  if (neighbours.empty()) {
-    return std::array<double, 2>{0, 0};
-  }
+  std::array<double, 2> sep_vel{0, 0};
 
-  std::array<double, 2> sep_vel = std::accumulate(
+  sep_vel = std::accumulate(
       neighbours.begin(), neighbours.end(), std::array<double, 2>{0, 0},
       [&b1, ds, s](std::array<double, 2> acc, bds::boid const& b) {
         if (dist(b1, b) < ds) {
-          return acc + (b.position() - b1.position());
+          auto pos = b.position();
+          acc[0] -= s
+                  * std::pow((pos[0] - b1.position()[0]),
+                             2); // usare operator+ e operator* per array
+          acc[1] -= s * std::pow((pos[1] - b1.position()[1]), 2);
         }
         return acc;
       });
@@ -121,7 +123,8 @@ void bds::velocitylimit(boid& b, double Vmax)
 }
 
 // Funzione della forza di repulsione dei boids
-std::array<double, 2> bds::edgeforce(boid const& b, int width, int height)
+std::array<double, 2> bds::edgeforce(boid const& b, unsigned int width,
+                                     unsigned int height)
 {
   double x{b.position()[0]};
   double y{b.position()[1]};
@@ -129,17 +132,9 @@ std::array<double, 2> bds::edgeforce(boid const& b, int width, int height)
   double vx{0};
   double vy{0};
 
-  if (x <= 1) {
-    vx = 1;
-  } else if (x >= width - 1) {
-    vx = -1;
-  }
+  vx = (std::pow(1 / x, 3) - std::pow(1 / (x - width), 3)) * 100;
 
-  if (y <= 1) {
-    vy = 1;
-  } else if (y >= height - 1) {
-    vy = -1;
-  }
+  vy = (std::pow(1 / y, 3) - std::pow(1 / (y - width), 3)) * 100;
 
   std::array<double, 2> a{vx, vy};
   return a;
