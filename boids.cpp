@@ -58,9 +58,9 @@ std::vector<bds::boid> bds::neighbours(boid const& b1,
 // Regola di separazione
 std::array<double, 2> bds::separation(bds::boid const& b1,
                                       std::vector<bds::boid> const& flock,
-                                      double ds, double s)
+                                      double d, double ds, double s)
 {
-  auto neighbours = bds::neighbours(b1, flock, ds);
+  auto neighbours = bds::neighbours(b1, flock, d);
 
   std::array<double, 2> sep_vel{0, 0};
 
@@ -69,10 +69,7 @@ std::array<double, 2> bds::separation(bds::boid const& b1,
       [&b1, ds, s](std::array<double, 2> acc, bds::boid const& b) {
         if (dist(b1, b) < ds) {
           auto pos = b.position();
-          acc[0] -= s
-                  * std::pow((pos[0] - b1.position()[0]),
-                             2); // usare operator+ e operator* per array
-          acc[1] -= s * std::pow((pos[1] - b1.position()[1]), 2);
+          acc= acc+(b.position()-b1.position());
         }
         return acc;
       });
@@ -91,8 +88,7 @@ std::array<double, 2> bds::alignment(boid const& b1,
   std::array<double, 2> v = std::accumulate(
       neighbours.begin(), neighbours.end(), std::array<double, 2>{0, 0},
       [](std::array<double, 2> v, boid const& b) { return v + b.velocity(); });
-  return (v / neighbours.size() - b1.velocity())
-       * a; 
+  return (v / neighbours.size() - b1.velocity()) * a;
 }
 
 // Regola di coesione
@@ -110,7 +106,7 @@ std::array<double, 2> bds::cohesion(bds::boid const& b1,
                       })
       / neighbours.size();
 
-    return (mass_c-b1.position())*c;
+  return (mass_c - b1.position()) * c;
 }
 
 // Funzione che limita la velocità dei boids

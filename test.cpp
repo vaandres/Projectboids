@@ -117,7 +117,7 @@ TEST_CASE("Testing separation function")
     double ds{4};
     double s{0.2};
 
-    auto sep_vel = bds::separation(b1, flock, ds, s);
+    auto sep_vel = bds::separation(b1, flock, d, ds, s);
     CHECK(sep_vel[0] == doctest::Approx(-0.7));
     CHECK(sep_vel[1] == doctest::Approx(-0.44));
   }
@@ -128,7 +128,7 @@ TEST_CASE("Testing separation function")
     double ds{1};
     double s{0.4};
 
-    auto sep_vel = bds::separation(b1, flock, ds, s);
+    auto sep_vel = bds::separation(b1, flock, d, ds, s);
     CHECK(sep_vel[0] == doctest::Approx(0.));
     CHECK(sep_vel[1] == doctest::Approx(0.));
   }
@@ -139,7 +139,7 @@ TEST_CASE("Testing separation function")
     double ds{1};
     double s{0.7};
 
-    auto sep_vel = bds::separation(b1, flock, ds, s);
+    auto sep_vel = bds::separation(b1, flock, d, ds, s);
     CHECK(sep_vel[0] == doctest::Approx(0.));
     CHECK(sep_vel[1] == doctest::Approx(0.));
   }
@@ -309,7 +309,7 @@ TEST_CASE("Testing operator- on array")
 }
 // test operator/ on array
 TEST_CASE("Testing operator/ on array")
-{ //vedi se mettere check_throw per divisione per 0
+{ // vedi se mettere check_throw per divisione per 0
   std::array<double, 2> a{1, 1};
   double b{2};
   auto c = bds::operator/(a, b);
