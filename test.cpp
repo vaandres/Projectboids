@@ -1,6 +1,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "boids.hpp"
 #include "doctest.h"
+#include "operator.hpp"
 
 
 TEST_CASE("Testing dist()")

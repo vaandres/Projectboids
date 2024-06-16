@@ -32,7 +32,7 @@ find_package(SFML 2.5 COMPONENTS graphics REQUIRED)
 if (BUILD_TESTING)
 
   # aggiungi l'eseguibile all.t
-   add_executable(boids.t test.cpp boids.cpp)
+   add_executable(boids.t test.cpp boids.cpp operator.cpp)
   # aggiungi l'eseguibile all.t alla lista dei test
    add_test(NAME boids.t COMMAND boids.t)
 

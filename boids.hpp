@@ -30,12 +30,6 @@ class boid
 
 }; // fine classe boid
 
-std::array<double, 2> operator+(std::array<double, 2>, std::array<double, 2>);
-
-std::array<double, 2> operator*(std::array<double, 2>, double);
-std::array<double, 2> operator-(std::array<double, 2>, std::array<double, 2>);
-std::array<double, 2> operator/(std::array<double, 2>, double);
-
 double dist(boid const&, boid const&);
 
 std::vector<boid> neighbours(boid const&, std::vector<boid> const&, double);
