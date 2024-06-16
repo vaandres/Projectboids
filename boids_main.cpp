@@ -14,12 +14,12 @@ std::array<double, 2> operator+(std::array<double, 2> v1,
 
 int main()
 {
-  int n       = 50;
-  double d    = 30;
-  double ds   = 15; // gestire errori di input (mettere catch error), negativi
-  double s    = 0.1; // max vel?
-  double a    = 0.03;
-  double c    = 0.1;
+  int n       = 160;
+  double d    = 90;
+  double ds   = 20; // gestire errori di input (mettere catch error), negativi
+  double s    = 0.001; // max vel?
+  double a    = 0.5;
+  double c    = 0.15;
   double Vmax = 1; 
   sf::Font font;
   font.loadFromFile("./Nexa-Heavy.ttf");
@@ -87,7 +87,7 @@ int main()
 
     window.clear(sf::Color::White);
     for (bds::boid b : boids) { // passato const& boid
-      sf::CircleShape boid_point(5);
+      sf::CircleShape boid_point(1);
       boid_point.setFillColor(sf::Color::Black);
       auto xy = b.position();
       boid_point.setPosition(static_cast<float> (xy[0]),static_cast<float> (xy[1])); // frecce /è necessari static cast?

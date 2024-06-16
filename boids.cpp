@@ -3,6 +3,15 @@
 #include <cmath>
 #include <numeric>
 
+std::array<double, 2> bds::operator-(std::array<double, 2> v1,
+                                     std::array<double, 2> v2)
+{
+  auto vxf                 = v1[0] - v2[0];
+  auto vyf                 = v1[1] - v2[1];
+  std::array<double, 2> vf = {vxf, vyf};
+  return vf;
+}
+
 std::array<double, 2> bds::operator+(std::array<double, 2> v1,
                                      std::array<double, 2> v2)
 {
@@ -15,6 +24,14 @@ std::array<double, 2> bds::operator*(std::array<double, 2> v1, double k)
 {
   auto vxf                 = k * v1[0];
   auto vyf                 = k * v1[1];
+  std::array<double, 2> vf = {vxf, vyf};
+  return vf;
+}
+
+std::array<double, 2> bds::operator/(std::array<double, 2> v1, double k)
+{
+  auto vxf                 = v1[0] / k;
+  auto vyf                 = v1[1] / k;
   std::array<double, 2> vf = {vxf, vyf};
   return vf;
 }
@@ -116,27 +133,17 @@ std::array<double, 2> bds::cohesion(bds::boid const& b1,
                                     std::vector<bds::boid> const& flock,
                                     double d, double c)
 {
-  std::array<double, 2> coh_vel{0, 0};
   auto neighbours = bds::neighbours(b1, flock, d);
-  coh_vel =
-      std::accumulate(neighbours.begin(), neighbours.end(), coh_vel,
-                      [&b1, c](std::array<double, 2> acc, bds::boid const& b) {
-                        auto pos = b.position();
-                        acc[0] += c * pos[0];
-                        acc[1] += c * pos[1];
-                        return acc;
-                      });
-
-  auto size = neighbours.size();
-  if (size != 0) {
-    coh_vel[0] /= size;
-    coh_vel[1] /= size;
-    coh_vel[0] -= c * b1.position()[0];
-    coh_vel[1] -= c * b1.position()[1];
-    return coh_vel;
-  } else {
+  if (neighbours.empty())
     return {0, 0};
-  }
+  std::array<double, 2> mass_c =
+      std::accumulate(neighbours.begin(), neighbours.end(), mass_c,
+                      [&b1, c](std::array<double, 2> acc, bds::boid const& b) {
+                        return acc + b.position();
+                      })
+      /neighbours.size();
+
+  return (mass_c - b1.position()) * c;
 }
 
 // Funzione che limita la velocità dei boids
@@ -158,9 +165,9 @@ std::array<double, 2> bds::edgeforce(boid const& b, unsigned int width,
   double vx{0};
   double vy{0};
 
-  vx = (std::pow(1 / x, 3) - std::pow(1 / (x - width), 3))*100;
+  vx = (std::pow(1 / x, 3) - std::pow(1 / (x - width), 3)) * 100;
 
-  vy = (std::pow(1 / y, 3) - std::pow(1 / (y - width), 3))*100;
+  vy = (std::pow(1 / y, 3) - std::pow(1 / (y - width), 3)) * 100;
 
   std::array<double, 2> a{vx, vy};
   return a;
