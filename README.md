@@ -32,7 +32,7 @@ il file .gitignore garantisce che la cartella di build sia ignorata e quindi non
 - catch error e assert
 - input e gestione parametri N
 - dividere pboid nei file del main V
-- fix warinigs
+- fix warinigs G
 - ottimizzazioni
 - improve code readibility
 - boid triangolo
