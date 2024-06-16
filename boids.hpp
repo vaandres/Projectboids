@@ -35,7 +35,7 @@ double dist(boid const&, boid const&);
 std::vector<boid> neighbours(boid const&, std::vector<boid> const&, double);
 
 std::array<double, 2> separation(boid const&, std::vector<boid> const&, double,
-                                 double, double);
+                                 double);
 
 std::array<double, 2> alignment(boid const&, std::vector<boid> const&, double,
                                 double);
@@ -43,7 +43,7 @@ std::array<double, 2> alignment(boid const&, std::vector<boid> const&, double,
 std::array<double, 2> cohesion(boid const&, std::vector<boid> const&, double,
                                double);
 
-std::array<double, 2> edgeforce(boid const& b, int width, int height);
+std::array<double, 2> edgeforce(boid const& b, unsigned int width, unsigned int height);
 
 void velocitylimit(boid& b, double Vmax);
 } // namespace bds
