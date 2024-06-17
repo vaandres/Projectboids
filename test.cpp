@@ -111,9 +111,8 @@ TEST_CASE("Testing separation function")
   std::vector<bds::boid> flock{b2, b3, b4, b5, b6};
 
   SUBCASE("Testing separation function with neighbours")
-
+  
   {
-    double d{4};
     double ds{4};
     double s{0.2};
 
@@ -124,20 +123,8 @@ TEST_CASE("Testing separation function")
 
   SUBCASE("Testing separation function without neighbours")
   {
-    double d{3};
     double ds{1};
     double s{0.4};
-
-    auto sep_vel = bds::separation(b1, flock, ds, s);
-    CHECK(sep_vel[0] == doctest::Approx(0.));
-    CHECK(sep_vel[1] == doctest::Approx(0.));
-  }
-
-  SUBCASE("Testing separation function with a low separation threshold")
-  {
-    double d{10};
-    double ds{1};
-    double s{0.7};
 
     auto sep_vel = bds::separation(b1, flock, ds, s);
     CHECK(sep_vel[0] == doctest::Approx(0.));
@@ -149,8 +136,8 @@ TEST_CASE("Testing separation function")
 TEST_CASE("Testing alignment function")
 {
   bds::boid b1{4., 8., 0.5, 0.5};
-  bds::boid b2{5., 10, -1.0, 1.0};
-  bds::boid b3{2., 7, 1.5, 1.5};
+  bds::boid b2{5., 10., -1.0, 1.0};
+  bds::boid b3{2., 7., 1.5, 1.5};
   bds::boid b4{11., 5., 2.0, 2.0};
   bds::boid b5{9., 8., -2.5, 2.5};
   bds::boid b6{7., 10., 3.0, 3.0};
@@ -178,14 +165,14 @@ TEST_CASE("Testing alignment function")
 
 TEST_CASE("Testing cohesion function")
 {
-  bds::boid b1{13, 7., 3, 4};
+  bds::boid b1{13., 7., 3., 4.};
   bds::boid b2{10., 5., -2., 5.};
   bds::boid b3{30., 5., 3., 2.};
   bds::boid b4{11., 45., 0, 1.};
-  bds::boid b5{8., 6., 3, 4};
-  bds::boid b6{7., 6.5, 0, 0};
-  bds::boid b7{10.5, 7., 0, 0};
-  bds::boid b8{7.5, 15., 0, 0};
+  bds::boid b5{8., 6., 3., 4.};
+  bds::boid b6{7., 6.5, 0., 0.};
+  bds::boid b7{10.5, 7., 0., 0.};
+  bds::boid b8{7.5, 15., 0., 0.};
   std::vector<bds::boid> flock{b2, b3, b4, b5, b6, b7, b8};
 
   SUBCASE("Testing cohesion function with neighbours")
