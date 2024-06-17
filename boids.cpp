@@ -67,9 +67,8 @@ std::array<double, 2> bds::separation(bds::boid const& b1,
   sep_vel = std::accumulate(
       neighbours.begin(), neighbours.end(), std::array<double, 2>{0, 0},
       [&b1, ds, s](std::array<double, 2> acc, bds::boid const& b) {
-        if (dist(b1, b) < ds) {
-          acc= acc+((b.position()-b1.position())*(b.position()-b1.position()));
-        }
+          acc = acc + (b.position()-b1.position());
+        
         return acc;
       });
 
