@@ -128,9 +128,9 @@ std::array<double, 2> bds::edgeforce(boid const& b, unsigned int width,
   double vx{0};
   double vy{0};
 
-  vx = (std::pow(10 / x, 2) - std::pow(10 / (x - width), 2));
+  vx = (std::pow(2, -x) - std::pow(2, (x - width)));
 
-  vy = (std::pow(10 / y, 2) - std::pow(10 / (y - height), 2));
+  vy = (std::pow(2, -y) - std::pow(2, (y - height)));
 
   std::array<double, 2> a{vx, vy};
   return a;
