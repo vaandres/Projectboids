@@ -22,13 +22,13 @@ std::array<double, 2> operator/(std::array<double, 2> v1, double k)
 
 int main()
 {
-  int n       = 160;
+  int n       = 100;
   double d    = 90;
   double ds   = 20; // gestire errori di input (mettere catch error), negativi
   double s    = 0.5; // max vel?
   double a    = 0.1;
   double c    = 0.001;
-  double Vmax = 1;
+  double Vmax = 4;
   sf::Font font;
   font.loadFromFile("./Nexa-Heavy.ttf");
 
@@ -98,7 +98,7 @@ int main()
 
     window.clear(sf::Color::White);
     for (bds::boid b : boids) { // passato const& boid
-      sf::CircleShape boid_point(1);
+      sf::CircleShape boid_point(2);
       boid_point.setFillColor(sf::Color::Black);
       auto xy = b.position();
       boid_point.setPosition(

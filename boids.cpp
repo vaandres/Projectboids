@@ -128,13 +128,14 @@ std::array<double, 2> bds::edgeforce(boid const& b, unsigned int width,
   double vx{0};
   double vy{0};
 
-  vx = (std::pow(1 / x, 2) - std::pow(1 / (x - width), 2));
+  vx = (std::pow(10 / x, 2) - std::pow(10 / (x - width), 2));
 
-  vy = (std::pow(1 / y, 2) - std::pow(1 / (y - height), 2));
+  vy = (std::pow(10 / y, 2) - std::pow(10 / (y - height), 2));
 
   std::array<double, 2> a{vx, vy};
   return a;
 }
+
 // bds::statistics bds::stats(std::vector<boid> const& flock)
 // {
 //   double dis_mean{0.0};
