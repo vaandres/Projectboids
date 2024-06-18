@@ -315,3 +315,5 @@ TEST_CASE("Testing operator/ on array")
   CHECK(c[0] == -2.5);
   CHECK(c[1] == -1);
 }
+
+// fare test operatore * su due array
