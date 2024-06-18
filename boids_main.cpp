@@ -25,9 +25,9 @@ int main()
   int n       = 160;
   double d    = 90;
   double ds   = 20; // gestire errori di input (mettere catch error), negativi
-  double s    = 0.1; // max vel?
+  double s    = 0.5; // max vel?
   double a    = 0.1;
-  double c    = 1;
+  double c    = 0.001;
   double Vmax = 1;
   sf::Font font;
   font.loadFromFile("./Nexa-Heavy.ttf");
