@@ -1,11 +1,9 @@
 #include "boids.hpp"
 #include "operator.hpp"
-#include "operator.hpp"
 #include <SFML/Graphics.hpp>
 #include <random>
 
 std::array<double, 2> operator+(std::array<double, 2> v1,
-                                std::array<double, 2> v2)
                                 std::array<double, 2> v2)
 {
   auto vxf                 = v1[0] + v2[0];
@@ -15,8 +13,6 @@ std::array<double, 2> operator+(std::array<double, 2> v1,
 }
 
 std::array<double, 2> operator/(std::array<double, 2> v1, double k)
-{
-  assert(k != 0);
 {
   assert(k != 0);
   auto vxf                 = v1[0] / k;
@@ -90,10 +86,6 @@ int main()
 
     for (bds::boid& b1 : boids) { // passare const ref
 
-      b1.setVelocity(
-          b1.velocity() + bds::edgeforce(b1, windowWidth, windowHeight)
-          + bds::alignment(b1, boids, d, a) + bds::separation(b1, boids, ds, s)
-          + bds::cohesion(b1, boids, d, c));
       b1.setVelocity(
           b1.velocity() + bds::edgeforce(b1, windowWidth, windowHeight)
           + bds::alignment(b1, boids, d, a) + bds::separation(b1, boids, ds, s)
