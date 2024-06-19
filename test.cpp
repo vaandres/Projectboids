@@ -194,28 +194,92 @@ TEST_CASE("Testing cohesion function")
   }
 }
 
- /*TEST_CASE("Testing edgeforce function")
- {
-   bds::boid b1{1., 2., 3., 4.};
-   std::array<double, 2> edge = bds::edgeforce(b1, 3, 10);
-   CHECK(edge[0] == doctest::Approx(1.));
-   CHECK(edge[1] == doctest::Approx(0.));
+TEST_CASE("Testing edgeforce function")
+{
+  SUBCASE("Testing edgeforce function with boid inside the window")
+  {
+    bds::boid b1{2.3, 1., -1.3, -2.};
+    unsigned int w{50};
+    unsigned int h{33};
+    auto edge_force = bds::edgeforce(b1, w, h);
+    CHECK(edge_force[0] == doctest::Approx(0.203).epsilon(0.001));
+    CHECK(edge_force[1] == doctest::Approx(0.5).epsilon(0.001));
+  }
 
-   bds::boid b2{10., 8., 0., 0.};
-   std::array<double, 2> edge1 = bds::edgeforce(b2, 10, 10);
-   CHECK(edge1[0] == doctest::Approx(-1.));
-   CHECK(edge1[1] == doctest::Approx(0.));
+  SUBCASE("Testing edgeforce function with boid outside the window")
+  {
+    bds::boid b1{35., 40., 6.5, 2.};
+    unsigned int w{30};
+    unsigned int h{36};
+    auto edge_force = bds::edgeforce(b1, w, h);
+    CHECK(edge_force[0] == doctest::Approx(-32.).epsilon(0.01));
+    CHECK(edge_force[1] == doctest::Approx(-16.).epsilon(0.01));
+  }
+}
+/*
+TEST_CASE("Testing size method")
+{
+  bds::boid b1{0, 70, 2.4, 2};
+  bds::boid b2{64, 21, -4, -2.1};
+  bds::boid b3{0, 0, 0, 0};
 
-   bds::boid b3{10., 0., 0., 0.};
-   std::array<double, 2> edge2 = bds::edgeforce(b3, 10, 10);
-   CHECK(edge2[0] == doctest::Approx(-1.));
-   CHECK(edge2[1] == doctest::Approx(1.));
+  SUBCASE("Testing size method")
+  {
+    bds::flock f1{{b1, b2, b3}};
+    CHECK(f1.size() == 3);
+  }
 
-   bds::boid b4{1., 10., 0., 0.};
-   std::array<double, 2> edge3 = bds::edgeforce(b4, 10, 10);
-   CHECK(edge3[0] == doctest::Approx(1.));
-   CHECK(edge3[1] == doctest::Approx(-1.));
- }*/
+  SUBCASE("Testing size method with 0 boids")
+  {
+    bds::flock f2{{}};
+    CHECK(f2.size() == 0);
+  }
+}
+
+TEST_CASE("Testing stats method")
+{
+  bds::boid b1{0, 70, 2.4, 2};
+  bds::boid b2{64, 21, -4, -2.1};
+  bds::boid b3{0, 0, 0, 0};
+
+  SUBCASE("Testing stats method")
+  {
+    bds::flock f1{{b1, b2, b3}};
+    const auto stats = f1.stats();
+    CHECK(stats.dis_mean == doctest::Approx(38.5).epsilon(0.01));
+    CHECK(stats.dis_err == doctest::Approx(24.04).epsilon(0.01));
+    CHECK(stats.speed_mean == doctest::Approx(2.5).epsilon(0.01));
+    CHECK(stats.speed_err == doctest::Approx(1.5).epsilon(0.01));
+  }
+
+  SUBCASE("Testing stats method with 0 boids")
+  {
+    bds::flock f2{{}};
+    const auto stats = f2.stats();
+    CHECK(stats.dis_mean == 0);
+    CHECK(stats.dis_err == 0);
+    CHECK(stats.speed_mean == 0);
+    CHECK(stats.speed_err == 0);
+  }
+}
+
+*/
+
+TEST_CASE("Testing operator* of array")
+
+{
+  std::array<double, 2> a{2.5, 1.};
+  std::array<double, 2> b{-1., -3.5};
+  auto c = bds::operator*(a, b);
+  CHECK(c[0] == -2.5);
+  CHECK(c[1] == -3.5);
+
+  a = {3, -2};
+  b = {0, 0};
+  c = bds::operator*(a, b);
+  CHECK(c[0] == 0);
+  CHECK(c[1] == 0);
+}
 
 TEST_CASE("Testing setVelocity method")
 {
