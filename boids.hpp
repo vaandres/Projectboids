@@ -64,10 +64,10 @@ std::array<double, 2> alignment(boid const&, std::vector<boid> const&, double,
 std::array<double, 2> cohesion(boid const&, std::vector<boid> const&, double,
                                double);
 
-std::array<double, 2> edgeforce(boid const& b, unsigned int width,
-                                unsigned int height);
+std::array<double, 2> edgeforce(boid const&, unsigned int,
+                                unsigned int);
 
-void velocitylimit(boid& b, double Vmax);
+void velocitylimit(boid&, double);
 } // namespace bds
 
 #endif

@@ -136,7 +136,8 @@ std::array<double, 2> bds::edgeforce(boid const& b, unsigned int width,
 int bds::flock::size() const
 {
   return static_cast<int>(flock_.size());
-};
+}
+
 bds::statistics bds::flock::stats() const
 {
   double dis_mean{};
