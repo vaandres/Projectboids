@@ -27,18 +27,29 @@ class boid
 
   void setVelocity(const std::array<double, 2>& newVel);
 
-  double absoluteVelocity();
+  double absoluteVelocity() const;
 
 }; // fine classe boid
 
 struct statistics
 {
   double dis_mean;
-  double dis_sigma;
-  std::array<double, 2> vel_mean;
-  std::array<double, 2> vel_sigma;
+  double dis_err;
+  double speed_mean;
+  double speed_err;
 };
-statistics stats(std::vector<boid> const&);
+
+class flock
+{
+ private:
+  std::vector<boid> flock_;
+
+ public:
+  statistics stats() const;
+  int size() const;
+
+}; // fine classe flock
+
 
 double dist(boid const&, boid const&);
 
@@ -53,10 +64,10 @@ std::array<double, 2> alignment(boid const&, std::vector<boid> const&, double,
 std::array<double, 2> cohesion(boid const&, std::vector<boid> const&, double,
                                double);
 
-std::array<double, 2> edgeforce(boid const& b, unsigned int width,
-                                unsigned int height);
+std::array<double, 2> edgeforce(boid const&, unsigned int,
+                                unsigned int);
 
-void velocitylimit(boid& b, double Vmax);
+void velocitylimit(boid&, double);
 } // namespace bds
 
 #endif
