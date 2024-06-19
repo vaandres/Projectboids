@@ -133,17 +133,20 @@ std::array<double, 2> bds::edgeforce(boid const& b, unsigned int width,
   std::array<double, 2> a{vx, vy};
   return a;
 }
-bds::statistics bds::flock::stats(std::vector<boid> const& flock) const
+int bds::flock::size() const
 {
-  double dis_mean{0.0};
-  double dis_sigma{0.0};
-  double dis_err{0.0};
-  double speed_mean{0.0};
-  double speed_sigma{0.0};
-  double speed_err{0.0};
+  return static_cast<int>(flock_.size());
+};
+bds::statistics bds::flock::stats() const
+{
+  double dis_mean{};
+  double dis_sigma{};
+  double dis_err{};
+  double speed_mean{};
+  double speed_sigma{};
+  double speed_err{};
 
-  int n = flock.size();
-  double conv_fac{0.0264583333};
+  int n = static_cast<int>(flock_.size());
   double sum_dist{};
   double sum_dist2{};
   double sum_speed{};
@@ -151,29 +154,29 @@ bds::statistics bds::flock::stats(std::vector<boid> const& flock) const
   double conv_fac{0.0264583333}; // fattore di conversione da pixel a cm
 
   sum_dist = std::accumulate(
-      flock.begin(), flock.end(), 0.0, [&flock](double s, boid const& b1) {
+      flock_.begin(), flock_.end(), 0.0, [this](double s, boid const& b1) {
         return s
-             + std::accumulate(flock.begin(), flock.end(), 0.0,
-                               [&b1](double s, boid const& b2) {
-                                 return s + dist(b1, b2);
+             + std::accumulate(flock_.begin(), flock_.end(), 0.0,
+                               [&b1](double t, boid const& b2) {
+                                 return t + dist(b1, b2);
                                });
       });
 
   sum_dist2 = std::accumulate(
-      flock.begin(), flock.end(), 0.0, [&flock](double s, boid const& b1) {
+      flock_.begin(), flock_.end(), 0.0, [this](double s, boid const& b1) {
         return s
-             + std::accumulate(flock.begin(), flock.end(), 0.0,
-                               [&b1](double s, boid const& b2) {
-                                 return s + dist(b1, b2) * dist(b1, b2);
+             + std::accumulate(flock_.begin(), flock_.end(), 0.0,
+                               [&b1](double t, boid const& b2) {
+                                 return t + dist(b1, b2) * dist(b1, b2);
                                });
       });
 
   sum_speed = std::accumulate(
-      flock.begin(), flock.end(), 0.0,
+      flock_.begin(), flock_.end(), 0.0,
       [](double s, boid const& b) { return s + b.absoluteVelocity(); });
-      
+
   sum_speed2 = std::accumulate(
-      flock.begin(), flock.end(), 0.0, [](double s, boid const& b) {
+      flock_.begin(), flock_.end(), 0.0, [](double s, boid const& b) {
         return s + b.absoluteVelocity() * b.absoluteVelocity();
       });
 

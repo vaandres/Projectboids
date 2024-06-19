@@ -31,23 +31,26 @@ class boid
 
 }; // fine classe boid
 
-class flock
-{
- private:
-  std::vector<boid> boids;
-
- public:
-  statistics stats(std::vector<boid> const&) const;
-
-}; // fine classe flock
-
 struct statistics
 {
   double dis_mean;
-  double dis_sigma;
-  std::array<double, 2> vel_mean;
-  std::array<double, 2> vel_sigma;
+  double dis_err;
+  double speed_mean;
+  double speed_err;
 };
+
+class flock
+{
+ private:
+  std::vector<boid> flock_;
+
+ public:
+  statistics stats() const;
+  int size() const;
+
+}; // fine classe flock
+
+
 double dist(boid const&, boid const&);
 
 std::vector<boid> neighbours(boid const&, std::vector<boid> const&, double);
