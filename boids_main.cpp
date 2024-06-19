@@ -1,10 +1,10 @@
 #include "boids.hpp"
+#include "operator.hpp"
 #include <SFML/Graphics.hpp>
 #include <random>
-#include "operator.hpp"
 
 std::array<double, 2> operator+(std::array<double, 2> v1,
-                                     std::array<double, 2> v2)
+                                std::array<double, 2> v2)
 {
   auto vxf                 = v1[0] + v2[0];
   auto vyf                 = v1[1] + v2[1];
@@ -13,7 +13,8 @@ std::array<double, 2> operator+(std::array<double, 2> v1,
 }
 
 std::array<double, 2> operator/(std::array<double, 2> v1, double k)
-{ assert(k != 0); 
+{
+  assert(k != 0);
   auto vxf                 = v1[0] / k;
   auto vyf                 = v1[1] / k;
   std::array<double, 2> vf = {vxf, vyf};
@@ -24,7 +25,7 @@ int main()
 {
   int n       = 160;
   double d    = 90;
-  double ds   = 20; // gestire errori di input (mettere catch error), negativi
+  double ds   = 20;  // gestire errori di input (mettere catch error), negativi
   double s    = 0.1; // max vel?
   double a    = 0.1;
   double c    = 1;
@@ -85,15 +86,14 @@ int main()
 
     for (bds::boid& b1 : boids) { // passare const ref
 
-      b1.setVelocity(b1.velocity()
-                     +bds::edgeforce(b1, windowWidth, windowHeight)
-                      +bds::alignment(b1, boids, d, a)+
-                     bds::separation(b1, boids, ds, s)
-                     +bds::cohesion(b1, boids, d, c));
+      b1.setVelocity(
+          b1.velocity() + bds::edgeforce(b1, windowWidth, windowHeight)
+          + bds::alignment(b1, boids, d, a) + bds::separation(b1, boids, ds, s)
+          + bds::cohesion(b1, boids, d, c));
       bds::velocitylimit(b1, Vmax);
       std::array<double, 2> p = b1.position() + b1.velocity();
       b1.setPosition(p);
-      assert(b1.position()[0]<=windowWidth);
+      assert(b1.position()[0] <= windowWidth);
     }
 
     window.clear(sf::Color::White);

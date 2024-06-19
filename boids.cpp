@@ -158,6 +158,7 @@ bds::statistics bds::flock::stats(std::vector<boid> const& flock) const
                                  return s + dist(b1, b2);
                                });
       });
+
   sum_dist2 = std::accumulate(
       flock.begin(), flock.end(), 0.0, [&flock](double s, boid const& b1) {
         return s
@@ -166,21 +167,22 @@ bds::statistics bds::flock::stats(std::vector<boid> const& flock) const
                                  return s + dist(b1, b2) * dist(b1, b2);
                                });
       });
+
   sum_speed = std::accumulate(
       flock.begin(), flock.end(), 0.0,
       [](double s, boid const& b) { return s + b.absoluteVelocity(); });
+      
   sum_speed2 = std::accumulate(
       flock.begin(), flock.end(), 0.0, [](double s, boid const& b) {
         return s + b.absoluteVelocity() * b.absoluteVelocity();
       });
 
-  dis_mean    = sum_dist / (n * n)*conv_fac;
-  dis_sigma   = std::sqrt(sum_dist2 / (n * n) - dis_mean * dis_mean)*conv_fac;
+  dis_mean    = sum_dist / (n * n) * conv_fac;
+  dis_sigma   = std::sqrt(sum_dist2 / (n * n) - dis_mean * dis_mean) * conv_fac;
   dis_err     = dis_sigma / std::sqrt(n);
-  speed_mean  = sum_speed / n*conv_fac;
-  speed_sigma = std::sqrt(sum_speed2 / n - speed_mean * speed_mean)*conv_fac;
+  speed_mean  = sum_speed / n * conv_fac;
+  speed_sigma = std::sqrt(sum_speed2 / n - speed_mean * speed_mean) * conv_fac;
   speed_err   = speed_sigma / std::sqrt(n);
 
   return {dis_mean, dis_err, speed_mean, speed_err};
-
 }
