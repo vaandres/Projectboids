@@ -68,6 +68,7 @@ int main()
                  gauss2(e1)}; // implicita conv double int
     boids.push_back(bi);
   }
+  bds::boid pred {50,50, 5,5};
 
   while (window.isOpen()
          | window2.isOpen()) { // un po' buggato sia con opzione schermo intero
@@ -98,6 +99,13 @@ int main()
       assert(b1.position()[0] >= - 100);
       assert(b1.position()[1] >= - 100);
     }
+  std::vector<bds::boid> prey = neighbours(pred,boids,ds);
+  for (bds::boid& b1: prey){
+    b1.setVelocity(b1.velocity()+ escape(pred,boids,ds,c));
+  }
+   pred.setVelocity(pred.velocity()+follow(pred,boids,d,a));
+   std::array<double, 2> p = pred.position() + pred.velocity();
+   pred.setPosition(p);
 
     window.clear(sf::Color::White);
     for (bds::boid b : boids) { // passato const& boid
@@ -109,6 +117,13 @@ int main()
           static_cast<float>(xy[1])); // frecce /è necessari static cast?
       window.draw(boid_point);
     }
+    sf::CircleShape pred_point(4);
+    pred_point.setFillColor(sf::Color::Red);
+    auto xy = pred.position();
+    pred_point.setPosition(
+      static_cast<float>(xy[0]),
+          static_cast<float>(xy[1])); 
+      window.draw(pred_point);
 
     window.display();
 

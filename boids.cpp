@@ -88,7 +88,12 @@ std::array<double, 2> bds::alignment(boid const& b1,
       [](std::array<double, 2> s, boid const& b) { return s + b.velocity(); });
   return (v / static_cast<double>(neighbours.size()) - b1.velocity()) * a;
 }
+std::array<double, 2> bds::follow(boid const& p1,
+                                     std::vector<boid> const& flock, double d,
+                                     double a){
 
+                                      return alignment(p1,flock,d,a)*3;
+                                     }
 // Regola di coesione
 std::array<double, 2> bds::cohesion(bds::boid const& b1,
                                     std::vector<bds::boid> const& flock,
@@ -108,7 +113,10 @@ std::array<double, 2> bds::cohesion(bds::boid const& b1,
 
   return (mass_c - b1.position()) * c;
 }
-
+std::array<double,2> bds::escape(bds::boid const& p1, std::vector<bds::boid> const& flock,
+                                    double d, double c){
+                                      return cohesion(p1, flock, d, -5*c);
+                                    }
 // Funzione che limita la velocità dei boids
 void bds::velocitylimit(boid& b, double Vmax)
 {

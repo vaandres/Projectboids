@@ -57,6 +57,11 @@ std::array<double, 2> edgeforce(boid const& b, unsigned int width,
                                 unsigned int height);
 
 void velocitylimit(boid& b, double Vmax);
+std::array<double, 2> escape(boid const&, std::vector<boid> const&, double,
+                               double);
+
+std::array<double, 2> follow(boid const&, std::vector<boid> const&, double,
+                               double);
 } // namespace bds
 
 #endif
