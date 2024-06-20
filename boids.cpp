@@ -17,7 +17,7 @@ std::array<double, 2> bds::boid::velocity() const
 }
 
 // Metode che rende il modulo della velocità di un boid
-double bds::boid::absoluteVelocity()const
+double bds::boid::absoluteVelocity() const
 {
   return std::sqrt(std::pow(velocity_[0], 2) + std::pow(velocity_[1], 2));
 }
@@ -163,46 +163,46 @@ bds::statistics bds::flock::stats() const
   if (n == 1) {
     return {0., 0., flock_[0].absoluteVelocity() * conv_fac, 0.};
   }
-  if (n > 1) {/*sum_dist = std::accumulate(
-      flock_.begin(), flock_.end(), 0.0, [this](double s, boid const& b1) {
-        auto b1_iter = std::find(flock_.begin(), flock_.end(), b1);
-        return s
-             + std::accumulate(b1_iter + 1, flock_.end(), 0.0,
-                               [&b1](double t, boid const& b2) {
-                                 return t + dist(b1, b2);
-                               });
-      });
+  if (n > 1) { /*sum_dist = std::accumulate(
+       flock_.begin(), flock_.end(), 0.0, [this](double s, boid const& b1) {
+         auto b1_iter = std::find(flock_.begin(), flock_.end(), b1);
+         return s
+              + std::accumulate(b1_iter + 1, flock_.end(), 0.0,
+                                [&b1](double t, boid const& b2) {
+                                  return t + dist(b1, b2);
+                                });
+       });
 
-  sum_dist2 = std::accumulate(
-      flock_.begin(), flock_.end(), 0.0, [this](double s, boid const& b1) {
-        auto b1_iter = std::find(flock_.begin(), flock_.end(), b1);
-        return s
-             + std::accumulate(b1_iter + 1, flock_.end(), 0.0,
-                               [&b1](double t, boid const& b2) {
-                                 return t + dist(b1, b2) * dist(b1, b2);
-                               });
-      });*/
+   sum_dist2 = std::accumulate(
+       flock_.begin(), flock_.end(), 0.0, [this](double s, boid const& b1) {
+         auto b1_iter = std::find(flock_.begin(), flock_.end(), b1);
+         return s
+              + std::accumulate(b1_iter + 1, flock_.end(), 0.0,
+                                [&b1](double t, boid const& b2) {
+                                  return t + dist(b1, b2) * dist(b1, b2);
+                                });
+       });*/
 
-  for (auto b1_iter = flock_.begin(); b1_iter != flock_.end(); ++b1_iter) {
-    for (auto b2_iter = b1_iter + 1; b2_iter != flock_.end(); ++b2_iter) {
-      sum_dist += dist(*b1_iter, *b2_iter) * conv_fac;
-      sum_dist2 += dist(*b1_iter, *b2_iter) * dist(*b1_iter, *b2_iter)
-                 * conv_fac * conv_fac;
+    for (auto b1_iter = flock_.begin(); b1_iter != flock_.end(); ++b1_iter) {
+      for (auto b2_iter = b1_iter + 1; b2_iter != flock_.end(); ++b2_iter) {
+        double distance = dist(*b1_iter, *b2_iter) * conv_fac;
+        sum_dist += distance;
+        sum_dist2 += distance * distance;
+      }
     }
-  }
 
-  sum_speed = std::accumulate(flock_.begin(), flock_.end(), 0.0,
-                              [](double s, boid const& b) {
-                                return s + b.absoluteVelocity();
-                              })
-            * conv_fac;
+    sum_speed = std::accumulate(flock_.begin(), flock_.end(), 0.0,
+                                [](double s, boid const& b) {
+                                  return s + b.absoluteVelocity();
+                                })
+              * conv_fac;
 
-  sum_speed2 =
-      std::accumulate(flock_.begin(), flock_.end(), 0.0,
-                      [](double s, boid const& b) {
-                        return s + b.absoluteVelocity() * b.absoluteVelocity();
-                      })
-      * conv_fac * conv_fac;
+    sum_speed2 = std::accumulate(
+                     flock_.begin(), flock_.end(), 0.0,
+                     [](double s, boid const& b) {
+                       return s + b.absoluteVelocity() * b.absoluteVelocity();
+                     })
+               * conv_fac * conv_fac;
   }
 
   dis_mean    = sum_dist / (n * (n - 1) / 2);
