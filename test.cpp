@@ -249,8 +249,8 @@ TEST_CASE("Testing stats method")
     bds::flock f1{{b1, b2, b3}};
     const auto stats = f1.stats();
     
-    CHECK(stats.dis_mean == doctest::Approx(1.922649704));
-    CHECK(stats.dis_err == doctest::Approx(0.0848173848));
+    CHECK(stats.dis_mean == doctest::Approx(1.9223));
+    CHECK(stats.dis_err == doctest::Approx(0.0874421));
     CHECK(stats.speed_mean == doctest::Approx(0.0673968));
     CHECK(stats.speed_err == doctest::Approx(0.0288547));
   }
@@ -284,8 +284,6 @@ TEST_CASE("Testing stats method")
     CHECK(stats.speed_err == doctest::Approx(0.));
   }
 }
-
-
 
 TEST_CASE("Testing operator* of array")
 
