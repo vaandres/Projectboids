@@ -216,7 +216,7 @@ TEST_CASE("Testing edgeforce function")
     CHECK(edge_force[1] == doctest::Approx(-16.).epsilon(0.01));
   }
 }
-/*
+
 TEST_CASE("Testing size method")
 {
   bds::boid b1{0, 70, 2.4, 2};
@@ -248,6 +248,7 @@ TEST_CASE("Testing stats method")
   {
     bds::flock f1{{b1, b2, b3}};
     const auto stats = f1.stats();
+    
     CHECK(stats.dis_mean == doctest::Approx(1.922649704));
     CHECK(stats.dis_err == doctest::Approx(0.0848173848));
     CHECK(stats.speed_mean == doctest::Approx(0.0673968));
@@ -284,7 +285,7 @@ TEST_CASE("Testing stats method")
   }
 }
 
-*/
+
 
 TEST_CASE("Testing operator* of array")
 

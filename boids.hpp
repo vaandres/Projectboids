@@ -27,16 +27,16 @@ class boid
 
   void setVelocity(const std::array<double, 2>& newVel);
 
-  double absoluteVelocity();
+  double absoluteVelocity()const;
 
 }; // fine classe boid
 
 struct statistics
 {
-  double dis_mean;
-  double dis_sigma;
-  std::array<double, 2> vel_mean;
-  std::array<double, 2> vel_sigma;
+   double dis_mean;
+  double dis_err;
+  double speed_mean;
+  double speed_err;
 };
 class flock
 {
