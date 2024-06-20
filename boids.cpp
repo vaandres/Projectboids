@@ -136,96 +136,63 @@ std::array<double, 2> bds::edgeforce(boid const& b, unsigned int width,
   return a;
 }
 
-// bds::statistics bds::stats(std::vector<boid> const& flock)
-// {
-//   double dis_mean{0.0};
-//   double dis_sigma{0.0};
-//   std::array<double, 2> vel_mean;
-//   std::array<double, 2> vel_sigma;
-//   int n = flock.size();
-//   double conv_fac{0.0264583333};
-//   std::array<double, 2> vel_mean;
-//   std::array<double, 2> vel_sigma;
-//   double sum_dist{};
-//   double sum_dist2{};
-//   std::array<double, 2> sum_vel{};
-//   std::array<double, 2> sum_vel2{};
-//   double conv_fac{0.0264583333}; // fattore di conversione da pixel a cm
-
-//   sum_dist = std::accumulate(
-//       flock.begin(), flock.end(), 0.0, [&flock](double s, boid const& b1) {
-//         return s
-//              + std::accumulate(flock.begin(), flock.end(), 0.0,
-//                                [&b1](double s, boid const& b2) {
-//                                  return s + dist(b1, b2);
-//                                });
-//       });
-//   sum_dist2 = std::accumulate(
-//       flock.begin(), flock.end(), 0.0, [&flock](double s, boid const& b1) {
-//         return s
-//              + std::accumulate(flock.begin(), flock.end(), 0.0,
-//                                [&b1](double s, boid const& b2) {
-//                                  return s + dist(b1, b2) * dist(b1, b2);
-//                                });
-//       });
-//   sum_vel = std::accumulate(
-//       flock.begin(), flock.end(), std::array<double, 2>{0, 0},
-//       [](std::array<double, 2> s, boid const& b) { return s + b.velocity();
-//       });
-
-//   sum_vel2 =
-//       std::accumulate(flock.begin(), flock.end(), std::array<double, 2>{0,
-//       0},
-//                       [](std::array<double, 2> s, boid const& b) {
-//                         return s + b.velocity() * b.velocity();
-//                       });
-
-//   dis_mean     = sum_dist / (n * n);
-//   dis_sigma    = std::sqrt(fabs(sum_dist2 / (n * n) - dis_mean * dis_mean));
-//   vel_mean     = sum_vel / n;
-//   vel_sigma[0] = std::sqrt(fabs(sum_vel2[0] / n - vel_mean[0] *
-//   vel_mean[0])); vel_sigma[1] = std::sqrt(fabs(sum_vel2[1] / n - vel_mean[1]
-//   * vel_mean[1])); return {dis_mean, dis_sigma, vel_mean, vel_sigma};
-
-/*for (boid const& b1 : flock) {
-  // pos_mean = ;
-  vel_mean = vel_mean + b1.velocity();
-  for (boid const& b2 : flock) {
-    dis_mean = dis_mean + dist(b1, b2);
-  }
+int bds::flock::size() const
+{
+  return static_cast<int>(flock_.size());
 }
-vel_mean =
-    std::accumulate(flock.begin(), flock.end(), std::array<double, 2>{0, 0},
-                    [](std::array<double, 2> s, boid const& b) {
-                      return s + b.velocity();
-                    })
-    / n;
 
-double dis_mean =
-    std::accumulate(flock.begin(), flock.end(), 0.0,
-                    [&flock](double s, boid const& b1) {
-                      return s
-                           + std::accumulate(flock.begin(), flock.end(), 0.0,
-                                             [&b1](double s, boid const& b2) {
-                                               return s + dist(b1, b2);
-                                             });
-                    })
-    / (n * n);
+bds::statistics bds::flock::stats() const
+{
+  double dis_mean{};
+  double dis_sigma{};
+  double dis_err{};
+  double speed_mean{};
+  double speed_sigma{};
+  double speed_err{};
 
+  int n = static_cast<int>(flock_.size());
+  double sum_dist{};
+  double sum_dist2{};
+  double sum_speed{};
+  double sum_speed2{};
+  double conv_fac{0.0264583333}; // fattore di conversione da pixel a cm
 
-for (boid const& b1 : flock) {
-  for (boid const& b2 : flock) {
-    dis_sigma = dis_sigma
-              + (dis_mean - conv_fac * dist(b1, b2))
-                    * (dis_mean - conv_fac * dist(b1, b2));
-  }
+  if(n == 0)
+    return {0, 0, 0, 0};
+
+  sum_dist = std::accumulate(
+      flock_.begin(), flock_.end(), 0.0, [this](double s, boid const& b1) {
+        return s
+             + std::accumulate(flock_.begin(), flock_.end(), 0.0,
+                               [&b1](double t, boid const& b2) {
+                                 return t + dist(b1, b2);
+                               });
+      });
+
+  sum_dist2 = std::accumulate(
+      flock_.begin(), flock_.end(), 0.0, [this](double s, boid const& b1) {
+        return s
+             + std::accumulate(flock_.begin(), flock_.end(), 0.0,
+                               [&b1](double t, boid const& b2) {
+                                 return t + dist(b1, b2) * dist(b1, b2);
+                               });
+      });
+
+  sum_speed = std::accumulate(
+      flock_.begin(), flock_.end(), 0.0,
+      [](double s, boid const& b) { return s + b .absoluteVelocity(); });
+
+  sum_speed2 = std::accumulate(
+      flock_.begin(), flock_.end(), 0.0, [](double s, boid const& b) {
+        return s + b.absoluteVelocity() * b.absoluteVelocity();
+      });
+
+  dis_mean    = sum_dist / (n * n) * conv_fac;
+  dis_sigma   = std::sqrt(sum_dist2 / (n * n) - dis_mean * dis_mean) * conv_fac;
+  dis_err     = dis_sigma / std::sqrt(n);
+  speed_mean  = sum_speed / n * conv_fac;
+  speed_sigma = std::sqrt(sum_speed2 / n - speed_mean * speed_mean) * conv_fac;
+  speed_err   = speed_sigma / std::sqrt(n);
+
+  return {dis_mean, dis_err, speed_mean, speed_err};
 }
-for (boid const& b : flock) {
-  vel_sigma =
-      vel_sigma + (vel_mean - b.velocity()) * (vel_mean - b.velocity());
-}
-dis_sigma    = std::sqrt(fabs(dis_sigma) / (n - 1));
-vel_sigma[0] = std::sqrt(fabs(vel_sigma[0]) / (n - 1));
-vel_sigma[1] = std::sqrt(fabs(vel_sigma[1]) / (n - 1));
-return {dis_mean, dis_sigma, vel_mean, vel_sigma};*/
-//}
