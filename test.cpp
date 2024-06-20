@@ -241,15 +241,17 @@ TEST_CASE("Testing stats method")
   bds::boid b1{0, 70, 2.4, 2};
   bds::boid b2{64, 21, -4, -2.1};
   bds::boid b3{0, 0, 0, 0};
+  bds::boid b4{1., 2., 1.5, 1.5};
+  bds::boid b5{3., 0., 1., 0.};
 
   SUBCASE("Testing stats method")
   {
     bds::flock f1{{b1, b2, b3}};
     const auto stats = f1.stats();
-    CHECK(stats.dis_mean == doctest::Approx(38.5).epsilon(0.01));
-    CHECK(stats.dis_err == doctest::Approx(24.04).epsilon(0.01));
-    CHECK(stats.speed_mean == doctest::Approx(2.5).epsilon(0.01));
-    CHECK(stats.speed_err == doctest::Approx(1.5).epsilon(0.01));
+    CHECK(stats.dis_mean == doctest::Approx(1.922649704));
+    CHECK(stats.dis_err == doctest::Approx(0.0848173848));
+    CHECK(stats.speed_mean == doctest::Approx(0.0673968));
+    CHECK(stats.speed_err == doctest::Approx(0.0288547));
   }
 
   SUBCASE("Testing stats method with 0 boids")
@@ -260,6 +262,25 @@ TEST_CASE("Testing stats method")
     CHECK(stats.dis_err == 0);
     CHECK(stats.speed_mean == 0);
     CHECK(stats.speed_err == 0);
+  }
+
+  SUBCASE("Testing stats method with 2 boids")
+  {
+    bds::flock f3{{b4, b5}};
+    const auto stats = f3.stats();
+    CHECK(stats.dis_mean == doctest::Approx(0.07483547));
+    CHECK(stats.dis_err == doctest::Approx(0.));
+    CHECK(stats.speed_mean == doctest::Approx(0.041292));
+    CHECK(stats.speed_err == doctest::Approx(0.0104893));
+  }
+
+  SUBCASE("Testing stats method with 1 boid")
+  {bds::flock f4{{b2}};
+  const auto stats = f4.stats();
+  CHECK(stats.dis_mean == doctest::Approx(0.));
+    CHECK(stats.dis_err == doctest::Approx(0.));
+    CHECK(stats.speed_mean == doctest::Approx(0.119532));
+    CHECK(stats.speed_err == doctest::Approx(0.));
   }
 }
 
