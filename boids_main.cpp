@@ -23,13 +23,13 @@ std::array<double, 2> operator/(std::array<double, 2> v1, double k)
 
 int main()
 {
-  int n       = 100;
+  int n       = 200;
   double d    = 90;
   double ds   = 20;  // gestire errori di input (mettere catch error), negativi
   double s    = 0.5; // max vel?
   double a    = 0.1;
   double c    = 0.01;
-  double Vmax = 10;
+  double Vmax = 5;
   sf::Font font;
   font.loadFromFile("./Nexa-Heavy.ttf");
 
@@ -68,7 +68,7 @@ int main()
                  gauss2(e1)}; // implicita conv double int
     boids.push_back(bi);
   }
-  bds::boid pred {50,50, 5,5};
+  bds::boid pred {0,0, 3,3};
 
   while (window.isOpen()
          | window2.isOpen()) { // un po' buggato sia con opzione schermo intero
@@ -85,11 +85,12 @@ int main()
       }
     }
 
+  std::vector<bds::boid> preds = {pred};
     for (bds::boid& b1 : boids) { // passare const ref
 
       b1.setVelocity(
           b1.velocity() + bds::edgeforce(b1, windowWidth, windowHeight)
-          + bds::alignment(b1, boids, d, a) + bds::separation(b1, boids, ds, s)
+          + bds::alignment(b1, boids, d, a) + bds::separation(b1, boids, ds, s)+ separation(b1,preds,d,c)
           + bds::cohesion(b1, boids, d, c));
       bds::velocitylimit(b1, Vmax);
       std::array<double, 2> p = b1.position() + b1.velocity();
@@ -99,11 +100,12 @@ int main()
       assert(b1.position()[0] >= - 100);
       assert(b1.position()[1] >= - 100);
     }
-  std::vector<bds::boid> prey = neighbours(pred,boids,ds);
+  /* std::vector<bds::boid> prey = neighbours(pred,boids,d);
   for (bds::boid& b1: prey){
-    b1.setVelocity(b1.velocity()+ escape(pred,boids,ds,c));
-  }
-   pred.setVelocity(pred.velocity()+follow(pred,boids,d,a));
+    b1.setVelocity(b1.velocity()+ escape(pred,b1,d,c));
+  } */
+   pred.setVelocity(pred.velocity()+  bds::follow(pred,boids,d,Vmax) +bds::edgeforce(pred, windowWidth, windowHeight));
+   bds::velocitylimit(pred, Vmax);
    std::array<double, 2> p = pred.position() + pred.velocity();
    pred.setPosition(p);
 

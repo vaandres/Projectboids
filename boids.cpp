@@ -37,6 +37,17 @@ double bds::dist(boid const& b1, boid const& b2)
                    + std::pow(pos1[1] - pos2[1], 2));
 }
 
+std::array<double, 2> norm(std::array<double, 2> v)
+{
+  double module = sqrt(v[0] * v[0] + v[1] * v[1]);
+  if (module != 0) {
+    std::array<double, 2> result = bds::operator/(v, module);
+    return result;
+  } 
+  else {
+    return {0, 0};
+  }
+}
 // Funzione cambio velocità del boid
 void bds::boid::setVelocity(const std::array<double, 2>& newVel)
 {
@@ -74,6 +85,12 @@ std::array<double, 2> bds::separation(bds::boid const& b1,
 
   return sep_vel * -s;
 }
+std::array<double, 2> bds::escape(bds::boid const& p1,
+                                  bds::boid const& b1, double d,
+                                  double c)
+{ std::vector<bds::boid>pred = {p1};
+  return separation(b1, pred, d, 3 * c);
+}
 
 // Funzione per allineare i boids
 std::array<double, 2> bds::alignment(boid const& b1,
@@ -89,11 +106,33 @@ std::array<double, 2> bds::alignment(boid const& b1,
   return (v / static_cast<double>(neighbours.size()) - b1.velocity()) * a;
 }
 std::array<double, 2> bds::follow(boid const& p1,
-                                     std::vector<boid> const& flock, double d,
-                                     double a){
+                                  std::vector<boid> const& flock, double d,
+                                  double Vmax)
+{
+  bds::boid b0{0, 0, 0, 0};
+      double dmin = 100.0;
 
-                                      return alignment(p1,flock,d,a)*3;
-                                     }
+  for (bds::boid b : flock) {
+        double h = dist(p1, b);
+    if (h <= dmin) {
+      dmin = h;
+      b0   = b;
+    }
+  }
+  std::array<double, 2> centre;
+  for (bds::boid b : neighbours(b0, flock, d)) {
+    centre = centre + b.position();
+  }
+  if (size(neighbours(b0, flock, d)) == 0) {
+    return {0, 0};
+  }
+  else{
+      centre = centre / static_cast<double>(neighbours(b0, flock, d).size());
+  std::array<double, 2> dir = centre-p1.position();
+  return norm(dir)*Vmax;
+  }
+
+}
 // Regola di coesione
 std::array<double, 2> bds::cohesion(bds::boid const& b1,
                                     std::vector<bds::boid> const& flock,
@@ -113,10 +152,7 @@ std::array<double, 2> bds::cohesion(bds::boid const& b1,
 
   return (mass_c - b1.position()) * c;
 }
-std::array<double,2> bds::escape(bds::boid const& p1, std::vector<bds::boid> const& flock,
-                                    double d, double c){
-                                      return cohesion(p1, flock, d, -5*c);
-                                    }
+
 // Funzione che limita la velocità dei boids
 void bds::velocitylimit(boid& b, double Vmax)
 {
