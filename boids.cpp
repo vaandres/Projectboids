@@ -183,13 +183,13 @@ bds::statistics bds::flock::stats() const
                                 });
        });*/
 
-    for (auto b1_iter = flock_.begin(); b1_iter != flock_.end(); ++b1_iter) {
-      for (auto b2_iter = b1_iter + 1; b2_iter != flock_.end(); ++b2_iter) {
-        double distance = dist(*b1_iter, *b2_iter) * conv_fac;
-        sum_dist += distance;
-        sum_dist2 += distance * distance;
-      }
+  for (auto b1_iter = flock_.begin(); b1_iter != flock_.end(); ++b1_iter) {
+    for (auto b2_iter = b1_iter + 1; b2_iter != flock_.end(); ++b2_iter) {
+      sum_dist += dist(*b1_iter, *b2_iter) * conv_fac;
+      sum_dist2 += dist(*b1_iter, *b2_iter) * dist(*b1_iter, *b2_iter)
+                 * conv_fac * conv_fac;
     }
+  }
 
     sum_speed = std::accumulate(flock_.begin(), flock_.end(), 0.0,
                                 [](double s, boid const& b) {
@@ -206,10 +206,10 @@ bds::statistics bds::flock::stats() const
   }
 
   dis_mean    = sum_dist / (n * (n - 1) / 2);
-  dis_sigma   = std::sqrt(sum_dist2 / (n * (n - 1) / 2) - dis_mean * dis_mean);
+  dis_sigma   = std::sqrt(std::abs(sum_dist2 / (n * (n - 1) / 2) - dis_mean * dis_mean));
   dis_err     = dis_sigma / std::sqrt(n * (n - 1) / 2);
   speed_mean  = sum_speed / n;
-  speed_sigma = std::sqrt(sum_speed2 / n - speed_mean * speed_mean);
+  speed_sigma = std::sqrt(std::abs(sum_speed2 / n - speed_mean * speed_mean));
   speed_err   = speed_sigma / std::sqrt(n);
 
   return {dis_mean, dis_err, speed_mean, speed_err};
