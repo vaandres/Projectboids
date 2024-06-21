@@ -18,7 +18,6 @@ std::array<double, 2> bds::boid::velocity() const
 
 // Metode che rende il modulo della velocità di un boid
 double bds::boid::absoluteVelocity() const
-double bds::boid::absoluteVelocity() const
 {
   return std::sqrt(std::pow(velocity_[0], 2) + std::pow(velocity_[1], 2));
 }
