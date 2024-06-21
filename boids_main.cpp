@@ -55,7 +55,7 @@ int main()
     std::random_device r;
     std::default_random_engine e1(r());
     std::uniform_real_distribution<> roll_dice1(
-        20, windowWidth - 20); // non capisco perchè restituiscono tutti int
+        20, windowWidth - 20); // non capisco perchè restituiscono tutti int             //generare con nuova ckasse flock
                                // (in caso satatic cast)
     // int rand_x = roll_dice1(e1);
     std::uniform_real_distribution<> roll_dice2(20, windowHeight - 20);
@@ -90,7 +90,7 @@ int main()
 
       b1.setVelocity(
           b1.velocity() + bds::edgeforce(b1, windowWidth, windowHeight)
-          + bds::alignment(b1, boids, d, a) + bds::separation(b1, boids, ds, s)+ separation(b1,preds,d,c)
+          + bds::alignment(b1, boids, d, a) + escape(pred,b1,d,c) + bds::separation(b1, boids, ds, s)/* separation(b1,preds,d,c) */ //fix con escape
           + bds::cohesion(b1, boids, d, c));
       bds::velocitylimit(b1, Vmax);
       std::array<double, 2> p = b1.position() + b1.velocity();

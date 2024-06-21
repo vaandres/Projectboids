@@ -109,7 +109,7 @@ std::array<double, 2> bds::follow(boid const& p1,
                                   std::vector<boid> const& flock, double d,
                                   double Vmax)
 {
-  bds::boid b0{0, 0, 0, 0};
+     bds::boid b0{0, 0, 0, 0};
       double dmin = 100.0;
 
   for (bds::boid b : flock) {
@@ -119,10 +119,10 @@ std::array<double, 2> bds::follow(boid const& p1,
       b0   = b;
     }
   }
-  std::array<double, 2> centre;
+   std::array<double, 2> centre;
   for (bds::boid b : neighbours(b0, flock, d)) {
     centre = centre + b.position();
-  }
+  }                                              //cohesion provare
   if (size(neighbours(b0, flock, d)) == 0) {
     return {0, 0};
   }
@@ -130,7 +130,7 @@ std::array<double, 2> bds::follow(boid const& p1,
       centre = centre / static_cast<double>(neighbours(b0, flock, d).size());
   std::array<double, 2> dir = centre-p1.position();
   return norm(dir)*Vmax;
-  }
+  } 
 
 }
 // Regola di coesione
