@@ -27,7 +27,7 @@ class boid
 
   void setVelocity(const std::array<double, 2>& newVel);
 
-  double absoluteVelocity() const;
+  double absoluteVelocity()const;
 
 }; // fine classe boid
 
@@ -38,18 +38,19 @@ struct statistics
   double speed_mean;
   double speed_err;
 };
-
 class flock
 {
  private:
   std::vector<boid> flock_;
 
  public:
+  flock(std::vector<boid> const& boids)
+      : flock_{boids}
+  {}
   statistics stats() const;
   int size() const;
 
 }; // fine classe flock
-
 
 double dist(boid const&, boid const&);
 
