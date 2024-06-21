@@ -23,13 +23,13 @@ std::array<double, 2> operator/(std::array<double, 2> v1, double k)
 
 int main()
 {
-  int n       = 100;
-  double d    = 90;
-  double ds   = 20;  // gestire errori di input (mettere catch error), negativi
-  double s    = 0.5; // max vel?
-  double a    = 0.1;
-  double c    = 0.01;
-  double Vmax = 10;
+  int n{100};
+  double d{90};
+  double ds{20}; // gestire errori di input (mettere catch error), negativi
+  double s{0.5}; // max vel?
+  double a{0.1};
+  double c{0.01};
+  double Vmax{10};
   sf::Font font;
   font.loadFromFile("./Nexa-Heavy.ttf");
 
@@ -95,8 +95,8 @@ int main()
       b1.setPosition(p);
       assert(b1.position()[0] <= windowWidth + 100);
       assert(b1.position()[1] <= windowHeight + 100);
-      assert(b1.position()[0] >= - 100);
-      assert(b1.position()[1] >= - 100);
+      assert(b1.position()[0] >= -100);
+      assert(b1.position()[1] >= -100);
     }
 
     window.clear(sf::Color::White);
