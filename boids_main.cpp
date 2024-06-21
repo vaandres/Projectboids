@@ -90,7 +90,7 @@ int main()
 
       b1.setVelocity(
           b1.velocity() + bds::edgeforce(b1, windowWidth, windowHeight)
-          + bds::alignment(b1, boids, d, a) + escape(pred,b1,d,c) + bds::separation(b1, boids, ds, s)/* separation(b1,preds,d,c) */ //fix con escape
+          + bds::alignment(b1, boids, d, a) + escape(pred,b1,d,c) + bds::separation(b1, boids, ds, s)
           + bds::cohesion(b1, boids, d, c));
       bds::velocitylimit(b1, Vmax);
       std::array<double, 2> p = b1.position() + b1.velocity();
@@ -104,7 +104,7 @@ int main()
   for (bds::boid& b1: prey){
     b1.setVelocity(b1.velocity()+ escape(pred,b1,d,c));
   } */
-   pred.setVelocity(pred.velocity()+  bds::follow(pred,boids,d,Vmax) +bds::edgeforce(pred, windowWidth, windowHeight));
+   pred.setVelocity(pred.velocity()+  bds::follow(pred,boids,d/* ,Vmax */) +bds::edgeforce(pred, windowWidth, windowHeight));
    bds::velocitylimit(pred, Vmax);
    std::array<double, 2> p = pred.position() + pred.velocity();
    pred.setPosition(p);

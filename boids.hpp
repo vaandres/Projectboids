@@ -60,8 +60,8 @@ void velocitylimit(boid& b, double Vmax);
 std::array<double, 2> escape(boid const&, boid const&, double,
                                double);
 
-std::array<double, 2> follow(boid const&, std::vector<boid> const&, double,
-                               double);
+std::array<double, 2> follow(boid const&, std::vector<boid> const&, double/* ,
+                               double */);
 } // namespace bds
 
 #endif
