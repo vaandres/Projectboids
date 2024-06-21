@@ -50,7 +50,7 @@ int main()
   // adegurare a framerate tempo e a grandezza boid
 
   // Assegnazione delle caratteristiche allo spawn dei boid*/
-  std::vector<bds::boid> boids;
+  std::vector<bds::boid> flock;
   for (int i; i < n; i++) {
     std::random_device r;
     std::default_random_engine e1(r());
@@ -66,7 +66,7 @@ int main()
     // int rand_vy = static_cast<int> (gauss2(e1));
     bds::boid bi{roll_dice1(e1), roll_dice2(e1), gauss1(e1),
                  gauss2(e1)}; // implicita conv double int
-    boids.push_back(bi);
+    flock.push_back(bi);
   }
 
   while (window.isOpen()
@@ -84,12 +84,12 @@ int main()
       }
     }
 
-    for (bds::boid& b1 : boids) { // passare const ref
+    for (bds::boid& b1 : flock) { // passare const ref
 
       b1.setVelocity(
           b1.velocity() + bds::edgeforce(b1, windowWidth, windowHeight)
-          + bds::alignment(b1, boids, d, a) + bds::separation(b1, boids, ds, s)
-          + bds::cohesion(b1, boids, d, c));
+          + bds::alignment(b1, flock, d, a) + bds::separation(b1, flock, ds, s)
+          + bds::cohesion(b1, flock, d, c));
       bds::velocitylimit(b1, Vmax);
       std::array<double, 2> p = b1.position() + b1.velocity();
       b1.setPosition(p);
@@ -100,7 +100,7 @@ int main()
     }
 
     window.clear(sf::Color::White);
-    for (bds::boid b : boids) { // passato const& boid
+    for (bds::boid& b : flock) { // passato const& boid
       sf::CircleShape boid_point(2);
       boid_point.setFillColor(sf::Color::Black);
       auto xy = b.position();
@@ -113,7 +113,7 @@ int main()
     window.display();
 
     if (window2.isOpen()) {
-      //   statistics data = stats(boids);
+      //   Statistics data = stats(boids);
       //   window2.clear(sf::Color::White);
       //   sf::Text text;
       //   text.setFont(font);

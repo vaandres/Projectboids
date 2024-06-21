@@ -217,24 +217,6 @@ TEST_CASE("Testing edgeforce function")
   }
 }
 
-TEST_CASE("Testing size method")
-{
-  bds::boid b1{0, 70, 2.4, 2};
-  bds::boid b2{64, 21, -4, -2.1};
-  bds::boid b3{0, 0, 0, 0};
-
-  SUBCASE("Testing size method")
-  {
-    bds::flock f1{{b1, b2, b3}};
-    CHECK(f1.size() == 3);
-  }
-
-  SUBCASE("Testing size method with 0 boids")
-  {
-    bds::flock f2{{}};
-    CHECK(f2.size() == 0);
-  }
-}
 
 TEST_CASE("Testing stats method")
 {
@@ -246,8 +228,8 @@ TEST_CASE("Testing stats method")
 
   SUBCASE("Testing stats method")
   {
-    bds::flock f1{{b1, b2, b3}};
-    const auto stats = f1.stats();
+    std::vector<bds::boid> flock1{b1, b2, b3};
+    const auto stats = bds::stats(flock1);
     
     CHECK(stats.dis_mean == doctest::Approx(1.9223));
     CHECK(stats.dis_err == doctest::Approx(0.0874421));
@@ -257,8 +239,8 @@ TEST_CASE("Testing stats method")
 
   SUBCASE("Testing stats method with 0 boids")
   {
-    bds::flock f2{{}};
-    const auto stats = f2.stats();
+    std::vector<bds::boid> flock2;
+    const auto stats = bds::stats(flock2);
     CHECK(stats.dis_mean == 0);
     CHECK(stats.dis_err == 0);
     CHECK(stats.speed_mean == 0);
@@ -267,8 +249,8 @@ TEST_CASE("Testing stats method")
 
   SUBCASE("Testing stats method with 2 boids")
   {
-    bds::flock f3{{b4, b5}};
-    const auto stats = f3.stats();
+    std::vector<bds::boid> flock3{b4, b5};
+    const auto stats = bds::stats(flock3);
     CHECK(stats.dis_mean == doctest::Approx(0.07483547));
     CHECK(stats.dis_err == doctest::Approx(0.));
     CHECK(stats.speed_mean == doctest::Approx(0.041292));
@@ -276,8 +258,9 @@ TEST_CASE("Testing stats method")
   }
 
   SUBCASE("Testing stats method with 1 boid")
-  {bds::flock f4{{b2}};
-  const auto stats = f4.stats();
+  {
+   std::vector<bds::boid> flock4{b2};
+  const auto stats = bds::stats(flock4);
   CHECK(stats.dis_mean == doctest::Approx(0.));
     CHECK(stats.dis_err == doctest::Approx(0.));
     CHECK(stats.speed_mean == doctest::Approx(0.119532));

@@ -31,26 +31,14 @@ class boid
 
 }; // fine classe boid
 
-struct statistics
+struct Statistics
 {
   double dis_mean;
   double dis_err;
   double speed_mean;
   double speed_err;
 };
-class flock
-{
- private:
-  std::vector<boid> flock_;
-
- public:
-  flock(std::vector<boid> const& boids)
-      : flock_{boids}
-  {}
-  statistics stats() const;
-  int size() const;
-
-}; // fine classe flock
+ // fine classe flock
 
 double dist(boid const&, boid const&);
 
@@ -69,6 +57,8 @@ std::array<double, 2> edgeforce(boid const&, unsigned int,
                                 unsigned int);
 
 void velocitylimit(boid&, double);
+
+Statistics stats(std::vector<boid> const&);
 } // namespace bds
 
 #endif
