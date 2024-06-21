@@ -5,15 +5,15 @@
 #include <cassert>
 #include <vector>
 namespace bds {
-// Classe principale dei boids
-class boid
+// Classe principale dei Boids
+class Boid
 {
  private:
   std::array<double, 2> position_{0, 0};
   std::array<double, 2> velocity_{0, 0};
-  // Costruttore della classe boids
+  // Costruttore della classe Boids
  public:
-  boid(double x, double y, double vx,
+  Boid(double x, double y, double vx,
        double vy) // aggiungere un assert per posizioni negative?
       : position_{x, y}
       , velocity_{vx, vy}
@@ -29,7 +29,7 @@ class boid
 
   double absoluteVelocity()const;
 
-}; // fine classe boid
+}; // fine classe Boid
 
 struct Statistics
 {
@@ -40,25 +40,25 @@ struct Statistics
 };
  // fine classe flock
 
-double dist(boid const&, boid const&);
+double dist(Boid const&, Boid const&);
 
-std::vector<boid> neighbours(boid const&, std::vector<boid> const&, double);
+std::vector<Boid> neighbours(Boid const&, std::vector<Boid> const&, double);
 
-std::array<double, 2> separation(boid const&, std::vector<boid> const&, double,
+std::array<double, 2> separation(Boid const&, std::vector<Boid> const&, double,
                                  double);
 
-std::array<double, 2> alignment(boid const&, std::vector<boid> const&, double,
+std::array<double, 2> alignment(Boid const&, std::vector<Boid> const&, double,
                                 double);
 
-std::array<double, 2> cohesion(boid const&, std::vector<boid> const&, double,
+std::array<double, 2> cohesion(Boid const&, std::vector<Boid> const&, double,
                                double);
 
-std::array<double, 2> edgeforce(boid const&, unsigned int,
+std::array<double, 2> edgeforce(Boid const&, unsigned int,
                                 unsigned int);
 
-void velocitylimit(boid&, double);
+void velocitylimit(Boid&, double);
 
-Statistics stats(std::vector<boid> const&);
+Statistics stats(std::vector<Boid> const&);
 } // namespace bds
 
 #endif

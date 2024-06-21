@@ -47,10 +47,10 @@ int main()
                                    static_cast<int>(windowHeight) - 200));
   //????Esisite modo diverso invece di usare static cast.
 
-  // adegurare a framerate tempo e a grandezza boid
+  // adegurare a framerate tempo e a grandezza Boid
 
-  // Assegnazione delle caratteristiche allo spawn dei boid*/
-  std::vector<bds::boid> flock;
+  // Assegnazione delle caratteristiche allo spawn dei Boid*/
+  std::vector<bds::Boid> flock;
   for (int i; i < n; i++) {
     std::random_device r;
     std::default_random_engine e1(r());
@@ -64,7 +64,7 @@ int main()
     // int rand_vx = static_cast<int> (gauss1(e1));
     std::normal_distribution<double> gauss2(0, 2);
     // int rand_vy = static_cast<int> (gauss2(e1));
-    bds::boid bi{roll_dice1(e1), roll_dice2(e1), gauss1(e1),
+    bds::Boid bi{roll_dice1(e1), roll_dice2(e1), gauss1(e1),
                  gauss2(e1)}; // implicita conv double int
     flock.push_back(bi);
   }
@@ -84,7 +84,7 @@ int main()
       }
     }
 
-    for (bds::boid& b1 : flock) { // passare const ref
+    for (bds::Boid& b1 : flock) { // passare const ref
 
       b1.setVelocity(
           b1.velocity() + bds::edgeforce(b1, windowWidth, windowHeight)
@@ -100,20 +100,20 @@ int main()
     }
 
     window.clear(sf::Color::White);
-    for (bds::boid& b : flock) { // passato const& boid
-      sf::CircleShape boid_point(2);
-      boid_point.setFillColor(sf::Color::Black);
+    for (bds::Boid& b : flock) { // passato const& Boid
+      sf::CircleShape Boid_point(2);
+      Boid_point.setFillColor(sf::Color::Black);
       auto xy = b.position();
-      boid_point.setPosition(
+      Boid_point.setPosition(
           static_cast<float>(xy[0]),
           static_cast<float>(xy[1])); // frecce /è necessari static cast?
-      window.draw(boid_point);
+      window.draw(Boid_point);
     }
 
     window.display();
 
     if (window2.isOpen()) {
-      //   Statistics data = stats(boids);
+      //   Statistics data = stats(Boids);
       //   window2.clear(sf::Color::White);
       //   sf::Text text;
       //   text.setFont(font);
@@ -132,13 +132,13 @@ int main()
       //   window2.display();
       //   // text.setFont(font);
       /*const sf::Color AXIS_COLOR(sf::Color::Black);
-      sf::Vertex boid_line[] = {
+      sf::Vertex Boid_line[] = {
           sf::Vertex(sf::array2f(8, 4), AXIS_COLOR),
           sf::Vertex(sf::array2f(150, 150), AXIS_COLOR),
       };
-      boid_line.setFillColor(sf::Color::Black);
-      boid_line.setPosition(xy[0], xy[1]);
-      window.draw(boid_line, 2, sf::Lines);
+      Boid_line.setFillColor(sf::Color::Black);
+      Boid_line.setPosition(xy[0], xy[1]);
+      window.draw(Boid_line, 2, sf::Lines);
     }*/
     }
   }
