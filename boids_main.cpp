@@ -31,7 +31,7 @@ int main()
   double c{0.01};
   double Vmax{10};
   sf::Font font;
-  font.loadFromFile("./Nexa-Heavy.ttf");
+  font.loadFromFile("../Nexa-Heavy.ttf");
 
   unsigned windowWidth  = (1) * sf::VideoMode::getDesktopMode().width - 40;
   unsigned windowHeight = (1) * sf::VideoMode::getDesktopMode().height - 75;
@@ -84,7 +84,7 @@ int main()
       }
     }
 
-    for (bds::Boid& b1 : flock) { // passare const ref
+    for (bds::Boid& b1 : flock) { 
 
       b1.setVelocity(
           b1.velocity() + bds::edgeforce(b1, windowWidth, windowHeight)
@@ -113,24 +113,24 @@ int main()
     window.display();
 
     if (window2.isOpen()) {
-      //   Statistics data = stats(Boids);
-      //   window2.clear(sf::Color::White);
-      //   sf::Text text;
-      //   text.setFont(font);
-      //   text.setString(
-      //       "Avarage velocity" + std::to_string(data.vel_mean[0]) + "   "
-      //       + std::to_string(data.vel_mean[1]) + "\n\n"
-      //       + "Standard deviation: " + std::to_string(data.vel_sigma[0]) + "
-      //       "
-      //       + std::to_string(data.vel_sigma[1]) + "\n\n"
-      //       + "Avarage distance: " + std::to_string(data.dis_mean) + "\n\n"
-      //       + "Standard deviation: " + std::to_string(data.dis_sigma));
-      //   text.setCharacterSize(7);
-      //   text.setFillColor(sf::Color::Black);
-      //   text.setPosition(5, 5);
-      //   window2.draw(text);
-      //   window2.display();
-      //   // text.setFont(font);
+         bds::Statistics data = bds::stats(flock);
+         window2.clear(sf::Color::White);
+         sf::Text text;
+      text.setFont(font);
+         text.setString(
+            "Avarage velocity" + std::to_string(data.speed_mean)+ /* + "   "
+            + std::to_string(data.vel_mean[1]) + */ "\n\n"
+            + "Standard deviation: " + std::to_string(data.speed_err) /* + "
+            "
+           + std::to_string(data.vel_sigma[1])  */+ "\n\n"
+           + "Avarage distance: " + std::to_string(data.dis_mean) + "\n\n"
+            + "Standard deviation: " + std::to_string(data.dis_err));
+        text.setCharacterSize(7);
+       text.setFillColor(sf::Color::Black);
+        text.setPosition(5, 5);
+        window2.draw(text);
+        window2.display();
+      //  text.setFont(font);
       /*const sf::Color AXIS_COLOR(sf::Color::Black);
       sf::Vertex Boid_line[] = {
           sf::Vertex(sf::array2f(8, 4), AXIS_COLOR),
