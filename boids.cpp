@@ -22,10 +22,10 @@ double bds::Boid::absoluteVelocity() const
   return std::sqrt(std::pow(velocity_[0], 2) + std::pow(velocity_[1], 2));
 }
 
-// Metodo di cambio di posizione del Boid
-void bds::Boid::setPosition(const std::array<double, 2>& newPos)
+// Metodo di aggiornamento di posizione del Boid
+void bds::Boid::updatePosition()
 {
-  position_ = newPos;
+  position_ = position_ + velocity_;
 }
 
 // Funzione distanza tra due Boids
@@ -136,8 +136,18 @@ std::array<double, 2> bds::edgeforce(Boid const& b, unsigned int width,
   return a;
 }
 
+// Funzione che applica le regole che determinano il movimento del boid
+void bds::applyRules(Boid& b1, double a, double c, double s, double d,
+                                      double ds, unsigned int windowWidth,
+                                      unsigned int windowHeight,
+                                      std::vector<Boid> const& flock)
+{
+  b1.setVelocity(b1.velocity() + edgeforce(b1, windowWidth, windowHeight)
+                 + alignment(b1, flock, d, a) + separation(b1, flock, ds, s)
+                 + cohesion(b1, flock, d, c));
+}
 
-bds::Statistics bds::stats(std::vector<bds::Boid> const& flock)
+bds::Statistics bds::stats(std::vector<Boid> const& flock)
 {
   double dis_mean{};
   double dis_sigma{};
@@ -179,13 +189,13 @@ bds::Statistics bds::stats(std::vector<bds::Boid> const& flock)
                                 });
        });*/
 
-  for (auto b1_iter = flock.begin(); b1_iter != flock.end(); ++b1_iter) {
-    for (auto b2_iter = b1_iter + 1; b2_iter != flock.end(); ++b2_iter) {
-      sum_dist += dist(*b1_iter, *b2_iter) * conv_fac;
-      sum_dist2 += dist(*b1_iter, *b2_iter) * dist(*b1_iter, *b2_iter)
-                 * conv_fac * conv_fac;
+    for (auto b1_iter = flock.begin(); b1_iter != flock.end(); ++b1_iter) {
+      for (auto b2_iter = b1_iter + 1; b2_iter != flock.end(); ++b2_iter) {
+        sum_dist += dist(*b1_iter, *b2_iter) * conv_fac;
+        sum_dist2 += dist(*b1_iter, *b2_iter) * dist(*b1_iter, *b2_iter)
+                   * conv_fac * conv_fac;
+      }
     }
-  }
 
     sum_speed = std::accumulate(flock.begin(), flock.end(), 0.0,
                                 [](double s, Boid const& b) {
@@ -201,8 +211,9 @@ bds::Statistics bds::stats(std::vector<bds::Boid> const& flock)
                * conv_fac * conv_fac;
   }
 
-  dis_mean    = sum_dist / (n * (n - 1) / 2);
-  dis_sigma   = std::sqrt(std::abs(sum_dist2 / (n * (n - 1) / 2) - dis_mean * dis_mean));
+  dis_mean = sum_dist / (n * (n - 1) / 2);
+  dis_sigma =
+      std::sqrt(std::abs(sum_dist2 / (n * (n - 1) / 2) - dis_mean * dis_mean));
   dis_err     = dis_sigma / std::sqrt(n * (n - 1) / 2);
   speed_mean  = sum_speed / n;
   speed_sigma = std::sqrt(std::abs(sum_speed2 / n - speed_mean * speed_mean));

@@ -3,24 +3,6 @@
 #include <SFML/Graphics.hpp>
 #include <random>
 
-std::array<double, 2> operator+(std::array<double, 2> v1,
-                                std::array<double, 2> v2)
-{
-  auto vxf                 = v1[0] + v2[0];
-  auto vyf                 = v1[1] + v2[1];
-  std::array<double, 2> vf = {vxf, vyf};
-  return vf;
-}
-
-std::array<double, 2> operator/(std::array<double, 2> v1, double k)
-{
-  assert(k != 0);
-  auto vxf                 = v1[0] / k;
-  auto vyf                 = v1[1] / k;
-  std::array<double, 2> vf = {vxf, vyf};
-  return vf;
-}
-
 int main()
 {
   int n{100};
@@ -84,15 +66,10 @@ int main()
       }
     }
 
-    for (bds::Boid& b1 : flock) { 
-
-      b1.setVelocity(
-          b1.velocity() + bds::edgeforce(b1, windowWidth, windowHeight)
-          + bds::alignment(b1, flock, d, a) + bds::separation(b1, flock, ds, s)
-          + bds::cohesion(b1, flock, d, c));
+    for (bds::Boid& b1 : flock) {
+      bds::applyRules(b1, a, c, s, d, ds, windowWidth, windowHeight, flock);
       bds::velocitylimit(b1, Vmax);
-      std::array<double, 2> p = b1.position() + b1.velocity();
-      b1.setPosition(p);
+      b1.updatePosition();
       assert(b1.position()[0] <= windowWidth + 100);
       assert(b1.position()[1] <= windowHeight + 100);
       assert(b1.position()[0] >= -100);
@@ -113,23 +90,24 @@ int main()
     window.display();
 
     if (window2.isOpen()) {
-         bds::Statistics data = bds::stats(flock);
-         window2.clear(sf::Color::White);
-         sf::Text text;
+      bds::Statistics data = bds::stats(flock);
+      window2.clear(sf::Color::White);
+      sf::Text text;
       text.setFont(font);
-         text.setString(
-            "Avarage velocity" + std::to_string(data.speed_mean)+ /* + "   "
-            + std::to_string(data.vel_mean[1]) + */ "\n\n"
-            + "Standard deviation: " + std::to_string(data.speed_err) /* + "
-            "
-           + std::to_string(data.vel_sigma[1])  */+ "\n\n"
-           + "Avarage distance: " + std::to_string(data.dis_mean) + "\n\n"
-            + "Standard deviation: " + std::to_string(data.dis_err));
-        text.setCharacterSize(7);
-       text.setFillColor(sf::Color::Black);
-        text.setPosition(5, 5);
-        window2.draw(text);
-        window2.display();
+      text.setString(
+          "Avarage velocity" + std::to_string(data.speed_mean) + /* + "   "
+           + std::to_string(data.vel_mean[1]) + */
+          "\n\n"
+          + "Standard deviation: " + std::to_string(data.speed_err) /* + "
+          "
+         + std::to_string(data.vel_sigma[1])  */
+          + "\n\n" + "Avarage distance: " + std::to_string(data.dis_mean)
+          + "\n\n" + "Standard deviation: " + std::to_string(data.dis_err));
+      text.setCharacterSize(7);
+      text.setFillColor(sf::Color::Black);
+      text.setPosition(5, 5);
+      window2.draw(text);
+      window2.display();
       //  text.setFont(font);
       /*const sf::Color AXIS_COLOR(sf::Color::Black);
       sf::Vertex Boid_line[] = {

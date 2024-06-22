@@ -23,11 +23,11 @@ class Boid
 
   std::array<double, 2> velocity() const;
 
-  void setPosition(const std::array<double, 2>& newPos);
+  void updatePosition();
 
   void setVelocity(const std::array<double, 2>& newVel);
 
-  double absoluteVelocity()const;
+  double absoluteVelocity() const;
 
 }; // fine classe Boid
 
@@ -38,7 +38,7 @@ struct Statistics
   double speed_mean;
   double speed_err;
 };
- // fine classe flock
+// fine classe flock
 
 double dist(Boid const&, Boid const&);
 
@@ -53,8 +53,12 @@ std::array<double, 2> alignment(Boid const&, std::vector<Boid> const&, double,
 std::array<double, 2> cohesion(Boid const&, std::vector<Boid> const&, double,
                                double);
 
-std::array<double, 2> edgeforce(Boid const&, unsigned int,
-                                unsigned int);
+std::array<double, 2> edgeforce(Boid const&, unsigned int, unsigned int);
+
+void applyRules( Boid& b1, double a, double c, double s, double d,
+                                 double ds, unsigned int windowWidth,
+                                 unsigned int windowHeight,
+                                 std::vector<Boid> const& flock);
 
 void velocitylimit(Boid&, double);
 
