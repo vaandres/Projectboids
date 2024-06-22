@@ -37,7 +37,7 @@ double bds::dist(boid const& b1, boid const& b2)
                    + std::pow(pos1[1] - pos2[1], 2));
 }
 
-std::array<double, 2> norm(std::array<double, 2> v)
+/* std::array<double, 2> norm(std::array<double, 2> v)
 {
   double module = sqrt(v[0] * v[0] + v[1] * v[1]);
   if (module != 0) {
@@ -47,7 +47,7 @@ std::array<double, 2> norm(std::array<double, 2> v)
   else {
     return {0, 0};
   }
-}
+} */
 // Funzione cambio velocità del boid
 void bds::boid::setVelocity(const std::array<double, 2>& newVel)
 {
