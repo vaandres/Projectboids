@@ -19,6 +19,9 @@ string(APPEND CMAKE_CXX_FLAGS
 # abilita asserzioni di debug (in gcc), l'address sanitizer e l'undefined-behaviour sanitizer in debug mode
 string(APPEND CMAKE_CXX_FLAGS_DEBUG " -D_GLIBCXX_ASSERTIONS -fsanitize=address,undefined -fno-omit-frame-pointer")
 string(APPEND CMAKE_EXE_LINKER_FLAGS_DEBUG " -fsanitize=address,undefined -fno-omit-frame-pointer")
+ 
+# Aggiungi flag specifici per la modalità di rilascio (release mode)
+string(APPEND CMAKE_CXX_FLAGS_RELEASE " -O3 -DNDEBUG")
 
 # richiedi il componente graphics della libreria SFML, versione 2.5
 #   le dipendenze vengono identificate automaticamente

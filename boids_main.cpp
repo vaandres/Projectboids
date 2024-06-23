@@ -7,11 +7,11 @@ int main()
 {
   int n{100};
   double d{90};
-  double ds{20}; // gestire errori di input (mettere catch error), negativi
-  double s{0.5}; // max vel?
+  double ds{15}; // gestire errori di input (mettere catch error), negativi
+  double s{0.4}; // max vel?
   double a{0.1};
   double c{0.01};
-  double Vmax{10};
+  double Vmax{8};
   sf::Font font;
   font.loadFromFile("../Nexa-Heavy.ttf");
 

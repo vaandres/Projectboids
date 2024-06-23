@@ -74,11 +74,11 @@ std::array<double, 2> bds::separation(bds::Boid const& b1,
 
   return sep_vel * -s;
 }
-std::array<double, 2> bds::escape(bds::Boid const& p1,
-                                  bds::Boid const& b1, double d,
-                                  double c)
-{ std::vector<bds::Boid>pred = {p1};
-  return separation(b1, pred, d, 3 * c);
+std::array<double, 2> bds::escape(bds::Boid const& p1, bds::Boid const& b1,
+                                  double d, double c)
+{
+  std::vector<bds::Boid> pred = {p1};    // un po' dispendioso
+  return separation(b1, pred, d, 3 * c); // magic number
 }
 
 // Funzione per allineare i Boids
@@ -95,22 +95,33 @@ std::array<double, 2> bds::alignment(Boid const& b1,
   return (v / static_cast<double>(neighbours.size()) - b1.velocity()) * a;
 }
 
-std::array<double, 2> bds::follow(Boid const& p1,
-                                  std::vector<Boid> const& flock, double d/* ,
-                                  double Vmax */)
-{
-     bds::Boid b0{0, 0, 0, 0};
-      double dmin = 100.0;
+std::array<double, 2> bds::follow(bds::Boid const& p1, std::vector<bds::Boid> const& flock, double d) {
+        auto closest = std::min_element(flock.begin(), flock.end(), [&p1](const bds::Boid& a, const bds::Boid& b) {
+            return dist(p1, a) < dist(p1, b);
+        });
 
-  for (bds::Boid b : flock) {
-        double h = dist(p1, b);
+        if (closest == flock.end()) {
+            return {0.0, 0.0}; 
+        }
+
+        return cohesion(p1, neighbours(*closest, flock, d), d, 1) * 2.;
+    }
+/*std::array<double, 2> bds::follow(Boid const& p1,
+                                  std::vector<Boid> const& flock, double d/* ,
+                                  double Vmax )
+{
+  bds::Boid b0{0, 0, 0, 0};
+  double dmin = 100.0;  //magic number
+
+  for (const bds::Boid& b : flock) {
+    double h = dist(p1, b);
     if (h <= dmin) {
       dmin = h;
       b0   = b;
     }
   }
-  return cohesion(p1, neighbours(b0,flock,d), d, 1)*2;
-}
+  return cohesion(p1, neighbours(b0, flock, d), d, 1) * 2;
+}*/
 
 // Regola di coesione
 std::array<double, 2> bds::cohesion(bds::Boid const& b1,
@@ -161,19 +172,20 @@ std::array<double, 2> bds::edgeforce(Boid const& b, unsigned int width,
 
 // Funzione che applica le regole che determinano il movimento del boid
 void bds::applyRules(Boid& b1, double a, double c, double s, double d,
-                                      double ds, unsigned int windowWidth,
-                                      unsigned int windowHeight,
-                                      std::vector<Boid> const& flock,Boid& p1)
+                     double ds, unsigned int windowWidth,
+                     unsigned int windowHeight, std::vector<Boid> const& flock,
+                     Boid& p1)
 {
   b1.setVelocity(b1.velocity() + edgeforce(b1, windowWidth, windowHeight)
                  + alignment(b1, flock, d, a) + separation(b1, flock, ds, s)
-                 + cohesion(b1, flock, d, c)+ escape(p1,b1,d,c));
+                 + cohesion(b1, flock, d, c) + escape(p1, b1, d, c));
 }
 
-void bds::RulesPred(Boid& p1,std::vector<Boid> const& flock,double d, unsigned int windowWidth,unsigned int windowHeight){
-   p1.setVelocity(p1.velocity()+  bds::follow(p1,flock,d/* ,Vmax */) +bds::edgeforce(p1, windowWidth, windowHeight));
-
-  
+void bds::RulesPred(Boid& p1, std::vector<Boid> const& flock, double d,
+                    unsigned int windowWidth, unsigned int windowHeight)
+{
+  p1.setVelocity(p1.velocity() + bds::follow(p1, flock, d /* ,Vmax */)
+                 + bds::edgeforce(p1, windowWidth, windowHeight));
 }
 
 bds::Statistics bds::stats(std::vector<Boid> const& flock)
