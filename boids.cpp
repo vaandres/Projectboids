@@ -75,10 +75,10 @@ std::array<double, 2> bds::separation(bds::Boid const& b1,
   return sep_vel * -s;
 }
 std::array<double, 2> bds::escape(bds::Boid const& p1, bds::Boid const& b1,
-                                  double d, double c)
+                                  double d, double c, double e)
 {
   std::vector<bds::Boid> pred = {p1};    // un po' dispendioso
-  return separation(b1, pred, d, 3 * c); // magic number
+  return separation(b1, pred, d, e * c); // magic number
 }
 
 // Funzione per allineare i Boids
@@ -96,7 +96,7 @@ std::array<double, 2> bds::alignment(Boid const& b1,
 }
 
 std::array<double, 2> bds::follow(bds::Boid const& p1,
-                                  std::vector<bds::Boid> const& flock, double d)
+                                  std::vector<bds::Boid> const& flock, double d, double g, double f)
 {
   auto closest_it =
       std::min_element(flock.begin(), flock.end(),
@@ -109,7 +109,10 @@ std::array<double, 2> bds::follow(bds::Boid const& p1,
   }
 
   auto closest = *closest_it;
-  return (closest.position() - p1.position()) * 2.;
+    //if (neighbours(closest, flock, d).empty()) {
+    //return (closest.position() - p1.position()) * f;
+  //}
+  return cohesion(p1, neighbours(closest, flock, d), d, g) * f;
 }
 /*std::array<double, 2> bds::follow(Boid const& p1,
                                   std::vector<Boid> const& flock, double d/* ,
