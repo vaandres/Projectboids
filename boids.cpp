@@ -180,7 +180,7 @@ std::array<double, 2> bds::edgeforce(Boid const& b, unsigned int width,
 
 // Funzione che applica le regole che determinano il movimento del boid
 void bds::applyRules(Boid& b1, double a, double c, double s, double d,
-                     double ds, double e unsigned int windowWidth,
+                     double ds, double e, unsigned int windowWidth,
                      unsigned int windowHeight, std::vector<Boid> const& flock,
                      Boid& p1)
 {
