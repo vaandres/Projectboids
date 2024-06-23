@@ -56,7 +56,7 @@ std::array<double, 2> cohesion(Boid const&, std::vector<Boid> const&, double,
 std::array<double, 2> edgeforce(Boid const&, unsigned int, unsigned int);
 
 void applyRules( Boid& b1, double a, double c, double s, double d,
-                                 double ds, unsigned int windowWidth,
+                                 double ds, double e, unsigned int windowWidth,
                                  unsigned int windowHeight,
                                  std::vector<Boid> const& flock, Boid& p1);
 
