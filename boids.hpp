@@ -58,11 +58,19 @@ std::array<double, 2> edgeforce(Boid const&, unsigned int, unsigned int);
 void applyRules( Boid& b1, double a, double c, double s, double d,
                                  double ds, unsigned int windowWidth,
                                  unsigned int windowHeight,
-                                 std::vector<Boid> const& flock);
+                                 std::vector<Boid> const& flock, Boid& p1);
 
 void velocitylimit(Boid&, double);
 
 Statistics stats(std::vector<Boid> const&);
+
+void RulesPred(Boid& p1,std::vector<Boid> const& flock,double d, unsigned int windowWidth, unsigned int windowHeight);
+
+std::array<double, 2> escape(Boid const&, Boid const&, double,
+                               double);
+
+std::array<double, 2> follow(Boid const&, std::vector<Boid> const&, double
+                              );
 } // namespace bds
 
 #endif
