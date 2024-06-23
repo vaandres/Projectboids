@@ -11,6 +11,9 @@ int main()
   double s{0.4}; // max vel?
   double a{0.1};
   double c{0.01};
+  double e{3.};
+  double g{1.};
+  double f{2.};
   double Vmax{8};
   sf::Font font;
   font.loadFromFile("../Nexa-Heavy.ttf");
@@ -70,7 +73,7 @@ int main()
 
 
     for (bds::Boid& b1 : flock) {
-      bds::applyRules(b1, a, c, s, d, ds, windowWidth, windowHeight, flock,pred);
+      bds::applyRules(b1, a, c, s, d, ds, e, windowWidth, windowHeight, flock,pred);
       bds::velocitylimit(b1, Vmax);
       b1.updatePosition();
       assert(b1.position()[0] <= windowWidth + 100);
@@ -79,7 +82,7 @@ int main()
       assert(b1.position()[1] >= -100);
     }
     
-   bds::RulesPred(pred,flock,d,windowWidth,windowHeight);
+   bds::RulesPred(pred,flock,d,g,f,windowWidth,windowHeight);
    bds::velocitylimit(pred, Vmax);
    pred.updatePosition();
    
