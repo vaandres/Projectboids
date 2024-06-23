@@ -64,12 +64,12 @@ void velocitylimit(Boid&, double);
 
 Statistics stats(std::vector<Boid> const&);
 
-void RulesPred(Boid& p1,std::vector<Boid> const& flock,double d, unsigned int windowWidth, unsigned int windowHeight);
+void RulesPred(Boid& p1,std::vector<Boid> const& flock,double d, double g, double f, unsigned int windowWidth, unsigned int windowHeight);
 
 std::array<double, 2> escape(Boid const&, Boid const&, double,
-                               double);
+                               double, double);
 
-std::array<double, 2> follow(Boid const&, std::vector<Boid> const&, double
+std::array<double, 2> follow(Boid const&, std::vector<Boid> const&, double, double, double
                               );
 } // namespace bds
 
