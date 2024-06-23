@@ -180,19 +180,19 @@ std::array<double, 2> bds::edgeforce(Boid const& b, unsigned int width,
 
 // Funzione che applica le regole che determinano il movimento del boid
 void bds::applyRules(Boid& b1, double a, double c, double s, double d,
-                     double ds, unsigned int windowWidth,
+                     double ds, double e unsigned int windowWidth,
                      unsigned int windowHeight, std::vector<Boid> const& flock,
                      Boid& p1)
 {
   b1.setVelocity(b1.velocity() + edgeforce(b1, windowWidth, windowHeight)
                  + alignment(b1, flock, d, a) + separation(b1, flock, ds, s)
-                 + cohesion(b1, flock, d, c) + escape(p1, b1, d, c));
+                 + cohesion(b1, flock, d, c) + escape(p1, b1, d, c, e));
 }
 
 void bds::RulesPred(Boid& p1, std::vector<Boid> const& flock, double d,
                     double g, double f, unsigned int windowWidth, unsigned int windowHeight)
 {
-  p1.setVelocity(p1.velocity() + bds::follow(p1, flock, d /* ,Vmax */)
+  p1.setVelocity(p1.velocity() + bds::follow(p1, flock, d, g, f /* ,Vmax */)
                  + bds::edgeforce(p1, windowWidth, windowHeight));
 }
 
