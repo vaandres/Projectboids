@@ -95,17 +95,22 @@ std::array<double, 2> bds::alignment(Boid const& b1,
   return (v / static_cast<double>(neighbours.size()) - b1.velocity()) * a;
 }
 
-std::array<double, 2> bds::follow(bds::Boid const& p1, std::vector<bds::Boid> const& flock, double d) {
-        auto closest = std::min_element(flock.begin(), flock.end(), [&p1](const bds::Boid& a, const bds::Boid& b) {
-            return dist(p1, a) < dist(p1, b);
-        });
+std::array<double, 2> bds::follow(bds::Boid const& p1,
+                                  std::vector<bds::Boid> const& flock, double d)
+{
+  auto closest_it =
+      std::min_element(flock.begin(), flock.end(),
+                       [&p1](const bds::Boid& a, const bds::Boid& b) {
+                         return dist(p1, a) < dist(p1, b);
+                       });
 
-        if (closest == flock.end()) {
-            return {0.0, 0.0}; 
-        }
+  if (closest_it == flock.end()) {
+    return {0.0, 0.0};
+  }
 
-        return cohesion(p1, neighbours(*closest, flock, d), d, 1) * 2.;
-    }
+  auto closest = *closest_it;
+  return (closest.position() - p1.position()) * 2.;
+}
 /*std::array<double, 2> bds::follow(Boid const& p1,
                                   std::vector<Boid> const& flock, double d/* ,
                                   double Vmax )
@@ -210,7 +215,7 @@ bds::Statistics bds::stats(std::vector<Boid> const& flock)
   if (n == 1) {
     return {0., 0., flock[0].absoluteVelocity() * conv_fac, 0.};
   }
-  if (n > 1) { 
+  if (n > 1) {
     for (auto b1_iter = flock.begin(); b1_iter != flock.end(); ++b1_iter) {
       for (auto b2_iter = b1_iter + 1; b2_iter != flock.end(); ++b2_iter) {
         sum_dist += dist(*b1_iter, *b2_iter) * conv_fac;
