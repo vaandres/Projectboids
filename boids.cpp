@@ -210,26 +210,7 @@ bds::Statistics bds::stats(std::vector<Boid> const& flock)
   if (n == 1) {
     return {0., 0., flock[0].absoluteVelocity() * conv_fac, 0.};
   }
-  if (n > 1) { /*sum_dist = std::accumulate(
-       flock.begin(), flock.end(), 0.0, [this](double s, Boid const& b1) {
-         auto b1_iter = std::find(flock.begin(), flock.end(), b1);
-         return s
-              + std::accumulate(b1_iter + 1, flock.end(), 0.0,
-                                [&b1](double t, Boid const& b2) {
-                                  return t + dist(b1, b2);
-                                });
-       });
-
-   sum_dist2 = std::accumulate(
-       flock.begin(), flock.end(), 0.0, [this](double s, Boid const& b1) {
-         auto b1_iter = std::find(flock.begin(), flock.end(), b1);
-         return s
-              + std::accumulate(b1_iter + 1, flock.end(), 0.0,
-                                [&b1](double t, Boid const& b2) {
-                                  return t + dist(b1, b2) * dist(b1, b2);
-                                });
-       });*/
-
+  if (n > 1) { 
     for (auto b1_iter = flock.begin(); b1_iter != flock.end(); ++b1_iter) {
       for (auto b2_iter = b1_iter + 1; b2_iter != flock.end(); ++b2_iter) {
         sum_dist += dist(*b1_iter, *b2_iter) * conv_fac;
