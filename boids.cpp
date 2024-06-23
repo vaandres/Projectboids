@@ -190,7 +190,7 @@ void bds::applyRules(Boid& b1, double a, double c, double s, double d,
 }
 
 void bds::RulesPred(Boid& p1, std::vector<Boid> const& flock, double d,
-                    unsigned int windowWidth, unsigned int windowHeight)
+                    double g, double f, unsigned int windowWidth, unsigned int windowHeight)
 {
   p1.setVelocity(p1.velocity() + bds::follow(p1, flock, d /* ,Vmax */)
                  + bds::edgeforce(p1, windowWidth, windowHeight));
