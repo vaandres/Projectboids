@@ -218,7 +218,7 @@ TEST_CASE("Testing edgeforce function")
 }
 
 
-TEST_CASE("Testing stats method")
+TEST_CASE("Testing stats")
 {
   bds::Boid b1{0, 70, 2.4, 2};
   bds::Boid b2{64, 21, -4, -2.1};
@@ -226,7 +226,7 @@ TEST_CASE("Testing stats method")
   bds::Boid b4{1., 2., 1.5, 1.5};
   bds::Boid b5{3., 0., 1., 0.};
 
-  SUBCASE("Testing stats method")
+  SUBCASE("Testing stats")
   {
     std::vector<bds::Boid> flock1{b1, b2, b3};
     const auto stats = bds::stats(flock1);
@@ -247,7 +247,7 @@ TEST_CASE("Testing stats method")
     CHECK(stats.speed_err == 0);
   }
 
-  SUBCASE("Testing stats method with 2 Boids")
+  SUBCASE("Testing stats with 2 Boids")
   {
     std::vector<bds::Boid> flock3{b4, b5};
     const auto stats = bds::stats(flock3);
@@ -257,7 +257,7 @@ TEST_CASE("Testing stats method")
     CHECK(stats.speed_err == doctest::Approx(0.0104893));
   }
 
-  SUBCASE("Testing stats method with 1 Boid")
+  SUBCASE("Testing stats with 1 Boid")
   {
    std::vector<bds::Boid> flock4{b2};
   const auto stats = bds::stats(flock4);
@@ -265,6 +265,76 @@ TEST_CASE("Testing stats method")
     CHECK(stats.dis_err == doctest::Approx(0.));
     CHECK(stats.speed_mean == doctest::Approx(0.119532));
     CHECK(stats.speed_err == doctest::Approx(0.));
+  }
+}
+
+// test escape function
+TEST_CASE("Testing escape function")
+{
+  bds::Boid p1{36., 40., 5., 3.};
+  bds::Boid b1{39., 41., 2., 3.};
+
+  SUBCASE("Testing escape function with a boid near a predator")
+  {
+    double d{4.};
+    double c{0.5};
+    double e{3};
+    auto escape_vel = bds::escape(p1, b1, d, c, e);
+    CHECK(escape_vel[0] == doctest::Approx(4.5));
+    CHECK(escape_vel[1] == doctest::Approx(1.5));
+  }
+
+  SUBCASE("Testing escape function with a boid far from a predator")
+  {
+    double d{1.};
+    double c{0.5};
+    double e{3};
+    auto escape_vel = bds::escape(p1, b1, d, c, e);
+    CHECK(escape_vel[0] == 0);
+    CHECK(escape_vel[1] == 0);
+  }
+}
+
+// test follow function
+TEST_CASE("Testing follow function")
+{
+  bds::Boid p1{32., 23., 3., 2.};
+  bds::Boid b1{30., 27., -5., 2.3};
+  bds::Boid b2{22., 20., 3.2, 2.1};
+  bds::Boid b3{29., 23., -1., 1.2};
+  bds::Boid b4{31., 26., 0., 0.};
+
+  SUBCASE("Testing follow function with a flock of boids")
+  {
+    std::vector<bds::Boid> flock{b1, b2, b3, b4};
+    double d{6.};
+    double g{1.};
+    double f{2.};
+    auto follow_vel = bds::follow(p1, flock, d, g, f);
+    CHECK(follow_vel[0] == doctest::Approx(-3.));
+    CHECK(follow_vel[1] == doctest::Approx(7.));
+  }
+
+  SUBCASE("Testing follow function with a boid with no neighbours")
+  {
+    std::vector<bds::Boid> flock{b1};
+    double d{2};
+    double g{2.7};
+    double f{1.5};
+    auto follow_vel = bds::follow(p1, flock, d, g, f);
+    CHECK(follow_vel[0] == 0.);
+    CHECK(follow_vel[1] == 0.);
+  }
+
+  SUBCASE("Testing follow function with an empty flock")
+  {
+    std::vector<bds::Boid> flock {};
+    double d{2};
+    double g{1.7};
+    double f{2.5};
+    auto follow_vel = bds::follow(p1, flock, d, g, f);
+    CHECK(follow_vel[0] == 0);
+    CHECK(follow_vel[1] == 0);
   }
 }
 
