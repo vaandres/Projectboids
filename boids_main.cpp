@@ -12,7 +12,6 @@ int main()
   double a{0.1};
   double c{0.01};
   double e{3.};
-  double g{1.};
   double f{0.7};
   double Vmax{8};
   const double range{7};
@@ -84,7 +83,7 @@ int main()
       assert(b1.position()[1] >= -100);
     }
 
-    bds::RulesPred(pred, flock, d, g, f, windowWidth, windowHeight);
+    bds::RulesPred(pred, flock, f, windowWidth, windowHeight);
     bds::velocitylimit(pred, Vmax * pred_coeff);
     pred.updatePosition();
     bds::eat(pred, flock, range);

@@ -96,8 +96,7 @@ std::array<double, 2> bds::alignment(Boid const& b1,
 }
 
 std::array<double, 2> bds::follow(bds::Boid const& p1,
-                                  std::vector<bds::Boid> const& flock, double d,
-                                  double g, double f)
+                                  std::vector<bds::Boid> const& flock, double f)
 {
   auto closest_it =
       std::min_element(flock.begin(), flock.end(),
@@ -111,27 +110,7 @@ std::array<double, 2> bds::follow(bds::Boid const& p1,
 
   auto closest = *closest_it;
   return (closest.position() - p1.position()) * f;
-  /*if (neighbours(closest, flock, d).empty()) {
-    return (closest.position() - p1.position()) * f;
-  }
-  return cohesion(p1, neighbours(closest, flock, d), d, g) * f;*/
 }
-/*std::array<double, 2> bds::follow(Boid const& p1,
-                                  std::vector<Boid> const& flock, double d/* ,
-                                  double Vmax )
-{
-  bds::Boid b0{0, 0, 0, 0};
-  double dmin = 100.0;  //magic number
-
-  for (const bds::Boid& b : flock) {
-    double h = dist(p1, b);
-    if (h <= dmin) {
-      dmin = h;
-      b0   = b;
-    }
-  }
-  return cohesion(p1, neighbours(b0, flock, d), d, 1) * 2;
-}*/
 
 // Regola di coesione
 std::array<double, 2> bds::cohesion(bds::Boid const& b1,
@@ -191,19 +170,20 @@ void bds::applyRules(Boid& b1, double a, double c, double s, double d,
                  + cohesion(b1, flock, d, c) + escape(p1, b1, d, c, e));
 }
 
-void bds::RulesPred(Boid& p1, std::vector<Boid> const& flock, double d,
-                    double g, double f, unsigned int windowWidth,
-                    unsigned int windowHeight)
+void bds::RulesPred(Boid& p1, std::vector<Boid> const& flock, double f,
+                    unsigned int windowWidth, unsigned int windowHeight)
 {
-  p1.setVelocity(p1.velocity() + bds::follow(p1, flock, d, g, f /* ,Vmax */)
+  p1.setVelocity(p1.velocity() + bds::follow(p1, flock, f)
                  + bds::edgeforce(p1, windowWidth, windowHeight));
 }
 
-void bds::eat(Boid const& p1, std::vector<Boid>& flock,double range){
-  auto p =p1;
-  flock.erase(std::remove_if(flock.begin(), flock.end(),
-                           [&p, range](Boid const& b) { return (dist(p,b)<range); }),
-            flock.end());
+void bds::eat(Boid const& p1, std::vector<Boid>& flock, double range)
+{
+  auto p = p1;
+  flock.erase(std::remove_if(
+                  flock.begin(), flock.end(),
+                  [&p, range](Boid const& b) { return (dist(p, b) < range); }),
+              flock.end());
 }
 
 bds::Statistics bds::stats(std::vector<Boid> const& flock)

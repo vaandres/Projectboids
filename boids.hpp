@@ -52,27 +52,24 @@ std::array<double, 2> alignment(Boid const&, std::vector<Boid> const&, double,
 
 std::array<double, 2> cohesion(Boid const&, std::vector<Boid> const&, double,
                                double);
+std::array<double, 2> escape(Boid const&, Boid const&, double, double, double);
+
+std::array<double, 2> follow(Boid const&, std::vector<Boid> const&, double);
+
+void eat(Boid const& p1, std::vector<Boid>& flock, double range);
 
 std::array<double, 2> edgeforce(Boid const&, unsigned int, unsigned int);
 
-void applyRules( Boid& b1, double a, double c, double s, double d,
-                                 double ds, double e, unsigned int windowWidth,
-                                 unsigned int windowHeight,
-                                 std::vector<Boid> const& flock, Boid& p1);
+void applyRules(Boid&, double, double, double, double, double, double,
+                unsigned int, unsigned int, std::vector<Boid> const&, Boid&);
 
 void velocitylimit(Boid&, double);
 
 Statistics stats(std::vector<Boid> const&);
 
-void RulesPred(Boid& p1,std::vector<Boid> const& flock,double d, double g, double f, unsigned int windowWidth, unsigned int windowHeight);
+void RulesPred(Boid&, std::vector<Boid> const&, double, unsigned int,
+               unsigned int);
 
-std::array<double, 2> escape(Boid const&, Boid const&, double,
-                               double, double);
-
-std::array<double, 2> follow(Boid const&, std::vector<Boid> const&, double, double, double
-                              );
-
-void eat(Boid const& p1, std::vector<Boid>& flock, double range);
 } // namespace bds
 
 #endif
