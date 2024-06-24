@@ -13,8 +13,9 @@ int main()
   double c{0.01};
   double e{3.};
   double g{1.};
-  double f{2.};
+  double f{1.};
   double Vmax{8};
+  const double pred_coeff{0.8};
   sf::Font font;
   font.loadFromFile("../Nexa-Heavy.ttf");
 
@@ -83,7 +84,7 @@ int main()
     }
     
    bds::RulesPred(pred,flock,d,g,f,windowWidth,windowHeight);
-   bds::velocitylimit(pred, Vmax);
+   bds::velocitylimit(pred, Vmax*pred_coeff);
    pred.updatePosition();
    
 

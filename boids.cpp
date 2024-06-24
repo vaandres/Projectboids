@@ -109,9 +109,9 @@ std::array<double, 2> bds::follow(bds::Boid const& p1,
   }
 
   auto closest = *closest_it;
-    //if (neighbours(closest, flock, d).empty()) {
-    //return (closest.position() - p1.position()) * f;
-  //}
+    if (neighbours(closest, flock, d).empty()) {
+    return (closest.position() - p1.position()) * f;
+  }
   return cohesion(p1, neighbours(closest, flock, d), d, g) * f;
 }
 /*std::array<double, 2> bds::follow(Boid const& p1,
