@@ -468,4 +468,23 @@ TEST_CASE("Testing eat"){
   CHECK(flock[2].position()[0]==b5.position()[0]);
 }
 
+TEST_CASE("Testing updatePosition"){
+  bds::Boid b1 {0,0,1000.63,1070.92};
+  bds::Boid b2 {0,0,0,0};
+  bds::Boid b3 {0,0,1.5,3.32414};
+  b1.updatePosition();
+  b2.updatePosition();
+  b3.updatePosition();
+
+  CHECK(b1.position()[0]==1000.63);
+  CHECK(b1.position()[1]==1070.92);
+  
+  CHECK(b2.position()[0]==0);
+  CHECK(b2.position()[1]==0);
+
+  CHECK(b3.position()[0]==1.5);
+  CHECK(b3.position()[1]==3.32414);
+
+}
+
 // fare test operatore * su due array
