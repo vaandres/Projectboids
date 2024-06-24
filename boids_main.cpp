@@ -13,9 +13,10 @@ int main()
   double c{0.01};
   double e{3.};
   double g{1.};
-  double f{1.};
+  double f{0.7};
   double Vmax{8};
-  const double pred_coeff{0.8};
+  const double range{7};
+  const double pred_coeff{1.05};
   sf::Font font;
   font.loadFromFile("../Nexa-Heavy.ttf");
 
@@ -86,7 +87,7 @@ int main()
     bds::RulesPred(pred, flock, d, g, f, windowWidth, windowHeight);
     bds::velocitylimit(pred, Vmax * pred_coeff);
     pred.updatePosition();
-    bds::eat(pred, flock, 7);
+    bds::eat(pred, flock, range);
 
     window.clear(sf::Color::White);
     for (bds::Boid& b : flock) { // passato const& Boid

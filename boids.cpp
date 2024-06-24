@@ -96,7 +96,8 @@ std::array<double, 2> bds::alignment(Boid const& b1,
 }
 
 std::array<double, 2> bds::follow(bds::Boid const& p1,
-                                  std::vector<bds::Boid> const& flock, double d, double g, double f)
+                                  std::vector<bds::Boid> const& flock, double d,
+                                  double g, double f)
 {
   auto closest_it =
       std::min_element(flock.begin(), flock.end(),
@@ -109,10 +110,11 @@ std::array<double, 2> bds::follow(bds::Boid const& p1,
   }
 
   auto closest = *closest_it;
-    if (neighbours(closest, flock, d).empty()) {
+  return (closest.position() - p1.position()) * f;
+  /*if (neighbours(closest, flock, d).empty()) {
     return (closest.position() - p1.position()) * f;
   }
-  return cohesion(p1, neighbours(closest, flock, d), d, g) * f;
+  return cohesion(p1, neighbours(closest, flock, d), d, g) * f;*/
 }
 /*std::array<double, 2> bds::follow(Boid const& p1,
                                   std::vector<Boid> const& flock, double d/* ,
@@ -190,19 +192,21 @@ void bds::applyRules(Boid& b1, double a, double c, double s, double d,
 }
 
 void bds::RulesPred(Boid& p1, std::vector<Boid> const& flock, double d,
-                    double g, double f, unsigned int windowWidth, unsigned int windowHeight)
+                    double g, double f, unsigned int windowWidth,
+                    unsigned int windowHeight)
 {
   p1.setVelocity(p1.velocity() + bds::follow(p1, flock, d, g, f /* ,Vmax */)
                  + bds::edgeforce(p1, windowWidth, windowHeight));
 }
 
-void bds::eat(Boid const& p1, std::vector<Boid>& flock,double range){
-  auto p =p1;
-  flock.erase(std::remove_if(flock.begin(), flock.end(),
-                           [p, range](Boid const& b) { return (dist(p,b)<range); }),
-            flock.end());
+void bds::eat(Boid const& p1, std::vector<Boid>& flock, double range)
+{
+  auto p = p1;
+  flock.erase(std::remove_if(
+                  flock.begin(), flock.end(),
+                  [p, range](Boid const& b) { return (dist(p, b) < range); }),
+              flock.end());
 }
-
 
 bds::Statistics bds::stats(std::vector<Boid> const& flock)
 {
