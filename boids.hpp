@@ -25,7 +25,7 @@ class Boid
 
   void updatePosition();
 
-  void setVelocity(const std::array<double, 2>& newVel);
+  void setVelocity(const std::array<double, 2>&);
 
   double absoluteVelocity() const;
 
