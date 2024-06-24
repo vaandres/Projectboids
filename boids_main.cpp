@@ -12,7 +12,7 @@ int main()
   double a{0.1};
   double c{0.01};
   double e{3.};
-  double f{0.7};
+  double f{0.4};
   double Vmax{8};
   const double range{7};
   const double pred_coeff{1.05};

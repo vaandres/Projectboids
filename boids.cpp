@@ -29,12 +29,12 @@ void bds::Boid::updatePosition()
 }
 
 // Funzione distanza tra due Boids
-double bds::dist(Boid const& b1, Boid const& b2)
+double bds::dist(Boid const& boid_1, Boid const& boid_2)
 {
-  auto pos1 = b1.position();
-  auto pos2 = b2.position();
-  return std::sqrt(std::pow(pos1[0] - pos2[0], 2)
-                   + std::pow(pos1[1] - pos2[1], 2));
+  auto pos_1 = boid_1.position();
+  auto pos_2 = boid_2.position();
+  return std::sqrt(std::pow(pos_1[0] - pos_2[0], 2)
+                   + std::pow(pos_1[1] - pos_2[1], 2));
 }
 
 // Funzione cambio velocità del Boid
@@ -44,109 +44,112 @@ void bds::Boid::setVelocity(const std::array<double, 2>& newVel)
 }
 
 // Funzione per trovare i vicini di un Boid
-std::vector<bds::Boid> bds::neighbours(Boid const& b1,
+std::vector<bds::Boid> bds::neighbours(Boid const& boid_1,
                                        std::vector<Boid> const& flock, double d)
 {
   std::vector<bds::Boid> neighbours;
   std::copy_if(flock.begin(), flock.end(), std::back_inserter(neighbours),
-               [&b1, d](bds::Boid const& b2) {
-                 return dist(b1, b2) < d && dist(b1, b2) != 0;
+               [&boid_1, d](bds::Boid const& boid_2) {
+                 return dist(boid_1, boid_2) < d && dist(boid_1, boid_2) != 0;
                });
   return neighbours;
 }
 
 // Regola di separazione
-std::array<double, 2> bds::separation(bds::Boid const& b1,
+std::array<double, 2> bds::separation(bds::Boid const& boid_1,
                                       std::vector<bds::Boid> const& flock,
                                       double ds, double s)
 {
-  auto neighbours = bds::neighbours(b1, flock, ds);
+  auto neighbours = bds::neighbours(boid_1, flock, ds);
 
   std::array<double, 2> sep_vel{0, 0};
 
   sep_vel = std::accumulate(
       neighbours.begin(), neighbours.end(), std::array<double, 2>{0, 0},
-      [&b1, ds, s](std::array<double, 2> acc, bds::Boid const& b) {
-        acc = acc + (b.position() - b1.position());
+      [&boid_1, ds, s](std::array<double, 2> acc, bds::Boid const& boid_2) {
+        acc = acc + (boid_2.position() - boid_1.position());
 
         return acc;
       });
 
   return sep_vel * -s;
 }
-std::array<double, 2> bds::escape(bds::Boid const& p1, bds::Boid const& b1,
-                                  double d, double c, double e)
+std::array<double, 2> bds::escape(bds::Boid const& predator,
+                                  bds::Boid const& boid, double d, double e)
 {
-  std::vector<bds::Boid> pred = {p1};    // un po' dispendioso
-  return separation(b1, pred, d, e * c); // magic number
+  std::vector<bds::Boid> pred = {predator}; // un po' dispendioso
+  return separation(boid, pred, d, e);      // magic number
 }
 
 // Funzione per allineare i Boids
-std::array<double, 2> bds::alignment(Boid const& b1,
+
+std::array<double, 2> bds::alignment(Boid const& boid_1,
                                      std::vector<Boid> const& flock, double d,
                                      double a)
 {
-  auto neighbours = bds::neighbours(b1, flock, d);
+  auto neighbours = bds::neighbours(boid_1, flock, d);
   if (neighbours.empty())
     return {0, 0};
-  std::array<double, 2> v = std::accumulate(
+  std::array<double, 2> alig_vel = std::accumulate(
       neighbours.begin(), neighbours.end(), std::array<double, 2>{0, 0},
-      [](std::array<double, 2> s, Boid const& b) { return s + b.velocity(); });
-  return (v / static_cast<double>(neighbours.size()) - b1.velocity()) * a;
+      [](std::array<double, 2> acc, Boid const& boid_2) {
+        return acc + boid_2.velocity();
+      });
+  return (alig_vel / static_cast<double>(neighbours.size()) - boid_1.velocity())
+       * a;
 }
 
-std::array<double, 2> bds::follow(bds::Boid const& p1,
+// Regola di coesione
+std::array<double, 2> bds::cohesion(bds::Boid const& boid_1,
+                                    std::vector<bds::Boid> const& flock,
+                                    double d, double c)
+{
+  auto neighbours = bds::neighbours(boid_1, flock, d);
+  if (neighbours.empty()) {
+    return {0, 0};
+  }
+  std::array<double, 2> mass_c =
+      std::accumulate(
+          neighbours.begin(), neighbours.end(), std::array<double, 2>{0, 0},
+          [&boid_1, c](std::array<double, 2> acc, bds::Boid const& boid_2) {
+            return acc + boid_2.position();
+          })
+      / static_cast<double>(neighbours.size());
+
+  return (mass_c - boid_1.position()) * c;
+}
+std::array<double, 2> bds::follow(bds::Boid const& predator,
                                   std::vector<bds::Boid> const& flock, double f)
 {
-  auto closest_it =
-      std::min_element(flock.begin(), flock.end(),
-                       [&p1](const bds::Boid& a, const bds::Boid& b) {
-                         return dist(p1, a) < dist(p1, b);
-                       });
+  auto closest_it = std::min_element(
+      flock.begin(), flock.end(),
+      [&predator](const bds::Boid& boid_1, const bds::Boid& boid_2) {
+        return dist(predator, boid_1) < dist(predator, boid_2);
+      });
 
   if (closest_it == flock.end()) {
     return {0.0, 0.0};
   }
 
   auto closest = *closest_it;
-  return (closest.position() - p1.position()) * f;
-}
-
-// Regola di coesione
-std::array<double, 2> bds::cohesion(bds::Boid const& b1,
-                                    std::vector<bds::Boid> const& flock,
-                                    double d, double c)
-{
-  auto neighbours = bds::neighbours(b1, flock, d);
-  if (neighbours.empty()) {
-    return {0, 0};
-  }
-  std::array<double, 2> i{0, 0};
-  std::array<double, 2> mass_c =
-      std::accumulate(neighbours.begin(), neighbours.end(), i,
-                      [&b1, c](std::array<double, 2> acc, bds::Boid const& b) {
-                        return acc + b.position();
-                      })
-      / static_cast<double>(neighbours.size());
-
-  return (mass_c - b1.position()) * c;
+  return (closest.position() - predator.position()) * f;
 }
 
 // Funzione che limita la velocità dei Boids
-void bds::velocitylimit(Boid& b, double Vmax)
+void bds::velocitylimit(Boid& boid, double Vmax)
 {
-  double V{b.absoluteVelocity()};
+  double V{boid.absoluteVelocity()};
   if (V > Vmax) {
-    b.setVelocity(b.velocity() * (Vmax / V));
+    boid.setVelocity(boid.velocity() * (Vmax / V));
   }
 }
 
 // Funzione della forza di repulsione dei Boids
-std::array<double, 2> bds::edgeforce(Boid const& b, unsigned int width,
+std::array<double, 2> bds::edgeforce(Boid const& boid, unsigned int width,
                                      unsigned int height)
 {
-  double x{b.position()[0]};
-  double y{b.position()[1]};
+  double x{boid.position()[0]};
+  double y{boid.position()[1]};
 
   double vx{0};
   double vy{0};
@@ -155,34 +158,35 @@ std::array<double, 2> bds::edgeforce(Boid const& b, unsigned int width,
 
   vy = (std::pow(2, -y) - std::pow(2, (y - height)));
 
-  std::array<double, 2> a{vx, vy};
-  return a;
+  std::array<double, 2> edge_vel{vx, vy};
+  return edge_vel;
 }
 
 // Funzione che applica le regole che determinano il movimento del boid
-void bds::applyRules(Boid& b1, double a, double c, double s, double d,
+void bds::applyRules(Boid& boid, double a, double c, double s, double d,
                      double ds, double e, unsigned int windowWidth,
                      unsigned int windowHeight, std::vector<Boid> const& flock,
-                     Boid& p1)
+                     Boid& predator)
 {
-  b1.setVelocity(b1.velocity() + edgeforce(b1, windowWidth, windowHeight)
-                 + alignment(b1, flock, d, a) + separation(b1, flock, ds, s)
-                 + cohesion(b1, flock, d, c) + escape(p1, b1, d, c, e));
+  boid.setVelocity(
+      boid.velocity() + edgeforce(boid, windowWidth, windowHeight)
+      + alignment(boid, flock, d, a) + separation(boid, flock, ds, s)
+      + cohesion(boid, flock, d, c) + escape(predator, boid, d, e));
 }
 
-void bds::RulesPred(Boid& p1, std::vector<Boid> const& flock, double f,
+void bds::RulesPred(Boid& predator, std::vector<Boid> const& flock, double f,
                     unsigned int windowWidth, unsigned int windowHeight)
 {
-  p1.setVelocity(p1.velocity() + bds::follow(p1, flock, f)
-                 + bds::edgeforce(p1, windowWidth, windowHeight));
+  predator.setVelocity(predator.velocity() + bds::follow(predator, flock, f)
+                       + bds::edgeforce(predator, windowWidth, windowHeight));
 }
 
-void bds::eat(Boid const& p1, std::vector<Boid>& flock, double range)
+void bds::eat(Boid const& predator, std::vector<Boid>& flock, double range)
 {
-  auto p = p1;
-  flock.erase(std::remove_if(
-                  flock.begin(), flock.end(),
-                  [&p, range](Boid const& b) { return (dist(p, b) < range); }),
+  flock.erase(std::remove_if(flock.begin(), flock.end(),
+                             [&predator, range](Boid const& boid) {
+                               return (dist(predator, boid) < range);
+                             }),
               flock.end());
 }
 
@@ -195,20 +199,20 @@ bds::Statistics bds::stats(std::vector<Boid> const& flock)
   double speed_sigma{};
   double speed_err{};
 
-  int n = static_cast<int>(flock.size());
+  int n_boids = static_cast<int>(flock.size());
   double sum_dist{};
   double sum_dist2{};
   double sum_speed{};
   double sum_speed2{};
   double conv_fac{0.0264583333}; // fattore di conversione da pixel a cm
 
-  if (n == 0)
+  if (n_boids == 0)
     return {0., 0., 0., 0.};
 
-  if (n == 1) {
+  if (n_boids == 1) {
     return {0., 0., flock[0].absoluteVelocity() * conv_fac, 0.};
   }
-  if (n > 1) {
+  if (n_boids > 1) {
     for (auto b1_iter = flock.begin(); b1_iter != flock.end(); ++b1_iter) {
       for (auto b2_iter = b1_iter + 1; b2_iter != flock.end(); ++b2_iter) {
         sum_dist += dist(*b1_iter, *b2_iter) * conv_fac;
@@ -231,13 +235,14 @@ bds::Statistics bds::stats(std::vector<Boid> const& flock)
                * conv_fac * conv_fac;
   }
 
-  dis_mean = sum_dist / (n * (n - 1) / 2);
-  dis_sigma =
-      std::sqrt(std::abs(sum_dist2 / (n * (n - 1) / 2) - dis_mean * dis_mean));
-  dis_err     = dis_sigma / std::sqrt(n * (n - 1) / 2);
-  speed_mean  = sum_speed / n;
-  speed_sigma = std::sqrt(std::abs(sum_speed2 / n - speed_mean * speed_mean));
-  speed_err   = speed_sigma / std::sqrt(n);
+  dis_mean   = sum_dist / (n_boids * (n_boids - 1) / 2);
+  dis_sigma  = std::sqrt(std::abs(sum_dist2 / (n_boids * (n_boids - 1) / 2)
+                                  - dis_mean * dis_mean));
+  dis_err    = dis_sigma / std::sqrt(n_boids * (n_boids - 1) / 2);
+  speed_mean = sum_speed / n_boids;
+  speed_sigma =
+      std::sqrt(std::abs(sum_speed2 / n_boids - speed_mean * speed_mean));
+  speed_err = speed_sigma / std::sqrt(n_boids);
 
   return {dis_mean, dis_err, speed_mean, speed_err};
 }

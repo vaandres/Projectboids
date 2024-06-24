@@ -111,7 +111,7 @@ TEST_CASE("Testing separation function")
   std::vector<bds::Boid> flock{b2, b3, b4, b5, b6};
 
   SUBCASE("Testing separation function with neighbours")
-  
+
   {
     double ds{4};
     double s{0.2};
@@ -217,7 +217,6 @@ TEST_CASE("Testing edgeforce function")
   }
 }
 
-
 TEST_CASE("Testing stats")
 {
   bds::Boid b1{0, 70, 2.4, 2};
@@ -230,7 +229,7 @@ TEST_CASE("Testing stats")
   {
     std::vector<bds::Boid> flock1{b1, b2, b3};
     const auto stats = bds::stats(flock1);
-    
+
     CHECK(stats.dis_mean == doctest::Approx(1.9223));
     CHECK(stats.dis_err == doctest::Approx(0.0874421));
     CHECK(stats.speed_mean == doctest::Approx(0.0673968));
@@ -259,9 +258,9 @@ TEST_CASE("Testing stats")
 
   SUBCASE("Testing stats with 1 Boid")
   {
-   std::vector<bds::Boid> flock4{b2};
-  const auto stats = bds::stats(flock4);
-  CHECK(stats.dis_mean == doctest::Approx(0.));
+    std::vector<bds::Boid> flock4{b2};
+    const auto stats = bds::stats(flock4);
+    CHECK(stats.dis_mean == doctest::Approx(0.));
     CHECK(stats.dis_err == doctest::Approx(0.));
     CHECK(stats.speed_mean == doctest::Approx(0.119532));
     CHECK(stats.speed_err == doctest::Approx(0.));
@@ -277,9 +276,8 @@ TEST_CASE("Testing escape function")
   SUBCASE("Testing escape function with a boid near a predator")
   {
     double d{4.};
-    double c{0.5};
-    double e{3};
-    auto escape_vel = bds::escape(p1, b1, d, c, e);
+    double e{1.5};
+    auto escape_vel = bds::escape(p1, b1, d, e);
     CHECK(escape_vel[0] == doctest::Approx(4.5));
     CHECK(escape_vel[1] == doctest::Approx(1.5));
   }
@@ -287,9 +285,8 @@ TEST_CASE("Testing escape function")
   SUBCASE("Testing escape function with a boid far from a predator")
   {
     double d{1.};
-    double c{0.5};
-    double e{3};
-    auto escape_vel = bds::escape(p1, b1, d, c, e);
+    double e{1.5};
+    auto escape_vel = bds::escape(p1, b1, d, e);
     CHECK(escape_vel[0] == 0);
     CHECK(escape_vel[1] == 0);
   }
@@ -453,38 +450,39 @@ TEST_CASE("Testing operator/ on array")
   CHECK(c[1] == -1);
 }
 
-TEST_CASE("Testing eat"){
-  bds::Boid b1{1,3.9,0,0};
-  bds::Boid b2{1,4,0,0};
-  bds::Boid b3{2,2,0,0};
-  bds::Boid b4{0,0,0,0};
-  bds::Boid b5{5,2,0,0};
-  bds::Boid p1{1,2,0,0};
-  std::vector<bds::Boid> flock{b1,b2,b3,b4,b5};
-  bds::eat(p1,flock,2);
-  CHECK(flock.size()==3);
-  CHECK(flock[0].position()[0]==b2.position()[0]);
-  CHECK(flock[1].position()[0]==b4.position()[0]);
-  CHECK(flock[2].position()[0]==b5.position()[0]);
+TEST_CASE("Testing eat")
+{
+  bds::Boid b1{1, 3.9, 0, 0};
+  bds::Boid b2{1, 4, 0, 0};
+  bds::Boid b3{2, 2, 0, 0};
+  bds::Boid b4{0, 0, 0, 0};
+  bds::Boid b5{5, 2, 0, 0};
+  bds::Boid p1{1, 2, 0, 0};
+  std::vector<bds::Boid> flock{b1, b2, b3, b4, b5};
+  bds::eat(p1, flock, 2);
+  CHECK(flock.size() == 3);
+  CHECK(flock[0].position()[0] == b2.position()[0]);
+  CHECK(flock[1].position()[0] == b4.position()[0]);
+  CHECK(flock[2].position()[0] == b5.position()[0]);
 }
 
-TEST_CASE("Testing updatePosition"){
-  bds::Boid b1 {0,0,1000.63,1070.92};
-  bds::Boid b2 {0,0,0,0};
-  bds::Boid b3 {0,0,1.5,3.32414};
+TEST_CASE("Testing updatePosition")
+{
+  bds::Boid b1{0, 0, 1000.63, 1070.92};
+  bds::Boid b2{0, 0, 0, 0};
+  bds::Boid b3{0, 0, 1.5, 3.32414};
   b1.updatePosition();
   b2.updatePosition();
   b3.updatePosition();
 
-  CHECK(b1.position()[0]==1000.63);
-  CHECK(b1.position()[1]==1070.92);
-  
-  CHECK(b2.position()[0]==0);
-  CHECK(b2.position()[1]==0);
+  CHECK(b1.position()[0] == 1000.63);
+  CHECK(b1.position()[1] == 1070.92);
 
-  CHECK(b3.position()[0]==1.5);
-  CHECK(b3.position()[1]==3.32414);
+  CHECK(b2.position()[0] == 0);
+  CHECK(b2.position()[1] == 0);
 
+  CHECK(b3.position()[0] == 1.5);
+  CHECK(b3.position()[1] == 3.32414);
 }
 
 // fare test operatore * su due array
