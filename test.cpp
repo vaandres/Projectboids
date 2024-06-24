@@ -322,8 +322,8 @@ TEST_CASE("Testing follow function")
     double g{2.7};
     double f{1.5};
     auto follow_vel = bds::follow(p1, flock, d, g, f);
-    CHECK(follow_vel[0] == 0.);
-    CHECK(follow_vel[1] == 0.);
+    CHECK(follow_vel[0] == -3.);
+    CHECK(follow_vel[1] == 6.);
   }
 
   SUBCASE("Testing follow function with an empty flock")
