@@ -71,6 +71,8 @@ std::array<double, 2> escape(Boid const&, Boid const&, double,
 
 std::array<double, 2> follow(Boid const&, std::vector<Boid> const&, double, double, double
                               );
+
+void eat(Boid const& p1, std::vector<Boid>& flock, double range);
 } // namespace bds
 
 #endif

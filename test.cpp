@@ -453,4 +453,19 @@ TEST_CASE("Testing operator/ on array")
   CHECK(c[1] == -1);
 }
 
+TEST_CASE("Testing eat"){
+  bds::Boid b1{1,3.9,0,0};
+  bds::Boid b2{1,4,0,0};
+  bds::Boid b3{2,2,0,0};
+  bds::Boid b4{0,0,0,0};
+  bds::Boid b5{5,2,0,0};
+  bds::Boid p1{1,2,0,0};
+  std::vector<bds::Boid> flock{b1,b2,b3,b4,b5};
+  bds::eat(p1,flock,2);
+  CHECK(flock.size()==3);
+  CHECK(flock[0].position()[0]==b2.position()[0]);
+  CHECK(flock[1].position()[0]==b4.position()[0]);
+  CHECK(flock[2].position()[0]==b5.position()[0]);
+}
+
 // fare test operatore * su due array

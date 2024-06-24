@@ -55,7 +55,7 @@ int main()
     flock.push_back(bi);
   }
 
-  bds::Boid pred {0,0, 3,3};
+  bds::Boid pred{0, 0, 3, 3};
 
   while (window.isOpen()
          | window2.isOpen()) { // un po' buggato sia con opzione schermo intero
@@ -72,9 +72,9 @@ int main()
       }
     }
 
-
     for (bds::Boid& b1 : flock) {
-      bds::applyRules(b1, a, c, s, d, ds, e, windowWidth, windowHeight, flock,pred);
+      bds::applyRules(b1, a, c, s, d, ds, e, windowWidth, windowHeight, flock,
+                      pred);
       bds::velocitylimit(b1, Vmax);
       b1.updatePosition();
       assert(b1.position()[0] <= windowWidth + 100);
@@ -82,11 +82,11 @@ int main()
       assert(b1.position()[0] >= -100);
       assert(b1.position()[1] >= -100);
     }
-    
-   bds::RulesPred(pred,flock,d,g,f,windowWidth,windowHeight);
-   bds::velocitylimit(pred, Vmax*pred_coeff);
-   pred.updatePosition();
-   
+
+    bds::RulesPred(pred, flock, d, g, f, windowWidth, windowHeight);
+    bds::velocitylimit(pred, Vmax * pred_coeff);
+    pred.updatePosition();
+    bds::eat(pred, flock, 7);
 
     window.clear(sf::Color::White);
     for (bds::Boid& b : flock) { // passato const& Boid
@@ -102,10 +102,9 @@ int main()
     sf::CircleShape pred_point(4);
     pred_point.setFillColor(sf::Color::Red);
     auto xy = pred.position();
-    pred_point.setPosition(
-      static_cast<float>(xy[0]),
-          static_cast<float>(xy[1])); 
-      window.draw(pred_point);
+    pred_point.setPosition(static_cast<float>(xy[0]),
+                           static_cast<float>(xy[1]));
+    window.draw(pred_point);
 
     window.display();
 
