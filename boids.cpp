@@ -199,13 +199,11 @@ void bds::RulesPred(Boid& p1, std::vector<Boid> const& flock, double d,
                  + bds::edgeforce(p1, windowWidth, windowHeight));
 }
 
-void bds::eat(Boid const& p1, std::vector<Boid>& flock, double range)
-{
-  auto p = p1;
-  flock.erase(std::remove_if(
-                  flock.begin(), flock.end(),
-                  [p, range](Boid const& b) { return (dist(p, b) < range); }),
-              flock.end());
+void bds::eat(Boid const& p1, std::vector<Boid>& flock,double range){
+  auto p =p1;
+  flock.erase(std::remove_if(flock.begin(), flock.end(),
+                           [&p, range](Boid const& b) { return (dist(p,b)<range); }),
+            flock.end());
 }
 
 bds::Statistics bds::stats(std::vector<Boid> const& flock)
