@@ -75,7 +75,8 @@ int main()
     for (bds::Boid& b1 : flock) {
       bds::applyRules(b1, a, c, s, d, ds, e, windowWidth, windowHeight, flock,
                       pred);
-      bds::velocitylimit(b1, Vmax);
+      bds::velocitylimit(b1, Vmax);}
+    for (bds::Boid& b1 : flock) {
       b1.updatePosition();
       assert(b1.position()[0] <= windowWidth + 100);
       assert(b1.position()[1] <= windowHeight + 100);
