@@ -293,7 +293,7 @@ TEST_CASE("Testing escape function")
 }
 
 // test follow function
-/*TEST_CASE("Testing follow function")
+TEST_CASE("Testing follow function")
 {
   bds::Boid p1{32., 23., 3., 2.};
   bds::Boid b1{30., 27., -5., 2.3};
@@ -304,36 +304,21 @@ TEST_CASE("Testing escape function")
   SUBCASE("Testing follow function with a flock of boids")
   {
     std::vector<bds::Boid> flock{b1, b2, b3, b4};
-    double d{6.};
-    double g{1.};
     double f{2.};
-    auto follow_vel = bds::follow(p1, flock, d, g, f);
-    CHECK(follow_vel[0] == doctest::Approx(-3.));
-    CHECK(follow_vel[1] == doctest::Approx(7.));
-  }
-
-  SUBCASE("Testing follow function with a boid with no neighbours")
-  {
-    std::vector<bds::Boid> flock{b1};
-    double d{2};
-    double g{2.7};
-    double f{1.5};
-    auto follow_vel = bds::follow(p1, flock, d, g, f);
-    CHECK(follow_vel[0] == -3.);
-    CHECK(follow_vel[1] == 6.);
+    auto follow_vel = bds::follow(p1, flock, f);
+    CHECK(follow_vel[0] == doctest::Approx(-6.));
+    CHECK(follow_vel[1] == doctest::Approx(0.));
   }
 
   SUBCASE("Testing follow function with an empty flock")
   {
     std::vector<bds::Boid> flock {};
-    double d{2};
-    double g{1.7};
     double f{2.5};
-    auto follow_vel = bds::follow(p1, flock, d, g, f);
+    auto follow_vel = bds::follow(p1, flock, f);
     CHECK(follow_vel[0] == 0);
     CHECK(follow_vel[1] == 0);
   }
-}*/
+}
 
 TEST_CASE("Testing operator* of array")
 
