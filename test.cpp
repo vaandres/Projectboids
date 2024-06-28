@@ -198,22 +198,26 @@ TEST_CASE("Testing edgeforce function")
 {
   SUBCASE("Testing edgeforce function with Boid inside the window")
   {
-    bds::Boid b1{2.3, 1., -1.3, -2.};
-    unsigned int w{50};
-    unsigned int h{33};
-    auto edge_force = bds::edgeforce(b1, w, h);
-    CHECK(edge_force[0] == doctest::Approx(0.203).epsilon(0.001));
-    CHECK(edge_force[1] == doctest::Approx(0.5).epsilon(0.001));
+    bds::Boid b1{90, 80, -1.3, -2.};
+    bds::Boid b2{500 - 90, 330 - 80, 0, 0};
+    unsigned int w{500};
+    unsigned int h{330};
+    auto edge_force_b1 = bds::edgeforce(b1, w, h);
+    auto edge_force_b2 = bds::edgeforce(b2, w, h);
+    CHECK(edge_force_b1[0] == doctest::Approx(0.385).epsilon(0.001));
+    CHECK(edge_force_b1[1] == doctest::Approx(1).epsilon(0.001));
+    CHECK(edge_force_b1[0] == -edge_force_b2[0]);
+    CHECK(edge_force_b1[1] == -edge_force_b2[1]);
   }
 
   SUBCASE("Testing edgeforce function with Boid outside the window")
   {
-    bds::Boid b1{35., 40., 6.5, 2.};
-    unsigned int w{30};
-    unsigned int h{36};
+    bds::Boid b1{465, 290, 6.5, 2.};
+    unsigned int w{500};
+    unsigned int h{330};
     auto edge_force = bds::edgeforce(b1, w, h);
-    CHECK(edge_force[0] == doctest::Approx(-32.).epsilon(0.01));
-    CHECK(edge_force[1] == doctest::Approx(-16.).epsilon(0.01));
+    CHECK(edge_force[0] == doctest::Approx(-72.89).epsilon(0.01));
+    CHECK(edge_force[1] == doctest::Approx(-45.2).epsilon(0.01));
   }
 }
 
@@ -312,7 +316,7 @@ TEST_CASE("Testing follow function")
 
   SUBCASE("Testing follow function with an empty flock")
   {
-    std::vector<bds::Boid> flock {};
+    std::vector<bds::Boid> flock{};
     double f{2.5};
     auto follow_vel = bds::follow(p1, flock, f);
     CHECK(follow_vel[0] == 0);
@@ -453,21 +457,21 @@ TEST_CASE("Testing eat")
 
 TEST_CASE("Testing updatePosition")
 {
-  bds::Boid b1{0, 0, 1000.63, 1070.92};
-  bds::Boid b2{0, 0, 0, 0};
+  bds::Boid b1{50, 45, 1000.63, 1070.92};
+  bds::Boid b2{1, 2, 0, 0};
   bds::Boid b3{0, 0, 1.5, 3.32414};
   b1.updatePosition();
   b2.updatePosition();
   b3.updatePosition();
 
-  CHECK(b1.position()[0] == 1000.63);
-  CHECK(b1.position()[1] == 1070.92);
+  CHECK(b1.position()[0] == doctest::Approx(83.35).epsilon(0.01));
+  CHECK(b1.position()[1] == doctest::Approx(80.70).epsilon(0.01));
 
-  CHECK(b2.position()[0] == 0);
-  CHECK(b2.position()[1] == 0);
+  CHECK(b2.position()[0] == 1);
+  CHECK(b2.position()[1] == 2);
 
-  CHECK(b3.position()[0] == 1.5);
-  CHECK(b3.position()[1] == 3.32414);
+  CHECK(b3.position()[0] == doctest::Approx(0.05));
+  CHECK(b3.position()[1] == doctest::Approx(0.111).epsilon(0.001));
 }
 
 // fare test operatore * su due array

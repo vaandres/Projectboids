@@ -25,7 +25,7 @@ double bds::Boid::absoluteVelocity() const
 // Metodo di aggiornamento di posizione del Boid
 void bds::Boid::updatePosition()
 {
-  position_ = position_ + velocity_;
+  position_ = position_ + velocity_/30;
 }
 
 // Funzione distanza tra due Boids
@@ -154,9 +154,9 @@ std::array<double, 2> bds::edgeforce(Boid const& boid, unsigned int width,
   double vx{0};
   double vy{0};
 
-  vx = (std::pow(2, -x) - std::pow(2, (x - width)));
+  vx = (std::pow(1.1, -x+80) - std::pow(1.1, (x - width+80)));
 
-  vy = (std::pow(2, -y) - std::pow(2, (y - height)));
+  vy = (std::pow(1.1, -y+80) - std::pow(1.1, (y - height+80)));
 
   std::array<double, 2> edge_vel{vx, vy};
   return edge_vel;

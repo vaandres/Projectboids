@@ -8,16 +8,16 @@ int main()
   int n{100};
   double d{90};
   double ds{15}; // gestire errori di input (mettere catch error), negativi
-  double s{0.4}; // max vel?
-  double a{0.1};
+  double s{0.8}; // max vel?
+  double a{0.5};
   double c{0.01};
   double e{3.};
   double f{0.4};
-  double Vmax{8};
+  double Vmax{30*8};
   const double range{7};
   const double pred_coeff{1.05};
   sf::Font font;
-  font.loadFromFile("../Nexa-Heavy.ttf");
+  font.loadFromFile("./Nexa-Heavy.ttf");
 
   unsigned windowWidth  = (1) * sf::VideoMode::getDesktopMode().width - 40;
   unsigned windowHeight = (1) * sf::VideoMode::getDesktopMode().height - 75;
