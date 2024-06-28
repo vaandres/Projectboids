@@ -1,21 +1,27 @@
 #include "boids.hpp"
 #include "operator.hpp"
 #include <SFML/Graphics.hpp>
+#include <iostream>
 #include <random>
 
 int main()
 {
   int n{100};
   double d{90};
-  double ds{15}; // gestire errori di input (mettere catch error), negativi
-  double s{0.4}; // max vel?
+  double ds{15};
+  double s{0.4};
   double a{0.1};
   double c{0.01};
   double e{3.};
   double f{0.4};
-  double Vmax{8};
+  const double Vmax{8};
   const double range{7};
   const double pred_coeff{1.05};
+
+  /*std::cout
+      << "Inserire in ordine : numero di boids , d , ds , s , a , c , e , f \n";
+  std::cin >> n >> d >> ds >> s >> a >> c >> e >> f;*/
+
   sf::Font font;
   font.loadFromFile("../Nexa-Heavy.ttf");
 
@@ -75,7 +81,8 @@ int main()
     for (bds::Boid& b1 : flock) {
       bds::applyRules(b1, a, c, s, d, ds, e, windowWidth, windowHeight, flock,
                       pred);
-      bds::velocitylimit(b1, Vmax);}
+      bds::velocitylimit(b1, Vmax);
+    }
     for (bds::Boid& b1 : flock) {
       b1.updatePosition();
       assert(b1.position()[0] <= windowWidth + 100);
