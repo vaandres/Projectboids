@@ -1,6 +1,7 @@
 #include "boids.hpp"
 #include "operator.hpp"
 #include <SFML/Graphics.hpp>
+#include <iostream>
 #include <random>
 
 int main()
@@ -16,6 +17,11 @@ int main()
   double Vmax{30*8};
   const double range{7};
   const double pred_coeff{1.05};
+
+  /*std::cout
+      << "Inserire in ordine : numero di boids , d , ds , s , a , c , e , f \n";
+  std::cin >> n >> d >> ds >> s >> a >> c >> e >> f;*/
+
   sf::Font font;
   font.loadFromFile("./Nexa-Heavy.ttf");
 
@@ -75,8 +81,7 @@ int main()
     for (bds::Boid& b1 : flock) {
       bds::applyRules(b1, a, c, s, d, ds, e, windowWidth, windowHeight, flock,
                       pred);
-      bds::velocitylimit(b1, Vmax);}
-    for (bds::Boid& b1 : flock) {
+      bds::velocitylimit(b1, Vmax);
       b1.updatePosition();
       assert(b1.position()[0] <= windowWidth + 100);
       assert(b1.position()[1] <= windowHeight + 100);
