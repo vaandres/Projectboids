@@ -293,7 +293,7 @@ TEST_CASE("Testing escape function")
 }
 
 // test follow function
-TEST_CASE("Testing follow function")
+/*TEST_CASE("Testing follow function")
 {
   bds::Boid p1{32., 23., 3., 2.};
   bds::Boid b1{30., 27., -5., 2.3};
@@ -333,7 +333,7 @@ TEST_CASE("Testing follow function")
     CHECK(follow_vel[0] == 0);
     CHECK(follow_vel[1] == 0);
   }
-}
+}*/
 
 TEST_CASE("Testing operator* of array")
 

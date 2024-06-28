@@ -7,13 +7,13 @@
 int main()
 {
   int n{100};
-  double d{90};
-  double ds{15};
-  double s{0.4};
+  double d{100};
+  double ds{20};
+  double s{0.2};
   double a{0.1};
-  double c{0.01};
-  double e{3.};
-  double f{0.4};
+  double c{0.02};
+  double e{2.};
+  double f{0.2};
   const double Vmax{8};
   const double range{7};
   const double pred_coeff{1.05};
@@ -82,8 +82,6 @@ int main()
       bds::applyRules(b1, a, c, s, d, ds, e, windowWidth, windowHeight, flock,
                       pred);
       bds::velocitylimit(b1, Vmax);
-    }
-    for (bds::Boid& b1 : flock) {
       b1.updatePosition();
       assert(b1.position()[0] <= windowWidth + 100);
       assert(b1.position()[1] <= windowHeight + 100);
