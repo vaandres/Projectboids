@@ -41,6 +41,7 @@ il file .gitignore garantisce che la cartella di build sia ignorata e quindi non
 - fix window
 - Choose range for parameters
 - improve code readibility (test)
+- remove comments
 - write project report
 
 
