@@ -318,8 +318,9 @@ TEST_CASE("Testing follow function")
   {
     std::vector<bds::Boid> flock{};
     double f{2.5};
-    auto follow_vel = bds::follow(p1, flock, f);
-    auto follow_vel = bds::follow(p1, flock, f);
+    std::array<double, 2> follow_vel = bds::follow(p1, flock, f);
+    follow_vel = bds::follow(p1, flock, f);
+    follow_vel = bds::follow(p1, flock, f);
     CHECK(follow_vel[0] == 0);
     CHECK(follow_vel[1] == 0);
   }
