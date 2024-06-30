@@ -12,10 +12,10 @@ int main()
   double s{0.8}; // max vel?
   double a{0.5};
   double c{0.01};
-  bool Predator_on{false};
+  bool Predator_on{true};
   double e = (Predator_on) ? 3 : 0;
   double f{0.4};
-  double Vmax{30 * 8};
+  double Vmax{10/0.0264583333};
   const double range{7};
   const double pred_coeff{1.05};
 
