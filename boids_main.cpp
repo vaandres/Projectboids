@@ -12,9 +12,10 @@ int main()
   double s{0.8}; // max vel?
   double a{0.5};
   double c{0.01};
-  double e{3.};
+  bool Predator_on{false};
+  double e = (Predator_on) ? 3 : 0;
   double f{0.4};
-  double Vmax{30*8};
+  double Vmax{30 * 8};
   const double range{7};
   const double pred_coeff{1.05};
 
@@ -89,10 +90,11 @@ int main()
       assert(b1.position()[1] >= -100);
     }
 
+    if(Predator_on){
     bds::RulesPred(pred, flock, f, windowWidth, windowHeight);
     bds::velocitylimit(pred, Vmax * pred_coeff);
     pred.updatePosition();
-    bds::eat(pred, flock, range);
+    bds::eat(pred, flock, range);}
 
     window.clear(sf::Color::White);
     for (bds::Boid& b : flock) { // passato const& Boid
@@ -105,12 +107,13 @@ int main()
       window.draw(Boid_point);
     }
 
+    if(Predator_on){
     sf::CircleShape pred_point(4);
     pred_point.setFillColor(sf::Color::Red);
     auto xy = pred.position();
     pred_point.setPosition(static_cast<float>(xy[0]),
                            static_cast<float>(xy[1]));
-    window.draw(pred_point);
+    window.draw(pred_point);}
 
     window.display();
 

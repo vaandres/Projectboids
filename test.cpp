@@ -284,6 +284,10 @@ TEST_CASE("Testing escape function")
     auto escape_vel = bds::escape(p1, b1, d, e);
     CHECK(escape_vel[0] == doctest::Approx(4.5));
     CHECK(escape_vel[1] == doctest::Approx(1.5));
+
+    escape_vel = bds::escape(p1, b1, d, 0);
+    CHECK(escape_vel[0] == 0);
+    CHECK(escape_vel[1] == 0);
   }
 
   SUBCASE("Testing escape function with a boid far from a predator")
@@ -319,8 +323,8 @@ TEST_CASE("Testing follow function")
     std::vector<bds::Boid> flock{};
     double f{2.5};
     std::array<double, 2> follow_vel = bds::follow(p1, flock, f);
-    follow_vel = bds::follow(p1, flock, f);
-    follow_vel = bds::follow(p1, flock, f);
+    follow_vel                       = bds::follow(p1, flock, f);
+    follow_vel                       = bds::follow(p1, flock, f);
     CHECK(follow_vel[0] == 0);
     CHECK(follow_vel[1] == 0);
   }
