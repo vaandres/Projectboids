@@ -19,9 +19,18 @@ int main()
   const double range{7};
   const double pred_coeff{1.1};
 
-  /*std::cout
-      << "Inserire in ordine : numero di boids , d , ds , s , a , c , e , f \n";
-  std::cin >> n >> d >> ds >> s >> a >> c >> e >> f;*/
+//NON ELIMINARE COMMENTO INPUT (così è più comodo fare prove)
+
+  /*std::cout << "Scegliere la modalità con o senza predatore: \n";
+  std::cin >> Predator_on;
+  if (Predator_on == true) {
+    std::cout << "Inserire in ordine : numero di boids , d , ds , s , a , c , "
+                 "e , f \n";
+    std::cin >> n >> d >> ds >> s >> a >> c >> e >> f;
+  } else {
+    std::cout << "Inserire in ordine : numero di boids , d , ds , s , a , c \n";
+    std::cin >> n >> d >> ds >> s >> a >> c;
+  }*/
 
   sf::Font font;
   font.loadFromFile("./Nexa-Heavy.ttf");
@@ -59,7 +68,7 @@ int main()
     // std::normal_distribution<double> roll_diceVy(-Vmax / 2, Vmax / 2);
     //  int rand_vy = static_cast<int> (gauss2(e1));
     bds::Boid boid_i{roll_diceX(e1), roll_diceY(e1), roll_diceVx(e1),
-                 roll_diceVy(e1)}; // implicita conv double int
+                     roll_diceVy(e1)}; // implicita conv double int
     flock.push_back(boid_i);
   }
 
