@@ -52,10 +52,10 @@ int main()
   // adegurare a framerate tempo e a grandezza Boid
 
   // Assegnazione delle caratteristiche allo spawn dei Boid*/
+  std::random_device r; // fuori dal ciclo è meno dispendioso
+  std::default_random_engine eng(r()); //uguale
   std::vector<bds::Boid> flock;
   for (int i = 0; i < n; i++) {
-    std::random_device r;
-    std::default_random_engine e1(r());
     std::uniform_real_distribution<> roll_diceX(
         20, windowWidth - 20); // non capisco perchè restituiscono tutti int
                                // (in caso satatic cast)
@@ -67,8 +67,8 @@ int main()
     std::uniform_real_distribution<> roll_diceVy(-Vmax / 2, Vmax / 2);
     // std::normal_distribution<double> roll_diceVy(-Vmax / 2, Vmax / 2);
     //  int rand_vy = static_cast<int> (gauss2(e1));
-    bds::Boid boid_i{roll_diceX(e1), roll_diceY(e1), roll_diceVx(e1),
-                     roll_diceVy(e1)}; // implicita conv double int
+    bds::Boid boid_i{roll_diceX(eng), roll_diceY(eng), roll_diceVx(eng),
+                     roll_diceVy(eng)}; // implicita conv double int
     flock.push_back(boid_i);
   }
 
