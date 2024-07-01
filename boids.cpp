@@ -1,4 +1,4 @@
-//#include "boids.hpp" //forse non serve
+// #include "boids.hpp" //forse non serve
 #include "operator.hpp"
 #include <algorithm>
 #include <cmath>
@@ -64,14 +64,14 @@ Velocity separation(Boid const& boid_1, std::vector<Boid> const& flock,
 {
   auto neighbours = bds::neighbours(boid_1, flock, ds);
 
-  Velocity sep_vel = std::accumulate(
-      neighbours.begin(), neighbours.end(), Velocity{0, 0},
-      [&boid_1, ds, s](Velocity acc, Boid const& boid_2) {
-        acc.vx += (boid_2.position().x - boid_1.position().x); // fix this
-        acc.vy += (boid_2.position().y - boid_1.position().y);
+  Velocity sep_vel =
+      std::accumulate(neighbours.begin(), neighbours.end(), Velocity{0, 0},
+                      [&boid_1, ds, s](Velocity acc, Boid const& boid_2) {
+                        acc.vx += (boid_2.position().x - boid_1.position().x);
+                        acc.vy += (boid_2.position().y - boid_1.position().y);
 
-        return acc;
-      });
+                        return acc;
+                      });
 
   return sep_vel * -s;
 }
@@ -110,7 +110,7 @@ Velocity cohesion(Boid const& boid_1, std::vector<Boid> const& flock, double d,
   Position mass_c =
       std::accumulate(neighbours.begin(), neighbours.end(), Position{0, 0},
                       [&boid_1, c](Position acc, Boid const& boid_2) {
-                        acc.x += boid_2.position().x; // fix this
+                        acc.x += boid_2.position().x;
                         acc.y += boid_2.position().y;
                         return acc;
                       })
@@ -134,8 +134,9 @@ Velocity follow(Boid const& predator, std::vector<Boid> const& flock, double f)
   }
 
   auto closest = *closest_it;
-  return Velocity{(closest.position().x - predator.position().x) * f,
-                  (closest.position().y - predator.position().y) * f};
+  Velocity follow_vel{(closest.position().x - predator.position().x),
+                      closest.position().y - predator.position().y};
+  return follow_vel * f;
 }
 
 // Funzione che limita la velocità dei Boids

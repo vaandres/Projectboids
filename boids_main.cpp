@@ -1,4 +1,4 @@
-#include "boids.hpp"
+//#include "boids.hpp" //forse non serve
 #include "operator.hpp"
 #include <SFML/Graphics.hpp>
 #include <iostream>
