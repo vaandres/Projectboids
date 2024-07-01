@@ -13,13 +13,13 @@ int main()
   double a{0.1};
   double c{0.05};
   bool Predator_on{true};
-  double e = (Predator_on) ? 3 : 0;
-  double f{0.5};
+  double e = (Predator_on) ? 2 : 0;
+  double f{2.5};
   double Vmax{6 / 0.0264583333};
-  const double range{7};
-  const double pred_coeff{1.1};
+  const double range{8};
+  const double pred_coeff{1.3};
 
-//NON ELIMINARE COMMENTO INPUT (così è più comodo fare prove)
+  // NON ELIMINARE COMMENTO INPUT (così è più comodo fare prove)
 
   /*std::cout << "Scegliere la modalità con o senza predatore: \n";
   std::cin >> Predator_on;
@@ -52,27 +52,22 @@ int main()
   // adegurare a framerate tempo e a grandezza Boid
 
   // Assegnazione delle caratteristiche allo spawn dei Boid*/
-  std::random_device r; // fuori dal ciclo è meno dispendioso
-  std::default_random_engine eng(r()); //uguale
+  std::random_device r;                // fuori dal ciclo è meno dispendioso
+  std::default_random_engine eng(r()); // uguale
   std::vector<bds::Boid> flock;
+  std::uniform_real_distribution<> roll_diceX(20, windowWidth - 20);
+  std::uniform_real_distribution<> roll_diceY(20, windowHeight - 20);
+  std::uniform_real_distribution<> roll_diceVx(-Vmax / 2, Vmax / 2);
+  std::uniform_real_distribution<> roll_diceVy(-Vmax / 2, Vmax / 2);
+
   for (int i = 0; i < n; i++) {
-    std::uniform_real_distribution<> roll_diceX(
-        20, windowWidth - 20); // non capisco perchè restituiscono tutti int
-                               // (in caso satatic cast)
-    // int rand_x = roll_dice1(e1);
-    std::uniform_real_distribution<> roll_diceY(20, windowHeight - 20);
-    // int rand_y = roll_dice2(e1);
-    std::uniform_real_distribution<> roll_diceVx(-Vmax / 2, Vmax / 2);
-    // int rand_vx = static_cast<int> (gauss1(e1));
-    std::uniform_real_distribution<> roll_diceVy(-Vmax / 2, Vmax / 2);
-    // std::normal_distribution<double> roll_diceVy(-Vmax / 2, Vmax / 2);
-    //  int rand_vy = static_cast<int> (gauss2(e1));
     bds::Boid boid_i{roll_diceX(eng), roll_diceY(eng), roll_diceVx(eng),
                      roll_diceVy(eng)}; // implicita conv double int
     flock.push_back(boid_i);
   }
 
-  bds::Boid pred{0, 0, 3, 3};
+  bds::Boid pred{roll_diceX(eng), roll_diceY(eng), roll_diceVx(eng),
+                 roll_diceVy(eng)};
 
   while (window.isOpen()
          | window2.isOpen()) { // un po' buggato sia con opzione schermo intero
