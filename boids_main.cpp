@@ -9,15 +9,15 @@ int main()
   int n{100};
   double d{90};
   double ds{15}; // gestire errori di input (mettere catch error), negativi
-  double s{0.8}; // max vel?
-  double a{0.5};
-  double c{0.01};
+  double s{0.5}; // max vel?
+  double a{0.1};
+  double c{0.05};
   bool Predator_on{true};
   double e = (Predator_on) ? 3 : 0;
-  double f{0.4};
-  double Vmax{10/0.0264583333};
+  double f{0.5};
+  double Vmax{6 / 0.0264583333};
   const double range{7};
-  const double pred_coeff{1.05};
+  const double pred_coeff{1.1};
 
   /*std::cout
       << "Inserire in ordine : numero di boids , d , ds , s , a , c , e , f \n";
@@ -44,7 +44,7 @@ int main()
 
   // Assegnazione delle caratteristiche allo spawn dei Boid*/
   std::vector<bds::Boid> flock;
-  for (int i; i < n; i++) {
+  for (int i = 0; i < n; i++) {
     std::random_device r;
     std::default_random_engine e1(r());
     std::uniform_real_distribution<> roll_diceX(
@@ -53,13 +53,14 @@ int main()
     // int rand_x = roll_dice1(e1);
     std::uniform_real_distribution<> roll_diceY(20, windowHeight - 20);
     // int rand_y = roll_dice2(e1);
-    std::uniform_real_distribution<> roll_diceVx(-Vmax/2, Vmax/2);
+    std::uniform_real_distribution<> roll_diceVx(-Vmax / 2, Vmax / 2);
     // int rand_vx = static_cast<int> (gauss1(e1));
-    std::normal_distribution<double> roll_diceVy(-Vmax/2, Vmax/2);
-    // int rand_vy = static_cast<int> (gauss2(e1));
-    bds::Boid bi{roll_diceX(e1), roll_diceY(e1), roll_diceVx(e1),
+    std::uniform_real_distribution<> roll_diceVy(-Vmax / 2, Vmax / 2);
+    // std::normal_distribution<double> roll_diceVy(-Vmax / 2, Vmax / 2);
+    //  int rand_vy = static_cast<int> (gauss2(e1));
+    bds::Boid boid_i{roll_diceX(e1), roll_diceY(e1), roll_diceVx(e1),
                  roll_diceVy(e1)}; // implicita conv double int
-    flock.push_back(bi);
+    flock.push_back(boid_i);
   }
 
   bds::Boid pred{0, 0, 3, 3};
@@ -90,11 +91,12 @@ int main()
       assert(b1.position()[1] >= -100);
     }
 
-    if(Predator_on){
-    bds::RulesPred(pred, flock, f, windowWidth, windowHeight);
-    bds::velocitylimit(pred, Vmax * pred_coeff);
-    pred.updatePosition();
-    bds::eat(pred, flock, range);}
+    if (Predator_on) {
+      bds::RulesPred(pred, flock, f, windowWidth, windowHeight);
+      bds::velocitylimit(pred, Vmax * pred_coeff);
+      pred.updatePosition();
+      bds::eat(pred, flock, range);
+    }
 
     window.clear(sf::Color::White);
     for (bds::Boid& b : flock) { // passato const& Boid
@@ -107,13 +109,14 @@ int main()
       window.draw(Boid_point);
     }
 
-    if(Predator_on){
-    sf::CircleShape pred_point(4);
-    pred_point.setFillColor(sf::Color::Red);
-    auto xy = pred.position();
-    pred_point.setPosition(static_cast<float>(xy[0]),
-                           static_cast<float>(xy[1]));
-    window.draw(pred_point);}
+    if (Predator_on) {
+      sf::CircleShape pred_point(4);
+      pred_point.setFillColor(sf::Color::Red);
+      auto xy = pred.position();
+      pred_point.setPosition(static_cast<float>(xy[0]),
+                             static_cast<float>(xy[1]));
+      window.draw(pred_point);
+    }
 
     window.display();
 
@@ -122,15 +125,12 @@ int main()
       window2.clear(sf::Color::White);
       sf::Text text;
       text.setFont(font);
-      text.setString(
-          "Avarage velocity" + std::to_string(data.speed_mean) + /* + "   "
-           + std::to_string(data.vel_mean[1]) + */
-          "\n\n"
-          + "Standard deviation: " + std::to_string(data.speed_err) /* + "
-          "
-         + std::to_string(data.vel_sigma[1])  */
-          + "\n\n" + "Avarage distance: " + std::to_string(data.dis_mean)
-          + "\n\n" + "Standard deviation: " + std::to_string(data.dis_err));
+      text.setString("Avarage velocity: " + std::to_string(data.speed_mean)
+                     + " cm/s " + "\n\n" + "Standard deviation: "
+                     + std::to_string(data.speed_err) + " cm/s " + "\n\n"
+                     + "Avarage distance: " + std::to_string(data.dis_mean)
+                     + " cm " + "\n\n" + "Standard deviation: "
+                     + std::to_string(data.dis_err) + " cm ");
       text.setCharacterSize(7);
       text.setFillColor(sf::Color::Black);
       text.setPosition(5, 5);
