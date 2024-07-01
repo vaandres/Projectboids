@@ -47,18 +47,18 @@ int main()
   for (int i; i < n; i++) {
     std::random_device r;
     std::default_random_engine e1(r());
-    std::uniform_real_distribution<> roll_dice1(
+    std::uniform_real_distribution<> roll_diceX(
         20, windowWidth - 20); // non capisco perchè restituiscono tutti int
                                // (in caso satatic cast)
     // int rand_x = roll_dice1(e1);
-    std::uniform_real_distribution<> roll_dice2(20, windowHeight - 20);
+    std::uniform_real_distribution<> roll_diceY(20, windowHeight - 20);
     // int rand_y = roll_dice2(e1);
-    std::normal_distribution<double> gauss1(0, 2);
+    std::uniform_real_distribution<> roll_diceVx(-Vmax/2, Vmax/2);
     // int rand_vx = static_cast<int> (gauss1(e1));
-    std::normal_distribution<double> gauss2(0, 2);
+    std::normal_distribution<double> roll_diceVy(-Vmax/2, Vmax/2);
     // int rand_vy = static_cast<int> (gauss2(e1));
-    bds::Boid bi{roll_dice1(e1), roll_dice2(e1), gauss1(e1),
-                 gauss2(e1)}; // implicita conv double int
+    bds::Boid bi{roll_diceX(e1), roll_diceY(e1), roll_diceVx(e1),
+                 roll_diceVy(e1)}; // implicita conv double int
     flock.push_back(bi);
   }
 
