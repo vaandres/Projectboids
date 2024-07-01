@@ -1,39 +1,44 @@
 #include "operator.hpp"
+//#include "boids.hpp" //forse non serve
 
-std::array<double, 2> bds::operator+(std::array<double, 2> v1,
-                                     std::array<double, 2> v2)
+namespace bds {
+Velocity operator+(const Velocity& v1, const Velocity& v2)
 {
-  auto vxf                 = v1[0] + v2[0];
-  auto vyf                 = v1[1] + v2[1];
-  std::array<double, 2> vf = {vxf, vyf};
-  return vf;
+  return {v1.vx + v2.vx, v1.vy + v2.vy};
 }
-std::array<double, 2> bds::operator*(std::array<double, 2> v1, double k)
+
+Velocity operator-(const Velocity& v1, const Velocity& v2)
 {
-  auto vxf                 = k * v1[0];
-  auto vyf                 = k * v1[1];
-  std::array<double, 2> vf = {vxf, vyf};
-  return vf;
+  return {v1.vx - v2.vx, v1.vy - v2.vy};
 }
-std::array<double, 2> bds::operator*(std::array<double, 2> v1,std::array<double, 2> v2 )
+
+Velocity operator/(const Velocity& v, double scalar)
 {
-  auto vxf                 = v2[0] * v1[0];
-  auto vyf                 = v2[1] * v1[1];
-  std::array<double, 2> vf = {vxf, vyf};
-  return vf;
+  return {v.vx / scalar, v.vy / scalar};
 }
-std::array<double, 2> bds::operator-(std::array<double, 2> v1,
-                                     std::array<double, 2> v2)
+
+Velocity operator*(const Velocity& v, double scalar)
 {
-  auto vxf                 = v1[0] - v2[0];
-  auto vyf                 = v1[1] - v2[1];
-  std::array<double, 2> vf = {vxf, vyf};
-  return vf;
+  return {v.vx * scalar, v.vy * scalar};
 }
-std::array<double, 2> bds::operator/(std::array<double, 2> v1, double k)
-{ assert(k != 0); //meglio un throw?
-  auto vxf                 = v1[0] / k;
-  auto vyf                 = v1[1] / k;
-  std::array<double, 2> vf = {vxf, vyf};
-  return vf;
+
+Position operator+(const Position& p1, const Position& p2)
+{
+  return {p1.x + p2.x, p1.y + p2.y};
 }
+
+Position operator-(const Position& p1, const Position& p2)
+{
+  return {p1.x - p2.x, p1.y - p2.y};
+}
+
+Position operator/(const Position& p, double scalar)
+{
+  return {p.x / scalar, p.y / scalar};
+}
+
+Position operator*(const Position& p, double scalar)
+{
+  return {p.x * scalar, p.y * scalar};
+}
+} // namespace bds

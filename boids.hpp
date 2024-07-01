@@ -5,31 +5,40 @@
 #include <cassert>
 #include <vector>
 namespace bds {
+
+// Struct for position
+struct Position
+{
+  double x;
+  double y;
+};
+
+// Struct for velocity
+struct Velocity
+{
+  double vx;
+  double vy;
+};
+
 // Classe principale dei Boids
 class Boid
 {
  private:
-  std::array<double, 2> position_{0, 0};
-  std::array<double, 2> velocity_{0, 0};
-  // Costruttore della classe Boids
+  Position position_{0, 0};
+  Velocity velocity_{0, 0};
+
  public:
-  Boid(double x, double y, double vx,
-       double vy) // aggiungere un assert per posizioni negative?
+  Boid(double x, double y, double vx, double vy)
       : position_{x, y}
       , velocity_{vx, vy}
   {}
 
-  std::array<double, 2> position() const;
-
-  std::array<double, 2> velocity() const;
-
+  Position position() const;
+  Velocity velocity() const;
   void updatePosition();
-
-  void setVelocity(const std::array<double, 2>&);
-
+  void setVelocity(const Velocity&);
   double absoluteVelocity() const;
-
-}; // fine classe Boid
+};
 
 struct Statistics
 {
@@ -38,37 +47,25 @@ struct Statistics
   double speed_mean;
   double speed_err;
 };
-// fine classe flock
 
-double dist(Boid const&, Boid const&);
-
-std::vector<Boid> neighbours(Boid const&, std::vector<Boid> const&, double);
-
-std::array<double, 2> separation(Boid const&, std::vector<Boid> const&, double,
-                                 double);
-
-std::array<double, 2> alignment(Boid const&, std::vector<Boid> const&, double,
-                                double);
-
-std::array<double, 2> cohesion(Boid const&, std::vector<Boid> const&, double,
-                               double);
-std::array<double, 2> escape(Boid const&, Boid const&, double, double);
-
-std::array<double, 2> follow(Boid const&, std::vector<Boid> const&, double);
-
-void eat(Boid const&, std::vector<Boid>&, double);
-
-std::array<double, 2> edgeforce(Boid const&, unsigned int, unsigned int);
-
+double dist(const Boid&, const Boid&);
+std::vector<Boid> neighbours(const Boid&, const std::vector<Boid>&, double);
+Velocity separation(const Boid&, const std::vector<Boid>&, double, double);
+Velocity alignment(const Boid&, const std::vector<Boid>&, double, double);
+Velocity cohesion(const Boid&, const std::vector<Boid>&, double, double);
+Velocity escape(const Boid&, const Boid&, double, double);
+Velocity follow(const Boid&, const std::vector<Boid>&, double);
+void eat(const Boid&, std::vector<Boid>&, double);
+Velocity edgeforce(const Boid&, unsigned int, unsigned int);
 void applyRules(Boid&, double, double, double, double, double, double,
-                unsigned int, unsigned int, std::vector<Boid> const&, Boid&);
-
+                unsigned int, unsigned int, const std::vector<Boid>&, Boid&);
 void velocitylimit(Boid&, double);
-
-Statistics stats(std::vector<Boid> const&);
-
-void RulesPred(Boid&, std::vector<Boid> const&, double, unsigned int,
+Statistics stats(const std::vector<Boid>&);
+void RulesPred(Boid&, const std::vector<Boid>&, double, unsigned int,
                unsigned int);
+
+
+
 
 } // namespace bds
 

@@ -89,10 +89,10 @@ int main()
                       pred);
       bds::velocitylimit(b1, Vmax);
       b1.updatePosition();
-      assert(b1.position()[0] <= windowWidth + 100);
-      assert(b1.position()[1] <= windowHeight + 100);
-      assert(b1.position()[0] >= -100);
-      assert(b1.position()[1] >= -100);
+      assert(b1.position().x <= windowWidth + 100);
+      assert(b1.position().y <= windowHeight + 100);
+      assert(b1.position().x >= -100);
+      assert(b1.position().y >= -100);
     }
 
     if (Predator_on) {
@@ -106,19 +106,17 @@ int main()
     for (bds::Boid& b : flock) { // passato const& Boid
       sf::CircleShape Boid_point(2);
       Boid_point.setFillColor(sf::Color::Black);
-      auto xy = b.position();
       Boid_point.setPosition(
-          static_cast<float>(xy[0]),
-          static_cast<float>(xy[1])); // frecce /è necessari static cast?
+          static_cast<float>(b.position().x),
+          static_cast<float>(b.position().y)); // frecce /è necessari static cast?
       window.draw(Boid_point);
     }
 
     if (Predator_on) {
       sf::CircleShape pred_point(4);
       pred_point.setFillColor(sf::Color::Red);
-      auto xy = pred.position();
-      pred_point.setPosition(static_cast<float>(xy[0]),
-                             static_cast<float>(xy[1]));
+      pred_point.setPosition(static_cast<float>(pred.position().x),
+                             static_cast<float>(pred.position().y));
       window.draw(pred_point);
     }
 

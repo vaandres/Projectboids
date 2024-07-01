@@ -4,12 +4,24 @@
 #include <array>
 #include <cassert>
 #include <vector>
+#include "boids.hpp"
+
 namespace bds {
-std::array<double, 2> operator+(std::array<double, 2>, std::array<double, 2>);
-std::array<double, 2> operator*(std::array<double, 2>, double);
-std::array<double, 2> operator*(std::array<double, 2> v1,std::array<double, 2> v2 );
-std::array<double, 2> operator-(std::array<double, 2>, std::array<double, 2>);
-std::array<double, 2> operator/(std::array<double, 2>, double);
+Velocity operator+(const Velocity&, const Velocity&);
+
+Velocity operator-(const Velocity&, const Velocity&);
+
+Velocity operator/(const Velocity&, double);
+
+Velocity operator*(const Velocity&, double);
+
+Position operator+(const Position&, const Position&);
+
+Position operator-(const Position&, const Position&);
+
+Position operator/(const Position&, double);
+
+Position operator*(const Position&, double);
 } // namespace bds
 
 #endif

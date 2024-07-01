@@ -1,5 +1,5 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include "boids.hpp"
+//#include "boids.hpp" //forse non serve
 #include "doctest.h"
 #include "operator.hpp"
 
@@ -32,12 +32,13 @@ TEST_CASE("Testing velocitylimit")
   double Vmax{3};
   bds::Boid b{0, 0, 1, 1};
   bds::velocitylimit(b, Vmax);
-  CHECK(b.velocity()[0] == 1);
+  CHECK(b.velocity().vx == 1);
+  CHECK(b.velocity().vy == 1);
 
   b.setVelocity({-3, 4});
   bds::velocitylimit(b, Vmax);
-  CHECK(b.velocity()[0] == doctest::Approx(-1.8));
-  CHECK(b.velocity()[1] == doctest::Approx(2.4));
+  CHECK(b.velocity().vx == doctest::Approx(-1.8));
+  CHECK(b.velocity().vy == doctest::Approx(2.4));
   CHECK(b.absoluteVelocity() == 3);
 }
 
@@ -77,12 +78,12 @@ TEST_CASE("Testing velocity method")
   bds::Boid b1{0, 70, 2.4, 2};
   bds::Boid b2{64, 21, -4, -2.1};
   bds::Boid b3{0, 0, 0, 0};
-  CHECK(b1.velocity()[0] == 2.4);
-  CHECK(b1.velocity()[1] == 2);
-  CHECK(b2.velocity()[0] == -4);
-  CHECK(b2.velocity()[1] == -2.1);
-  CHECK(b3.velocity()[0] == 0);
-  CHECK(b3.velocity()[1] == 0);
+  CHECK(b1.velocity().vx == 2.4);
+  CHECK(b1.velocity().vy == 2);
+  CHECK(b2.velocity().vx == -4);
+  CHECK(b2.velocity().vy == -2.1);
+  CHECK(b3.velocity().vx == 0);
+  CHECK(b3.velocity().vy == 0);
 }
 
 TEST_CASE("Testing position method")
@@ -90,12 +91,12 @@ TEST_CASE("Testing position method")
   bds::Boid b1{0, 70, 2.4, 2};
   bds::Boid b2{64, 21, -4, -2.1};
   bds::Boid b3{0, 0, 0, 0};
-  CHECK(b1.position()[0] == 0);
-  CHECK(b1.position()[1] == 70);
-  CHECK(b2.position()[0] == 64);
-  CHECK(b2.position()[1] == 21);
-  CHECK(b3.position()[0] == 0);
-  CHECK(b3.position()[1] == 0);
+  CHECK(b1.position().x == 0);
+  CHECK(b1.position().y == 70);
+  CHECK(b2.position().x == 64);
+  CHECK(b2.position().y == 21);
+  CHECK(b3.position().x == 0);
+  CHECK(b3.position().y == 0);
   // ricordati di verificare che la posizione sia positiva(assert o exception?)
 }
 
@@ -117,8 +118,8 @@ TEST_CASE("Testing separation function")
     double s{0.2};
 
     auto sep_vel = bds::separation(b1, flock, ds, s);
-    CHECK(sep_vel[0] == doctest::Approx(-0.7));
-    CHECK(sep_vel[1] == doctest::Approx(-0.44));
+    CHECK(sep_vel.vx == doctest::Approx(-0.7));
+    CHECK(sep_vel.vy == doctest::Approx(-0.44));
   }
 
   SUBCASE("Testing separation function without neighbours")
@@ -127,8 +128,8 @@ TEST_CASE("Testing separation function")
     double s{0.4};
 
     auto sep_vel = bds::separation(b1, flock, ds, s);
-    CHECK(sep_vel[0] == doctest::Approx(0.));
-    CHECK(sep_vel[1] == doctest::Approx(0.));
+    CHECK(sep_vel.vx == doctest::Approx(0.));
+    CHECK(sep_vel.vy == doctest::Approx(0.));
   }
 }
 
@@ -149,8 +150,8 @@ TEST_CASE("Testing alignment function")
     double d{10.};
     double a{0.5};
     auto alignment_vel = bds::alignment(b1, flock, d, a);
-    CHECK(alignment_vel[0] == doctest::Approx(0.291).epsilon(0.01));
-    CHECK(alignment_vel[1] == doctest::Approx(0.88).epsilon(0.01));
+    CHECK(alignment_vel.vx == doctest::Approx(0.291).epsilon(0.01));
+    CHECK(alignment_vel.vy == doctest::Approx(0.88).epsilon(0.01));
   }
 
   SUBCASE("Testing alignment function with no neighbours")
@@ -158,8 +159,8 @@ TEST_CASE("Testing alignment function")
     double d{2.};
     double a{0.5};
     auto alignment_vel = bds::alignment(b1, flock, d, a);
-    CHECK(alignment_vel[0] == 0);
-    CHECK(alignment_vel[1] == 0);
+    CHECK(alignment_vel.vx == 0);
+    CHECK(alignment_vel.vy == 0);
   }
 }
 
@@ -180,8 +181,8 @@ TEST_CASE("Testing cohesion function")
     double d{7};
     double c{0.5};
     auto coh_vel = bds::cohesion(b1, flock, d, c);
-    CHECK(coh_vel[0] == doctest::Approx(-2.06).epsilon(0.01));
-    CHECK(coh_vel[1] == doctest::Approx(-0.44).epsilon(0.01));
+    CHECK(coh_vel.vx == doctest::Approx(-2.06).epsilon(0.01));
+    CHECK(coh_vel.vy == doctest::Approx(-0.44).epsilon(0.01));
   }
 
   SUBCASE("Testing cohesion function without neighbours")
@@ -189,8 +190,8 @@ TEST_CASE("Testing cohesion function")
     double d{1};
     double c{0.5};
     auto coh_vel = bds::cohesion(b1, flock, d, c);
-    CHECK(coh_vel[0] == doctest::Approx(0.).epsilon(0.01));
-    CHECK(coh_vel[1] == doctest::Approx(0.).epsilon(0.01));
+    CHECK(coh_vel.vx == doctest::Approx(0.).epsilon(0.01));
+    CHECK(coh_vel.vy == doctest::Approx(0.).epsilon(0.01));
   }
 }
 
@@ -204,10 +205,10 @@ TEST_CASE("Testing edgeforce function")
     unsigned int h{330};
     auto edge_force_b1 = bds::edgeforce(b1, w, h);
     auto edge_force_b2 = bds::edgeforce(b2, w, h);
-    CHECK(edge_force_b1[0] == doctest::Approx(0.385).epsilon(0.001));
-    CHECK(edge_force_b1[1] == doctest::Approx(1).epsilon(0.001));
-    CHECK(edge_force_b1[0] == -edge_force_b2[0]);
-    CHECK(edge_force_b1[1] == -edge_force_b2[1]);
+    CHECK(edge_force_b1.vx == doctest::Approx(0.385).epsilon(0.001));
+    CHECK(edge_force_b1.vy == doctest::Approx(1).epsilon(0.001));
+    CHECK(edge_force_b1.vx == -edge_force_b2.vx);
+    CHECK(edge_force_b1.vy == -edge_force_b2.vy);
   }
 
   SUBCASE("Testing edgeforce function with Boid outside the window")
@@ -216,8 +217,8 @@ TEST_CASE("Testing edgeforce function")
     unsigned int w{500};
     unsigned int h{330};
     auto edge_force = bds::edgeforce(b1, w, h);
-    CHECK(edge_force[0] == doctest::Approx(-72.89).epsilon(0.01));
-    CHECK(edge_force[1] == doctest::Approx(-45.2).epsilon(0.01));
+    CHECK(edge_force.vx == doctest::Approx(-72.89).epsilon(0.01));
+    CHECK(edge_force.vy == doctest::Approx(-45.2).epsilon(0.01));
   }
 }
 
@@ -282,12 +283,12 @@ TEST_CASE("Testing escape function")
     double d{4.};
     double e{1.5};
     auto escape_vel = bds::escape(p1, b1, d, e);
-    CHECK(escape_vel[0] == doctest::Approx(4.5));
-    CHECK(escape_vel[1] == doctest::Approx(1.5));
+    CHECK(escape_vel.vx == doctest::Approx(4.5));
+    CHECK(escape_vel.vy == doctest::Approx(1.5));
 
     escape_vel = bds::escape(p1, b1, d, 0);
-    CHECK(escape_vel[0] == 0);
-    CHECK(escape_vel[1] == 0);
+    CHECK(escape_vel.vx == 0);
+    CHECK(escape_vel.vy == 0);
   }
 
   SUBCASE("Testing escape function with a boid far from a predator")
@@ -295,8 +296,8 @@ TEST_CASE("Testing escape function")
     double d{1.};
     double e{1.5};
     auto escape_vel = bds::escape(p1, b1, d, e);
-    CHECK(escape_vel[0] == 0);
-    CHECK(escape_vel[1] == 0);
+    CHECK(escape_vel.vx == 0);
+    CHECK(escape_vel.vy == 0);
   }
 }
 
@@ -314,23 +315,23 @@ TEST_CASE("Testing follow function")
     std::vector<bds::Boid> flock{b1, b2, b3, b4};
     double f{2.};
     auto follow_vel = bds::follow(p1, flock, f);
-    CHECK(follow_vel[0] == doctest::Approx(-6.));
-    CHECK(follow_vel[1] == doctest::Approx(0.));
+    CHECK(follow_vel.vx == doctest::Approx(-6.));
+    CHECK(follow_vel.vy == doctest::Approx(0.));
   }
 
   SUBCASE("Testing follow function with an empty flock")
   {
     std::vector<bds::Boid> flock{};
     double f{2.5};
-    std::array<double, 2> follow_vel = bds::follow(p1, flock, f);
+    bds::Velocity follow_vel = bds::follow(p1, flock, f);
     follow_vel                       = bds::follow(p1, flock, f);
     follow_vel                       = bds::follow(p1, flock, f);
-    CHECK(follow_vel[0] == 0);
-    CHECK(follow_vel[1] == 0);
+    CHECK(follow_vel.vx == 0);
+    CHECK(follow_vel.vy == 0);
   }
 }
 
-TEST_CASE("Testing operator* of array")
+/*TEST_CASE("Testing operator* of array")
 
 {
   std::array<double, 2> a{2.5, 1.};
@@ -344,26 +345,26 @@ TEST_CASE("Testing operator* of array")
   c = bds::operator*(a, b);
   CHECK(c[0] == 0);
   CHECK(c[1] == 0);
-}
+}*/
 
 TEST_CASE("Testing setVelocity method")
 {
   bds::Boid b1{0, 0, 0, 0};
-  std::array<double, 2> newVel{1, 1.5};
+  bds::Velocity newVel{1, 1.5};
   b1.setVelocity(newVel);
-  CHECK(b1.velocity()[0] == 1);
-  CHECK(b1.velocity()[1] == 1.5);
+  CHECK(b1.velocity().vx == 1);
+  CHECK(b1.velocity().vy == 1.5);
   newVel = {0, 0};
   b1.setVelocity(newVel);
-  CHECK(b1.velocity()[0] == 0);
-  CHECK(b1.velocity()[1] == 0);
+  CHECK(b1.velocity().vx == 0);
+  CHECK(b1.velocity().vy == 0);
   newVel = {-1.5, -1};
   b1.setVelocity(newVel);
-  CHECK(b1.velocity()[0] == -1.5);
-  CHECK(b1.velocity()[1] == -1);
+  CHECK(b1.velocity().vx == -1.5);
+  CHECK(b1.velocity().vy == -1);
 }
 
-TEST_CASE("Testing operator+ on array")
+/*TEST_CASE("Testing operator+ on array")
 {
   std::array<double, 2> a{1, 1};
   std::array<double, 2> b{2, 2};
@@ -443,7 +444,7 @@ TEST_CASE("Testing operator/ on array")
   c = bds::operator/(a, b);
   CHECK(c[0] == -2.5);
   CHECK(c[1] == -1);
-}
+}*/
 
 TEST_CASE("Testing eat")
 {
@@ -456,9 +457,9 @@ TEST_CASE("Testing eat")
   std::vector<bds::Boid> flock{b1, b2, b3, b4, b5};
   bds::eat(p1, flock, 2);
   CHECK(flock.size() == 3);
-  CHECK(flock[0].position()[0] == b2.position()[0]);
-  CHECK(flock[1].position()[0] == b4.position()[0]);
-  CHECK(flock[2].position()[0] == b5.position()[0]);
+  CHECK(flock[0].position().x == b2.position().x);
+  CHECK(flock[1].position().x == b4.position().x);
+  CHECK(flock[2].position().x == b5.position().x);
 }
 
 TEST_CASE("Testing updatePosition")
@@ -470,12 +471,12 @@ TEST_CASE("Testing updatePosition")
   b2.updatePosition();
   b3.updatePosition();
 
-  CHECK(b1.position()[0] == doctest::Approx(83.35).epsilon(0.01));
-  CHECK(b1.position()[1] == doctest::Approx(80.70).epsilon(0.01));
+  CHECK(b1.position().x == doctest::Approx(83.35).epsilon(0.01));
+  CHECK(b1.position().y == doctest::Approx(80.70).epsilon(0.01));
 
-  CHECK(b2.position()[0] == 1);
-  CHECK(b2.position()[1] == 2);
+  CHECK(b2.position().x == 1);
+  CHECK(b2.position().y == 2);
 
-  CHECK(b3.position()[0] == doctest::Approx(0.05));
-  CHECK(b3.position()[1] == doctest::Approx(0.111).epsilon(0.001));
+  CHECK(b3.position().x == doctest::Approx(0.05));
+  CHECK(b3.position().y == doctest::Approx(0.111).epsilon(0.001));
 }
