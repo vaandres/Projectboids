@@ -1,5 +1,5 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-//#include "boids.hpp" //forse non serve
+// #include "boids.hpp" //forse non serve
 #include "doctest.h"
 #include "operator.hpp"
 
@@ -324,8 +324,8 @@ TEST_CASE("Testing follow function")
     std::vector<bds::Boid> flock{};
     double f{2.5};
     bds::Velocity follow_vel = bds::follow(p1, flock, f);
-    follow_vel                       = bds::follow(p1, flock, f);
-    follow_vel                       = bds::follow(p1, flock, f);
+    follow_vel               = bds::follow(p1, flock, f);
+    follow_vel               = bds::follow(p1, flock, f);
     CHECK(follow_vel.vx == 0);
     CHECK(follow_vel.vy == 0);
   }

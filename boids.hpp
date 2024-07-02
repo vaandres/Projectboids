@@ -64,9 +64,6 @@ Statistics stats(const std::vector<Boid>&);
 void RulesPred(Boid&, const std::vector<Boid>&, double, unsigned int,
                unsigned int);
 
-
-
-
 } // namespace bds
 
 #endif

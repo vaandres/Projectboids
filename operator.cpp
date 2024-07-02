@@ -1,5 +1,5 @@
 #include "operator.hpp"
-//#include "boids.hpp" //forse non serve
+// #include "boids.hpp" //forse non serve
 
 namespace bds {
 Velocity operator+(const Velocity& v1, const Velocity& v2)

@@ -1,4 +1,4 @@
-//#include "boids.hpp" //forse non serve
+// #include "boids.hpp" //forse non serve
 #include "operator.hpp"
 #include <SFML/Graphics.hpp>
 #include <iostream>
@@ -108,7 +108,8 @@ int main()
       Boid_point.setFillColor(sf::Color::Black);
       Boid_point.setPosition(
           static_cast<float>(b.position().x),
-          static_cast<float>(b.position().y)); // frecce /è necessari static cast?
+          static_cast<float>(
+              b.position().y)); // frecce /è necessari static cast?
       window.draw(Boid_point);
     }
 
