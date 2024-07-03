@@ -1,4 +1,3 @@
-// #include "boids.hpp" //forse non serve
 #include "operator.hpp"
 #include <algorithm>
 #include <cmath>
