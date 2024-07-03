@@ -5,73 +5,81 @@
 
 int main()
 {
-  int n{100};
-  double d{90};
-  double ds{15}; // gestire errori di input (mettere catch error), negativi
-  double s{0.5}; // max vel?
-  double a{0.1};
-  double c{0.05};
-  bool Predator_on{true};
-  double e = (Predator_on) ? 2 : 0;
-  double f{2.5};
-  double Vmax{6 / 0.0264583333};
-  const double range{8};
-  const double pred_coeff{1.3};
+  bool cin_on{false};  //modalità con gestione dei parametri tramite cin
+  int n{100};          //numero di boid nella separazione
+  double d{90};        //distanza di visione del boid
+  double ds{15};       //distanza di separazione
+  double s{0.5};       //fattore di moltiplicazione per la regola di separazione
+  double a{0.1};       //fattore di moltiplicazione per la regola di allineamento
+  double c{0.05};      //fattore di moltiplicazione per la regola di coesione
+  bool Predator_on{true};           //modalità con predatore
+  double e = (Predator_on) ? 2 : 0; //fattore di moltiplicazione per la regola di fuga
+  double f{2.5};                    //fattore di moltiplicazione per la regola di inseguimento  
+  double Vmax{6 / 0.0264583333};    //velocità massima
+  const double range{8};            //[NON MODIFICARE] distanza con cui i boids vengono mangiati dal predatore
+  const double pred_coeff{1.3};     //percentuale della velocità del predatore rispetto alla vellocità massima
 
-  // NON ELIMINARE COMMENTO INPUT (così è più comodo fare prove)
+  //Lettura dei parametri con cin
+  if (cin_on) {
+    std::cout << "Scegliere la modalità con (1) o senza predatore (0): \n";
+    std::cin >> Predator_on;
+    if (Predator_on == true) {
+      std::cout
+          << "Inserire in ordine : numero di boids , d , ds , s , a , c , "
+             "e , f \n";
+      std::cin >> n >> d >> ds >> s >> a >> c >> e >> f;
+    } else {
+      std::cout
+          << "Inserire in ordine : numero di boids , d , ds , s , a , c \n";
+      std::cin >> n >> d >> ds >> s >> a >> c;
+    }
+  }
 
-  /*std::cout << "Scegliere la modalità con o senza predatore: \n";
-  std::cin >> Predator_on;
-  if (Predator_on == true) {
-    std::cout << "Inserire in ordine : numero di boids , d , ds , s , a , c , "
-                 "e , f \n";
-    std::cin >> n >> d >> ds >> s >> a >> c >> e >> f;
-  } else {
-    std::cout << "Inserire in ordine : numero di boids , d , ds , s , a , c \n";
-    std::cin >> n >> d >> ds >> s >> a >> c;
-  }*/
-
+  //selezione del font per la scrittura delle statistiche dei boids
   sf::Font font;
   font.loadFromFile("./Nexa-Heavy.ttf");
 
-  unsigned windowWidth  = (1) * sf::VideoMode::getDesktopMode().width - 40;
-  unsigned windowHeight = (1) * sf::VideoMode::getDesktopMode().height - 75;
+  //creazione della finestra di sfml grafica 
+  unsigned int windowWidth  = (1) * sf::VideoMode::getDesktopMode().width - 40;
+  unsigned int windowHeight = (1) * sf::VideoMode::getDesktopMode().height - 75;
   sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight),
                           "Boids Simulation");
   window.setFramerateLimit(30);
   window.setPosition(sf::Vector2i(0, 0));
 
-  // finestra statistiche
+  //creazione della finestra delle statistiche
   sf::RenderWindow window2(sf::VideoMode(200, 200), "Statistics");
   window2.setFramerateLimit(30);
   window2.setPosition(sf::Vector2i(static_cast<int>(windowWidth) - 220,
                                    static_cast<int>(windowHeight) - 200));
-  //????Esisite modo diverso invece di usare static cast.
 
-  // adegurare a framerate tempo e a grandezza Boid
 
-  // Assegnazione delle caratteristiche allo spawn dei Boids
-  std::random_device r;                
-  std::default_random_engine eng(r()); 
+  // generazione delle variabili per lo spawn dei boids
+  std::random_device r;
+  std::default_random_engine eng(r());
   std::vector<bds::Boid> flock;
   std::uniform_real_distribution<> roll_diceX(20, windowWidth - 20);
   std::uniform_real_distribution<> roll_diceY(20, windowHeight - 20);
   std::uniform_real_distribution<> roll_diceVx(-Vmax / 2, Vmax / 2);
   std::uniform_real_distribution<> roll_diceVy(-Vmax / 2, Vmax / 2);
 
+  //loop di generazione dei boids
   for (int i = 0; i < n; i++) {
     bds::Boid boid_i{roll_diceX(eng), roll_diceY(eng), roll_diceVx(eng),
                      roll_diceVy(eng)}; // implicita conv double int
     flock.push_back(boid_i);
   }
 
+  //generazione del predatore
   bds::Boid pred{roll_diceX(eng), roll_diceY(eng), roll_diceVx(eng),
                  roll_diceVy(eng)};
 
+
+  //inizio gameloop di sfml
   while (window.isOpen()
-         | window2.isOpen()) { // un po' buggato sia con opzione schermo intero
-                               // che se messo schermo intero dopo
-                               // dividere while per finestre
+         | window2.isOpen()) {
+    
+    //chiusura delle finestre
     sf::Event event;
     sf::Event event2;
     while (window.pollEvent(event) | window2.pollEvent(event2)) {
@@ -83,6 +91,9 @@ int main()
       }
     }
 
+    //loop di cambio di posizione dei boids. La velocità dei boids viene modificata con la funzione 
+    //applyRules, successivamente è limitata con velocitylimit ed in infine la posizione è 
+    //aggiornata con updatePosition 
     for (bds::Boid& b1 : flock) {
       bds::applyRules(b1, a, c, s, d, ds, e, windowWidth, windowHeight, flock,
                       pred);
@@ -94,6 +105,9 @@ int main()
       assert(b1.position().y >= -100);
     }
 
+    //cambio di posizione del predatore. La velocità del predatore è modificata con la funzione 
+    //RulesPred, successivamente è limitata con velocitylimit ed in infine la posizione è 
+    //aggiornata con updatePosition 
     if (Predator_on) {
       bds::RulesPred(pred, flock, f, windowWidth, windowHeight);
       bds::velocitylimit(pred, Vmax * pred_coeff);
@@ -101,17 +115,21 @@ int main()
       bds::eat(pred, flock, range);
     }
 
+    //la finestra grafica viene colorata di bianco
     window.clear(sf::Color::White);
-    for (bds::Boid& b : flock) { // passato const& Boid
+
+    //i boids vengono disegnati sulla finestra grafica
+    for (bds::Boid& b : flock) { 
       sf::CircleShape Boid_point(2);
       Boid_point.setFillColor(sf::Color::Black);
       Boid_point.setPosition(
           static_cast<float>(b.position().x),
           static_cast<float>(
-              b.position().y)); // frecce /è necessari static cast?
+              b.position().y)); 
       window.draw(Boid_point);
     }
 
+    //il predatore viene disegnato sulla finestra grafica
     if (Predator_on) {
       sf::CircleShape pred_point(4);
       pred_point.setFillColor(sf::Color::Red);
@@ -120,12 +138,16 @@ int main()
       window.draw(pred_point);
     }
 
+    //la scena è disegnata
     window.display();
 
+    //loop della finetra di statistica
     if (window2.isOpen()) {
       bds::Statistics data = bds::stats(flock);
       window2.clear(sf::Color::White);
       sf::Text text;
+
+      //Stampa delle statistiche sulla finestra
       text.setFont(font);
       text.setString("Avarage velocity: " + std::to_string(data.speed_mean)
                      + " cm/s " + "\n\n" + "Standard deviation: "
@@ -138,16 +160,6 @@ int main()
       text.setPosition(5, 5);
       window2.draw(text);
       window2.display();
-      //  text.setFont(font);
-      /*const sf::Color AXIS_COLOR(sf::Color::Black);
-      sf::Vertex Boid_line[] = {
-          sf::Vertex(sf::array2f(8, 4), AXIS_COLOR),
-          sf::Vertex(sf::array2f(150, 150), AXIS_COLOR),
-      };
-      Boid_line.setFillColor(sf::Color::Black);
-      Boid_line.setPosition(xy[0], xy[1]);
-      window.draw(Boid_line, 2, sf::Lines);
-    }*/
     }
   }
 }
