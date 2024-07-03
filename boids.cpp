@@ -25,22 +25,20 @@ double bds::Boid::absoluteVelocity() const
 void bds::Boid::updatePosition()
 {
   position_.x += velocity_.vx / 30;
-  position_.y += velocity_.vy / 30;
-}
-
-// Funzione distanza tra due Boids
-double bds::dist(Boid const& boid_1, Boid const& boid_2)
-{
-  auto pos_1 = boid_1.position();
-  auto pos_2 = boid_2.position();
-  return std::sqrt(std::pow(pos_1.x - pos_2.x, 2)
-                   + std::pow(pos_1.y - pos_2.y, 2));
+  position_.y += velocity_.vy / 30; // magic number
 }
 
 // Funzione cambio velocità del Boid
 void bds::Boid::setVelocity(const Velocity& newVel)
 {
   velocity_ = newVel;
+}
+
+// Funzione distanza tra due Boids
+double bds::dist(Boid const& boid_1, Boid const& boid_2)
+{
+  return std::sqrt(std::pow(boid_1.position().x - boid_2.position().x, 2)
+                   + std::pow(boid_1.position().y - boid_2.position().y, 2));
 }
 
 // Funzione per trovare i vicini di un Boid
@@ -74,14 +72,7 @@ bds::Velocity bds::separation(Boid const& boid_1,
   return sep_vel * -s;
 }
 
-bds::Velocity bds::escape(Boid const& predator, Boid const& boid, double d,
-                          double e)
-{
-  std::vector<Boid> pred = {predator};
-  return separation(boid, pred, d, e);
-}
-
-// Funzione per allineare i Boids
+// Regola di allineamento
 bds::Velocity bds::alignment(Boid const& boid_1, std::vector<Boid> const& flock,
                              double d, double a)
 {
@@ -120,6 +111,15 @@ bds::Velocity bds::cohesion(Boid const& boid_1, std::vector<Boid> const& flock,
   return coh_vel * c;
 }
 
+// Regola di fuga
+bds::Velocity bds::escape(Boid const& predator, Boid const& boid, double d,
+                          double e)
+{
+  std::vector<Boid> pred = {predator};
+  return separation(boid, pred, d, e);
+}
+
+// Regola di inseguimento
 bds::Velocity bds::follow(Boid const& predator, std::vector<Boid> const& flock,
                           double f)
 {
@@ -143,9 +143,9 @@ bds::Velocity bds::follow(Boid const& predator, std::vector<Boid> const& flock,
 void bds::velocitylimit(Boid& boid, double Vmax)
 {
   double V{boid.absoluteVelocity()};
-  if (V > Vmax) {
-    boid.setVelocity(Velocity{boid.velocity().vx * (Vmax / V),
-                              boid.velocity().vy * (Vmax / V)});
+
+  if (boid.absoluteVelocity() > Vmax) {
+    boid.setVelocity(boid.velocity() * (Vmax / V));
   }
 }
 
@@ -159,8 +159,7 @@ bds::Velocity bds::edgeforce(Boid const& boid, unsigned int width,
   double vx{0};
   double vy{0};
 
-  vx = (std::pow(1.1, -x + 80) - std::pow(1.1, (x - width + 80)));
-
+  vx = (std::pow(1.1, -x + 80) - std::pow(1.1, (x - width + 80))); // magic number
   vy = (std::pow(1.1, -y + 80) - std::pow(1.1, (y - height + 80)));
 
   return Velocity{vx, vy};
@@ -178,6 +177,7 @@ void bds::applyRules(Boid& boid, double a, double c, double s, double d,
       + cohesion(boid, flock, d, c) + escape(predator, boid, d, e));
 }
 
+// Funzione che applica le regole che determinano il movimento del predatore
 void bds::RulesPred(Boid& predator, std::vector<Boid> const& flock, double f,
                     unsigned int windowWidth, unsigned int windowHeight)
 {
@@ -185,6 +185,7 @@ void bds::RulesPred(Boid& predator, std::vector<Boid> const& flock, double f,
                        + edgeforce(predator, windowWidth, windowHeight));
 }
 
+// Funzione che elimina i Boids che sono stati mangiati dal predatore
 void bds::eat(Boid const& predator, std::vector<Boid>& flock, double range)
 {
   flock.erase(std::remove_if(flock.begin(), flock.end(),
@@ -194,6 +195,7 @@ void bds::eat(Boid const& predator, std::vector<Boid>& flock, double range)
               flock.end());
 }
 
+// Funzione che calcola le statistiche dello stormo
 bds::Statistics bds::stats(std::vector<bds::Boid> const& flock)
 {
   double dis_mean{};

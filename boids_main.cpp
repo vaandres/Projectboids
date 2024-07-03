@@ -50,9 +50,9 @@ int main()
 
   // adegurare a framerate tempo e a grandezza Boid
 
-  // Assegnazione delle caratteristiche allo spawn dei Boid*/
-  std::random_device r;                // fuori dal ciclo è meno dispendioso
-  std::default_random_engine eng(r()); // uguale
+  // Assegnazione delle caratteristiche allo spawn dei Boids
+  std::random_device r;                
+  std::default_random_engine eng(r()); 
   std::vector<bds::Boid> flock;
   std::uniform_real_distribution<> roll_diceX(20, windowWidth - 20);
   std::uniform_real_distribution<> roll_diceY(20, windowHeight - 20);

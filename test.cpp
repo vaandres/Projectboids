@@ -331,21 +331,6 @@ TEST_CASE("Testing follow function")
   }
 }
 
-/*TEST_CASE("Testing operator* of array")
-
-{
-  std::array<double, 2> a{2.5, 1.};
-  std::array<double, 2> b{-1., -3.5};
-  auto c = bds::operator*(a, b);
-  CHECK(c[0] == -2.5);
-  CHECK(c[1] == -3.5);
-
-  a = {3, -2};
-  b = {0, 0};
-  c = bds::operator*(a, b);
-  CHECK(c[0] == 0);
-  CHECK(c[1] == 0);
-}*/
 
 TEST_CASE("Testing setVelocity method")
 {
@@ -363,88 +348,6 @@ TEST_CASE("Testing setVelocity method")
   CHECK(b1.velocity().vx == -1.5);
   CHECK(b1.velocity().vy == -1);
 }
-
-/*TEST_CASE("Testing operator+ on array")
-{
-  std::array<double, 2> a{1, 1};
-  std::array<double, 2> b{2, 2};
-  auto c = bds::operator+(a, b);
-  CHECK(c[0] == 3);
-  CHECK(c[1] == 3);
-  a = {0, 0};
-  b = {0, 0};
-  c = bds::operator+(a, b);
-  CHECK(c[0] == 0);
-  CHECK(c[1] == 0);
-  a = {2.5, 1};
-  b = {-1, -1};
-  c = bds::operator+(a, b);
-  CHECK(c[0] == 1.5);
-  CHECK(c[1] == 0);
-}
-// test operator* on array
-TEST_CASE("Testing operator* on array")
-{
-  std::array<double, 2> a{1, 1};
-  double b{2};
-  auto c = bds::operator*(a, b);
-  CHECK(c[0] == 2);
-  CHECK(c[1] == 2);
-
-  a = {3, -2};
-  b = 0;
-  c = bds::operator*(a, b);
-  CHECK(c[0] == 0);
-  CHECK(c[1] == 0);
-
-  a = {2.5, 1};
-  b = -1;
-  c = bds::operator*(a, b);
-  CHECK(c[0] == -2.5);
-  CHECK(c[1] == -1);
-}
-// test operator- on array
-TEST_CASE("Testing operator- on array")
-{
-  std::array<double, 2> a{1, 1};
-  std::array<double, 2> b{2, 2};
-  auto c = bds::operator-(a, b);
-  CHECK(c[0] == -1);
-  CHECK(c[1] == -1);
-
-  a = {0, 0};
-  b = {0, 0};
-  c = bds::operator-(a, b);
-  CHECK(c[0] == 0);
-  CHECK(c[1] == 0);
-
-  a = {2.5, 1};
-  b = {-1, -1};
-  c = bds::operator-(a, b);
-  CHECK(c[0] == 3.5);
-  CHECK(c[1] == 2);
-}
-// test operator/ on array
-TEST_CASE("Testing operator/ on array")
-{ // vedi se mettere check_throw per divisione per 0
-  std::array<double, 2> a{1, 1};
-  double b{2};
-  auto c = bds::operator/(a, b);
-  CHECK(c[0] == 0.5);
-  CHECK(c[1] == 0.5);
-
-  a = {3, -2};
-  b = 1;
-  c = bds::operator/(a, b);
-  CHECK(c[0] == 3);
-  CHECK(c[1] == -2);
-
-  a = {2.5, 1};
-  b = -1;
-  c = bds::operator/(a, b);
-  CHECK(c[0] == -2.5);
-  CHECK(c[1] == -1);
-}*/
 
 TEST_CASE("Testing eat")
 {
@@ -479,4 +382,172 @@ TEST_CASE("Testing updatePosition")
 
   CHECK(b3.position().x == doctest::Approx(0.05));
   CHECK(b3.position().y == doctest::Approx(0.111).epsilon(0.001));
+}
+
+TEST_CASE("Testing operator+ on Position")
+{
+  bds::Position p1{1, 1};
+  bds::Position p2{2, 2};
+  auto c = p1 + p2;
+  CHECK(c.x == 3);
+  CHECK(c.y == 3);
+
+  p1 = {0, 0};
+  p2 = {0, 0};
+  c  = p1 + p2;
+  CHECK(c.x == 0);
+  CHECK(c.y == 0);
+
+  p1 = {2.5, 1};
+  p2 = {-1, -1};
+  c  = p1 + p2;
+  CHECK(c.x == 1.5);
+  CHECK(c.y == 0);
+}
+
+TEST_CASE("Testing operator- on Position")
+{
+  bds::Position p1{1, 1};
+  bds::Position p2{2, 2};
+  auto c = p1 - p2;
+  CHECK(c.x == -1);
+  CHECK(c.y == -1);
+
+  p1 = {0, 0};
+  p2 = {0, 0};
+  c  = p1 - p2;
+  CHECK(c.x == 0);
+  CHECK(c.y == 0);
+
+  p1 = {2.5, 1};
+  p2 = {-1, -1};
+  c  = p1 - p2;
+  CHECK(c.x == 3.5);
+  CHECK(c.y == 2);
+}
+
+TEST_CASE("Testing operator/ on Position")
+{
+  bds::Position p1{1, 1};
+  double b{2};
+  auto c = p1 / b;
+  CHECK(c.x == 0.5);
+  CHECK(c.y == 0.5);
+
+  p1 = {3, -2};
+  b  = 1;
+  c  = p1 / b;
+  CHECK(c.x == 3);
+  CHECK(c.y == -2);
+
+  p1 = {2.5, 1};
+  b  = -1;
+  c  = p1 / b;
+  CHECK(c.x == -2.5);
+  CHECK(c.y == -1);
+}
+
+TEST_CASE("Testing operator* on Position")
+{
+  bds::Position p1{1, 1};
+  double b{2};
+  auto c = p1 * b;
+  CHECK(c.x == 2);
+  CHECK(c.y == 2);
+
+  p1 = {3, -2};
+  b  = 0;
+  c  = p1 * b;
+  CHECK(c.x == 0);
+  CHECK(c.y == 0);
+
+  p1 = {2.5, 1};
+  b  = -1;
+  c  = p1 * b;
+  CHECK(c.x == -2.5);
+  CHECK(c.y == -1);
+}
+
+TEST_CASE("Testing operator+ on Velocity")
+{
+  bds::Velocity v1{1, 1};
+  bds::Velocity v2{2, 2};
+  auto c = v1 + v2;
+  CHECK(c.vx == 3);
+  CHECK(c.vy == 3);
+
+  v1 = {0, 0};
+  v2 = {0, 0};
+  c  = v1 + v2;
+  CHECK(c.vx == 0);
+  CHECK(c.vy == 0);
+
+  v1 = {2.5, 1};
+  v2 = {-1, -1};
+  c  = v1 + v2;
+  CHECK(c.vx == 1.5);
+  CHECK(c.vy == 0);
+}
+
+TEST_CASE("Testing operator- on Velocity")
+{
+  bds::Velocity v1{1, 1};
+  bds::Velocity v2{2, 2};
+  auto c = v1 - v2;
+  CHECK(c.vx == -1);
+  CHECK(c.vy == -1);
+
+  v1 = {0, 0};
+  v2 = {0, 0};
+  c  = v1 - v2;
+  CHECK(c.vx == 0);
+  CHECK(c.vy == 0);
+
+  v1 = {2.5, 1};
+  v2 = {-1, -1};
+  c  = v1 - v2;
+  CHECK(c.vx == 3.5);
+  CHECK(c.vy == 2);
+}
+
+TEST_CASE("Testing operator* on Velocity")
+{
+  bds::Velocity v1{1, 1};
+  double b{2};
+  auto c = v1 * b;
+  CHECK(c.vx == 2);
+  CHECK(c.vy == 2);
+
+  v1 = {3, -2};
+  b  = 0;
+  c  = v1 * b;
+  CHECK(c.vx == 0);
+  CHECK(c.vy == 0);
+
+  v1 = {2.5, 1};
+  b  = -1;
+  c  = v1 * b;
+  CHECK(c.vx == -2.5);
+  CHECK(c.vy == -1);
+}
+
+TEST_CASE("Testing operator/ on Velocity")
+{
+  bds::Velocity v1{1, 1};
+  double b{2};
+  auto c = v1 / b;
+  CHECK(c.vx == 0.5);
+  CHECK(c.vy == 0.5);
+
+  v1 = {3, -2};
+  b  = 1;
+  c  = v1 / b;
+  CHECK(c.vx == 3);
+  CHECK(c.vy == -2);
+
+  v1 = {2.5, 1};
+  b  = -1;
+  c  = v1 / b;
+  CHECK(c.vx == -2.5);
+  CHECK(c.vy == -1);
 }
