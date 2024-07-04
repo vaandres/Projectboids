@@ -172,9 +172,9 @@ int main()
       text.setString("Avarage velocity: " + std::to_string(data.speed_mean)
                      + " cm/s " + "\n\n" + "Standard deviation: "
                      + std::to_string(data.speed_err) + " cm/s " + "\n\n"
-                     + "Avarage distance: " + std::to_string(data.dis_mean)
+                     + "Avarage distance: " + std::to_string(data.dist_mean)
                      + " cm " + "\n\n" + "Standard deviation: "
-                     + std::to_string(data.dis_err) + " cm ");
+                     + std::to_string(data.dist_err) + " cm ");
       text.setCharacterSize(7);
       text.setFillColor(sf::Color::Black);
       text.setPosition(5, 5);

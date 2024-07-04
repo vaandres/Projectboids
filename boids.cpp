@@ -197,13 +197,6 @@ void bds::eat(Boid const& predator, std::vector<Boid>& flock, double range)
 // Funzione che calcola le statistiche dello stormo
 bds::Statistics bds::stats(std::vector<Boid> const& flock)
 {
-  double dis_mean{};
-  double dis_sigma{};
-  double dis_err{};
-  double speed_mean{};
-  double speed_sigma{};
-  double speed_err{};
-
   int n_boids = static_cast<int>(flock.size());
   double sum_dist{};
   double sum_dist2{};
@@ -240,14 +233,14 @@ bds::Statistics bds::stats(std::vector<Boid> const& flock)
                * conv_fac * conv_fac;
   }
 
-  dis_mean   = sum_dist / (n_boids * (n_boids - 1) / 2);
-  dis_sigma  = std::sqrt(std::abs(sum_dist2 / (n_boids * (n_boids - 1) / 2)
-                                  - dis_mean * dis_mean));
-  dis_err    = dis_sigma / std::sqrt(n_boids * (n_boids - 1) / 2) * 3;
-  speed_mean = sum_speed / n_boids;
-  speed_sigma =
+  const double dist_mean  = sum_dist / (n_boids * (n_boids - 1) / 2);
+  const double dist_sigma = std::sqrt(std::abs(
+      sum_dist2 / (n_boids * (n_boids - 1) / 2) - dist_mean * dist_mean));
+  const double dist_err = dist_sigma / std::sqrt(n_boids * (n_boids - 1) / 2) * 3;
+  const double speed_mean = sum_speed / n_boids;
+  const double speed_sigma =
       std::sqrt(std::abs(sum_speed2 / n_boids - speed_mean * speed_mean));
-  speed_err = speed_sigma / std::sqrt(n_boids) * 3;
+  const double speed_err = speed_sigma / std::sqrt(n_boids) * 3;
 
-  return {dis_mean, dis_err, speed_mean, speed_err};
+  return {dist_mean, dist_err, speed_mean, speed_err};
 }
