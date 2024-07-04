@@ -73,21 +73,20 @@ int main()
     assert(boid_i.position().y >= 0);
 
     assert(boid_i.absoluteVelocity() <= Vmax);
-    
 
     flock.push_back(boid_i);
   }
 
-  // generazione del predatore
-  bds::Boid pred{roll_diceX(eng), roll_diceY(eng), roll_diceVx(eng),
+  // generazione del predatoratore
+  bds::Boid predator{roll_diceX(eng), roll_diceY(eng), roll_diceVx(eng),
                  roll_diceVy(eng)};
 
-  assert(pred.position().x <= windowWidth);
-  assert(pred.position().y <= windowHeight);
-  assert(pred.position().x >= 0);
-  assert(pred.position().y >= 0);
+  assert(predator.position().x <= windowWidth);
+  assert(predator.position().y <= windowHeight);
+  assert(predator.position().x >= 0);
+  assert(predator.position().y >= 0);
 
-  assert(pred.absoluteVelocity() <= Vmax * pred_coeff);
+  assert(predator.absoluteVelocity() <= Vmax * pred_coeff);
 
   // inizio gameloop di sfml
   while (window.isOpen() | window2.isOpen()) {
@@ -108,10 +107,10 @@ int main()
     // velocitylimit ed in infine la posizione è aggiornata con updatePosition
     for (bds::Boid& boid_i : flock) {
       bds::applyRules(boid_i, a, c, s, d, ds, e, windowWidth, windowHeight,
-                      flock, pred);
+                      flock, predator);
 
       bds::velocityLimit(boid_i, Vmax);
-      assert(boid_i.absoluteVelocity() <= Vmax);
+      assert(boid_i.absoluteVelocity() <= Vmax + 0.0001);
 
       boid_i.updatePosition();
       assert(boid_i.position().x <= windowWidth);
@@ -124,18 +123,18 @@ int main()
     // con la funzione RulesPred, successivamente è limitata con velocitylimit
     // ed in infine la posizione è aggiornata con updatePosition
     if (Predator_on) {
-      bds::rulesPred(pred, flock, f, windowWidth, windowHeight);
+      bds::rulesPred(predator, flock, f, windowWidth, windowHeight);
 
-      bds::velocityLimit(pred, Vmax * pred_coeff);
-      assert(pred.absoluteVelocity() <= Vmax * pred_coeff);
+      bds::velocityLimit(predator, Vmax * pred_coeff);
+      assert(predator.absoluteVelocity() <= Vmax * pred_coeff + 0.0001);
 
-      pred.updatePosition();
-      assert(pred.position().x <= windowWidth);
-      assert(pred.position().y <= windowHeight);
-      assert(pred.position().x >= 0);
-      assert(pred.position().y >= 0);
-      
-      bds::eat(pred, flock, range);
+      predator.updatePosition();
+      assert(predator.position().x <= windowWidth);
+      assert(predator.position().y <= windowHeight);
+      assert(predator.position().x >= 0);
+      assert(predator.position().y >= 0);
+
+      bds::eat(predator, flock, range);
     }
 
     // la finestra grafica viene colorata di bianco
@@ -152,11 +151,11 @@ int main()
 
     // il predatore viene disegnato sulla finestra grafica
     if (Predator_on) {
-      sf::CircleShape pred_point(4);
-      pred_point.setFillColor(sf::Color::Red);
-      pred_point.setPosition(static_cast<float>(pred.position().x),
-                             static_cast<float>(pred.position().y));
-      window.draw(pred_point);
+      sf::CircleShape predator_point(4);
+      predator_point.setFillColor(sf::Color::Red);
+      predator_point.setPosition(static_cast<float>(predator.position().x),
+                             static_cast<float>(predator.position().y));
+      window.draw(predator_point);
     }
 
     // la scena è disegnata

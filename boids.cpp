@@ -142,10 +142,8 @@ bds::Velocity bds::follow(Boid const& predator, std::vector<Boid> const& flock,
 // Funzione che limita la velocità dei Boids
 void bds::velocityLimit(Boid& boid, double Vmax)
 {
-  double V{boid.absoluteVelocity()};
-
   if (boid.absoluteVelocity() > Vmax) {
-    boid.setVelocity(boid.velocity() * (Vmax / V));
+    boid.setVelocity(boid.velocity() * (Vmax / boid.absoluteVelocity()));
   }
 }
 
