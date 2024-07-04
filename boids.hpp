@@ -5,6 +5,11 @@
 #include <cassert>
 #include <vector>
 namespace bds {
+// alcune costanti globali
+inline constexpr unsigned int const framerate{30};
+
+inline constexpr double const conv_fac{
+    0.0264583333}; // fattore di conversione da pixel a cm
 
 // Struct for position
 struct Position

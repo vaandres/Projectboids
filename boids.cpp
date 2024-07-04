@@ -24,8 +24,8 @@ double bds::Boid::absoluteVelocity() const
 // Metodo di aggiornamento di posizione del Boid
 void bds::Boid::updatePosition()
 {
-  position_.x += velocity_.vx / 30;
-  position_.y += velocity_.vy / 30; // magic number
+  position_.x += velocity_.vx / framerate;
+  position_.y += velocity_.vy / framerate; // magic number
 }
 
 // Funzione cambio velocità del Boid
@@ -159,7 +159,8 @@ bds::Velocity bds::edgeForce(Boid const& boid, unsigned int width,
   double vx{0};
   double vy{0};
 
-  vx = (std::pow(1.1, -x + 80) - std::pow(1.1, (x - width + 80))); // magic number
+  vx = (std::pow(1.1, -x + 80)
+        - std::pow(1.1, (x - width + 80))); // magic number
   vy = (std::pow(1.1, -y + 80) - std::pow(1.1, (y - height + 80)));
 
   return Velocity{vx, vy};
@@ -210,7 +211,6 @@ bds::Statistics bds::stats(std::vector<Boid> const& flock)
   double sum_dist2{};
   double sum_speed{};
   double sum_speed2{};
-  double conv_fac{0.0264583333}; // fattore di conversione da pixel a cm
 
   if (n_boids == 0)
     return {0., 0., 0., 0.};

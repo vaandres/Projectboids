@@ -15,8 +15,8 @@ int main()
   bool Predator_on{true};
   double e = (Predator_on) ? 2 : 0;
   double f{2.5};
-  double Vmax{10 / 0.0264583333};
-  const double range{8}; //[NON MODIFICARE]
+  double Vmax{10 / bds::conv_fac}; // non cambiare la parte /bds::conv_fac
+  const double range{8};           //[NON MODIFICARE]
   const double pred_coeff{1.3};
 
   // Lettura dei parametri con cin
@@ -44,7 +44,7 @@ int main()
   unsigned int windowHeight = (1) * sf::VideoMode::getDesktopMode().height - 75;
   sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight),
                           "Boids Simulation");
-  window.setFramerateLimit(30);
+  window.setFramerateLimit(bds::framerate);
   window.setPosition(sf::Vector2i(0, 0));
 
   // creazione della finestra delle statistiche
@@ -125,7 +125,7 @@ int main()
 
     // il predatore viene disegnato sulla finestra grafica
     if (Predator_on) {
-      sf::CircleShape pred_point(4);
+      sf::CircleShape pred_point(range - 4);
       pred_point.setFillColor(sf::Color::Red);
       pred_point.setPosition(static_cast<float>(pred.position().x),
                              static_cast<float>(pred.position().y));

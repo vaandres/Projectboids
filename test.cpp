@@ -331,7 +331,6 @@ TEST_CASE("Testing follow function")
   }
 }
 
-
 TEST_CASE("Testing setVelocity method")
 {
   bds::Boid b1{0, 0, 0, 0};
