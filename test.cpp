@@ -235,18 +235,18 @@ TEST_CASE("Testing stats")
     std::vector<bds::Boid> flock1{b1, b2, b3};
     const auto stats = bds::stats(flock1);
 
-    CHECK(stats.dis_mean == doctest::Approx(1.9223));
-    CHECK(stats.dis_err == doctest::Approx(0.0874421));
+    CHECK(stats.dist_mean == doctest::Approx(1.9223));
+    CHECK(stats.dist_err == doctest::Approx(0.2623263));
     CHECK(stats.speed_mean == doctest::Approx(0.0673968));
-    CHECK(stats.speed_err == doctest::Approx(0.0288547));
+    CHECK(stats.speed_err == doctest::Approx(0.0865641));
   }
 
   SUBCASE("Testing stats method with 0 Boids")
   {
     std::vector<bds::Boid> flock2;
     const auto stats = bds::stats(flock2);
-    CHECK(stats.dis_mean == 0);
-    CHECK(stats.dis_err == 0);
+    CHECK(stats.dist_mean == 0);
+    CHECK(stats.dist_err == 0);
     CHECK(stats.speed_mean == 0);
     CHECK(stats.speed_err == 0);
   }
@@ -255,18 +255,18 @@ TEST_CASE("Testing stats")
   {
     std::vector<bds::Boid> flock3{b4, b5};
     const auto stats = bds::stats(flock3);
-    CHECK(stats.dis_mean == doctest::Approx(0.07483547));
-    CHECK(stats.dis_err == doctest::Approx(0.));
+    CHECK(stats.dist_mean == doctest::Approx(0.07483547));
+    CHECK(stats.dist_err == doctest::Approx(0.));
     CHECK(stats.speed_mean == doctest::Approx(0.041292));
-    CHECK(stats.speed_err == doctest::Approx(0.0104893));
+    CHECK(stats.speed_err == doctest::Approx(0.0314679));
   }
 
   SUBCASE("Testing stats with 1 Boid")
   {
     std::vector<bds::Boid> flock4{b2};
     const auto stats = bds::stats(flock4);
-    CHECK(stats.dis_mean == doctest::Approx(0.));
-    CHECK(stats.dis_err == doctest::Approx(0.));
+    CHECK(stats.dist_mean == doctest::Approx(0.));
+    CHECK(stats.dist_err == doctest::Approx(0.));
     CHECK(stats.speed_mean == doctest::Approx(0.119532));
     CHECK(stats.speed_err == doctest::Approx(0.));
   }

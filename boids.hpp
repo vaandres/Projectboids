@@ -47,8 +47,8 @@ class Boid
 
 struct Statistics
 {
-  double dis_mean;
-  double dis_err;
+  double dist_mean;
+  double dist_err;
   double speed_mean;
   double speed_err;
 };

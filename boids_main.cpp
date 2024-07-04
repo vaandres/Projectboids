@@ -66,12 +66,27 @@ int main()
   for (int i = 0; i < n; i++) {
     bds::Boid boid_i{roll_diceX(eng), roll_diceY(eng), roll_diceVx(eng),
                      roll_diceVy(eng)};
+
+    assert(boid_i.position().x <= windowWidth);
+    assert(boid_i.position().y <= windowHeight);
+    assert(boid_i.position().x >= 0);
+    assert(boid_i.position().y >= 0);
+
+    assert(boid_i.absoluteVelocity() <= Vmax);
+
     flock.push_back(boid_i);
   }
 
-  // generazione del predatore
-  bds::Boid pred{roll_diceX(eng), roll_diceY(eng), roll_diceVx(eng),
+  // generazione del predatoratore
+  bds::Boid predator{roll_diceX(eng), roll_diceY(eng), roll_diceVx(eng),
                  roll_diceVy(eng)};
+
+  assert(predator.position().x <= windowWidth);
+  assert(predator.position().y <= windowHeight);
+  assert(predator.position().x >= 0);
+  assert(predator.position().y >= 0);
+
+  assert(predator.absoluteVelocity() <= Vmax * pred_coeff);
 
   // inizio gameloop di sfml
   while (window.isOpen() | window2.isOpen()) {
@@ -90,25 +105,36 @@ int main()
     // loop di cambio di posizione dei boids. La velocità dei boids viene
     // modificata con la funzione applyRules, successivamente è limitata con
     // velocitylimit ed in infine la posizione è aggiornata con updatePosition
-    for (bds::Boid& b1 : flock) {
-      bds::applyRules(b1, a, c, s, d, ds, e, windowWidth, windowHeight, flock,
-                      pred);
-      bds::velocityLimit(b1, Vmax);
-      b1.updatePosition();
-      assert(b1.position().x <= windowWidth + 100);
-      assert(b1.position().y <= windowHeight + 100);
-      assert(b1.position().x >= -100);
-      assert(b1.position().y >= -100);
+    for (bds::Boid& boid_i : flock) {
+      bds::applyRules(boid_i, a, c, s, d, ds, e, windowWidth, windowHeight,
+                      flock, predator);
+
+      bds::velocityLimit(boid_i, Vmax);
+      assert(boid_i.absoluteVelocity() <= Vmax + 0.0001);
+
+      boid_i.updatePosition();
+      assert(boid_i.position().x <= windowWidth);
+      assert(boid_i.position().y <= windowHeight);
+      assert(boid_i.position().x >= 0);
+      assert(boid_i.position().y >= 0);
     }
 
     // cambio di posizione del predatore. La velocità del predatore è modificata
     // con la funzione RulesPred, successivamente è limitata con velocitylimit
     // ed in infine la posizione è aggiornata con updatePosition
     if (Predator_on) {
-      bds::rulesPred(pred, flock, f, windowWidth, windowHeight);
-      bds::velocityLimit(pred, Vmax * pred_coeff);
-      pred.updatePosition();
-      bds::eat(pred, flock, range);
+      bds::rulesPred(predator, flock, f, windowWidth, windowHeight);
+
+      bds::velocityLimit(predator, Vmax * pred_coeff);
+      assert(predator.absoluteVelocity() <= Vmax * pred_coeff + 0.0001);
+
+      predator.updatePosition();
+      assert(predator.position().x <= windowWidth);
+      assert(predator.position().y <= windowHeight);
+      assert(predator.position().x >= 0);
+      assert(predator.position().y >= 0);
+
+      bds::eat(predator, flock, range);
     }
 
     // la finestra grafica viene colorata di bianco
@@ -125,11 +151,11 @@ int main()
 
     // il predatore viene disegnato sulla finestra grafica
     if (Predator_on) {
-      sf::CircleShape pred_point(range - 4);
-      pred_point.setFillColor(sf::Color::Red);
-      pred_point.setPosition(static_cast<float>(pred.position().x),
-                             static_cast<float>(pred.position().y));
-      window.draw(pred_point);
+      sf::CircleShape predator_point(range - 4);
+      predator_point.setFillColor(sf::Color::Red);
+      predator_point.setPosition(static_cast<float>(predator.position().x),
+                             static_cast<float>(predator.position().y));
+      window.draw(predator_point);
     }
 
     // la scena è disegnata
@@ -146,9 +172,9 @@ int main()
       text.setString("Avarage velocity: " + std::to_string(data.speed_mean)
                      + " cm/s " + "\n\n" + "Standard deviation: "
                      + std::to_string(data.speed_err) + " cm/s " + "\n\n"
-                     + "Avarage distance: " + std::to_string(data.dis_mean)
+                     + "Avarage distance: " + std::to_string(data.dist_mean)
                      + " cm " + "\n\n" + "Standard deviation: "
-                     + std::to_string(data.dis_err) + " cm ");
+                     + std::to_string(data.dist_err) + " cm ");
       text.setCharacterSize(7);
       text.setFillColor(sf::Color::Black);
       text.setPosition(5, 5);
