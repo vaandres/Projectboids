@@ -6,7 +6,6 @@
 // Metodo che rende la posizione di un Boid
 bds::Position bds::Boid::position() const
 {
-  assert(position_.x >= 0 && position_.y >= 0);
   return position_;
 }
 
@@ -25,10 +24,8 @@ double bds::Boid::absoluteVelocity() const
 // Metodo di aggiornamento di posizione del Boid
 void bds::Boid::updatePosition()
 {
-  assert(position_.x >= 0 && position_.y >= 0);
   position_.x += velocity_.vx / 30;
   position_.y += velocity_.vy / 30; // magic number
-  assert(position_.x >= 0 && position_.y >= 0);
 }
 
 // Funzione cambio velocità del Boid

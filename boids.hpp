@@ -31,9 +31,7 @@ class Boid
   Boid(double x, double y, double vx, double vy)
       : position_{x, y}
       , velocity_{vx, vy}
-  {
-    assert(x >= 0 && y >= 0);
-  }
+  {}
 
   Position position() const;
   Velocity velocity() const;

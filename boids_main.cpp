@@ -66,12 +66,28 @@ int main()
   for (int i = 0; i < n; i++) {
     bds::Boid boid_i{roll_diceX(eng), roll_diceY(eng), roll_diceVx(eng),
                      roll_diceVy(eng)};
+
+    assert(boid_i.position().x <= windowWidth);
+    assert(boid_i.position().y <= windowHeight);
+    assert(boid_i.position().x >= 0);
+    assert(boid_i.position().y >= 0);
+
+    assert(boid_i.absoluteVelocity() <= Vmax);
+    
+
     flock.push_back(boid_i);
   }
 
   // generazione del predatore
   bds::Boid pred{roll_diceX(eng), roll_diceY(eng), roll_diceVx(eng),
                  roll_diceVy(eng)};
+
+  assert(pred.position().x <= windowWidth);
+  assert(pred.position().y <= windowHeight);
+  assert(pred.position().x >= 0);
+  assert(pred.position().y >= 0);
+
+  assert(pred.absoluteVelocity() <= Vmax * pred_coeff);
 
   // inizio gameloop di sfml
   while (window.isOpen() | window2.isOpen()) {
@@ -90,15 +106,18 @@ int main()
     // loop di cambio di posizione dei boids. La velocità dei boids viene
     // modificata con la funzione applyRules, successivamente è limitata con
     // velocitylimit ed in infine la posizione è aggiornata con updatePosition
-    for (bds::Boid& b1 : flock) {
-      bds::applyRules(b1, a, c, s, d, ds, e, windowWidth, windowHeight, flock,
-                      pred);
-      bds::velocityLimit(b1, Vmax);
-      b1.updatePosition();
-      assert(b1.position().x <= windowWidth + 100);
-      assert(b1.position().y <= windowHeight + 100);
-      assert(b1.position().x >= -100);
-      assert(b1.position().y >= -100);
+    for (bds::Boid& boid_i : flock) {
+      bds::applyRules(boid_i, a, c, s, d, ds, e, windowWidth, windowHeight,
+                      flock, pred);
+
+      bds::velocityLimit(boid_i, Vmax);
+      assert(boid_i.absoluteVelocity() <= Vmax);
+
+      boid_i.updatePosition();
+      assert(boid_i.position().x <= windowWidth);
+      assert(boid_i.position().y <= windowHeight);
+      assert(boid_i.position().x >= 0);
+      assert(boid_i.position().y >= 0);
     }
 
     // cambio di posizione del predatore. La velocità del predatore è modificata
@@ -106,8 +125,16 @@ int main()
     // ed in infine la posizione è aggiornata con updatePosition
     if (Predator_on) {
       bds::rulesPred(pred, flock, f, windowWidth, windowHeight);
+
       bds::velocityLimit(pred, Vmax * pred_coeff);
+      assert(pred.absoluteVelocity() <= Vmax * pred_coeff);
+
       pred.updatePosition();
+      assert(pred.position().x <= windowWidth);
+      assert(pred.position().y <= windowHeight);
+      assert(pred.position().x >= 0);
+      assert(pred.position().y >= 0);
+      
       bds::eat(pred, flock, range);
     }
 
