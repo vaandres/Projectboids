@@ -26,7 +26,7 @@ $ cmake --build build --target test
 Per eseguire boids.out basta eseguire il comando:
 
 ```bash
-$ build/boids.out
+$ ./build/boids.out
 ```
 
 Nel caso ci fosse la necessità di eseguire il comando
