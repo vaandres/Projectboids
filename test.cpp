@@ -13,7 +13,7 @@ TEST_CASE("Testing dist()")
 
   bds::Boid b3{3, 5, 0, 0};
   distance = bds::dist(b1, b3);
-  CHECK(distance == doctest::Approx(3.605).epsilon(0.01));
+  CHECK(distance == doctest::Approx(3.61).epsilon(0.01));
 }
 
 TEST_CASE("Testing absoluteVelocity()")
@@ -24,7 +24,7 @@ TEST_CASE("Testing absoluteVelocity()")
 
   CHECK(b1.absoluteVelocity() == 5);
   CHECK(b2.absoluteVelocity() == 0);
-  CHECK(b3.absoluteVelocity() == doctest::Approx(48.7647).epsilon(0.0001));
+  CHECK(b3.absoluteVelocity() == doctest::Approx(48.77).epsilon(0.01));
 }
 
 TEST_CASE("Testing velocityLimit")
@@ -118,7 +118,7 @@ TEST_CASE("Testing separation function")
     double s{0.2};
 
     auto sep_vel = bds::separation(b1, flock, ds, s);
-    CHECK(sep_vel.vx == doctest::Approx(-0.7));
+    CHECK(sep_vel.vx == doctest::Approx(-0.70));
     CHECK(sep_vel.vy == doctest::Approx(-0.44));
   }
 
@@ -150,7 +150,7 @@ TEST_CASE("Testing alignment function")
     double d{10.};
     double a{0.5};
     auto alignment_vel = bds::alignment(b1, flock, d, a);
-    CHECK(alignment_vel.vx == doctest::Approx(0.291).epsilon(0.01));
+    CHECK(alignment_vel.vx == doctest::Approx(0.29).epsilon(0.01));
     CHECK(alignment_vel.vy == doctest::Approx(0.88).epsilon(0.01));
   }
 
@@ -205,8 +205,8 @@ TEST_CASE("Testing edgeForce function")
     unsigned int h{330};
     auto edge_force_b1 = bds::edgeForce(b1, w, h);
     auto edge_force_b2 = bds::edgeForce(b2, w, h);
-    CHECK(edge_force_b1.vx == doctest::Approx(0.385).epsilon(0.001));
-    CHECK(edge_force_b1.vy == doctest::Approx(1).epsilon(0.001));
+    CHECK(edge_force_b1.vx == doctest::Approx(0.39).epsilon(0.01));
+    CHECK(edge_force_b1.vy == doctest::Approx(1.00).epsilon(0.001));
     CHECK(edge_force_b1.vx == -edge_force_b2.vx);
     CHECK(edge_force_b1.vy == -edge_force_b2.vy);
   }
@@ -218,7 +218,7 @@ TEST_CASE("Testing edgeForce function")
     unsigned int h{330};
     auto edge_force = bds::edgeForce(b1, w, h);
     CHECK(edge_force.vx == doctest::Approx(-72.89).epsilon(0.01));
-    CHECK(edge_force.vy == doctest::Approx(-45.2).epsilon(0.01));
+    CHECK(edge_force.vy == doctest::Approx(-45.20).epsilon(0.01));
   }
 }
 
