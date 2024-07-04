@@ -236,9 +236,9 @@ TEST_CASE("Testing stats")
     const auto stats = bds::stats(flock1);
 
     CHECK(stats.dist_mean == doctest::Approx(1.9223));
-    CHECK(stats.dist_err == doctest::Approx(0.454363));
+    CHECK(stats.dist_err == doctest::Approx(0.151454));
     CHECK(stats.speed_mean == doctest::Approx(0.0673968));
-    CHECK(stats.speed_err == doctest::Approx(0.149933));
+    CHECK(stats.speed_err == doctest::Approx(0.04998));
   }
 
   SUBCASE("Testing stats method with 0 Boids")
@@ -258,7 +258,7 @@ TEST_CASE("Testing stats")
     CHECK(stats.dist_mean == doctest::Approx(0.07483547));
     CHECK(stats.dist_err == doctest::Approx(0.));
     CHECK(stats.speed_mean == doctest::Approx(0.041292));
-    CHECK(stats.speed_err == doctest::Approx(0.044502));
+    CHECK(stats.speed_err == doctest::Approx(0.014834));
   }
 
   SUBCASE("Testing stats with 1 Boid")
