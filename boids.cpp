@@ -6,6 +6,7 @@
 // Metodo che rende la posizione di un Boid
 bds::Position bds::Boid::position() const
 {
+  assert(position_.x >= 0 && position_.y >= 0);
   return position_;
 }
 
@@ -24,8 +25,10 @@ double bds::Boid::absoluteVelocity() const
 // Metodo di aggiornamento di posizione del Boid
 void bds::Boid::updatePosition()
 {
+  assert(position_.x >= 0 && position_.y >= 0);
   position_.x += velocity_.vx / 30;
   position_.y += velocity_.vy / 30; // magic number
+  assert(position_.x >= 0 && position_.y >= 0);
 }
 
 // Funzione cambio velocità del Boid
@@ -159,7 +162,8 @@ bds::Velocity bds::edgeForce(Boid const& boid, unsigned int width,
   double vx{0};
   double vy{0};
 
-  vx = (std::pow(1.1, -x + 80) - std::pow(1.1, (x - width + 80))); // magic number
+  vx = (std::pow(1.1, -x + 80)
+        - std::pow(1.1, (x - width + 80))); // magic number
   vy = (std::pow(1.1, -y + 80) - std::pow(1.1, (y - height + 80)));
 
   return Velocity{vx, vy};
@@ -244,11 +248,11 @@ bds::Statistics bds::stats(std::vector<Boid> const& flock)
   dis_mean   = sum_dist / (n_boids * (n_boids - 1) / 2);
   dis_sigma  = std::sqrt(std::abs(sum_dist2 / (n_boids * (n_boids - 1) / 2)
                                   - dis_mean * dis_mean));
-  dis_err    = dis_sigma / std::sqrt(n_boids * (n_boids - 1) / 2);
+  dis_err    = dis_sigma / std::sqrt(n_boids * (n_boids - 1) / 2) * 3;
   speed_mean = sum_speed / n_boids;
   speed_sigma =
       std::sqrt(std::abs(sum_speed2 / n_boids - speed_mean * speed_mean));
-  speed_err = speed_sigma / std::sqrt(n_boids);
+  speed_err = speed_sigma / std::sqrt(n_boids) * 3;
 
   return {dis_mean, dis_err, speed_mean, speed_err};
 }
