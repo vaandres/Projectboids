@@ -6,13 +6,13 @@
 int main()
 { // parametri in input
   bool cin_on{false};
-  int n{10};
+  int n{100};
   double d{90};
   double ds{15};
   double s{0.5};
   double a{0.1};
   double c{0.05};
-  bool Predator_on{true};
+  bool Predator_on{false};
   double e = (Predator_on) ? 2 : 0;
   double f{2.5};
   double const Vmax{10 / bds::conv_fac}; // non cambiare
@@ -27,7 +27,7 @@ int main()
       std::cout
           << "Inserire in ordine : numero di boids , d , ds , s , a , c , "
              "e , f , pred_coeff\n";
-      std::cin >> n >> d >> ds >> s >> a >> c >> e >> f >>pred_coeff;
+      std::cin >> n >> d >> ds >> s >> a >> c >> e >> f >> pred_coeff;
     } else {
       std::cout
           << "Inserire in ordine : numero di boids , d , ds , s , a , c \n";

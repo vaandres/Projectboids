@@ -232,14 +232,14 @@ bds::Statistics bds::stats(std::vector<Boid> const& flock)
                * conv_fac * conv_fac;
   }
 
-  const double dist_mean  = sum_dist / (n_boids * (n_boids - 1) / 2);
-  const double dist_sigma = std::sqrt(std::abs(
-      sum_dist2 / (n_boids * (n_boids - 1) / 2) - dist_mean * dist_mean));
-  const double dist_err = dist_sigma / std::sqrt(n_boids * (n_boids - 1) / 2) * 3;
+  const double dist_mean = sum_dist / (n_boids * (n_boids - 1) / 2);
+  const double dist_err =
+      3
+      * std::sqrt(std::abs(sum_dist2 / (n_boids * (n_boids - 1) / 2)
+                           - dist_mean * dist_mean));
   const double speed_mean = sum_speed / n_boids;
-  const double speed_sigma =
-      std::sqrt(std::abs(sum_speed2 / n_boids - speed_mean * speed_mean));
-  const double speed_err = speed_sigma / std::sqrt(n_boids) * 3;
+  const double speed_err =
+      3 * std::sqrt(std::abs(sum_speed2 / n_boids - speed_mean * speed_mean));
 
   return {dist_mean, dist_err, speed_mean, speed_err};
 }
