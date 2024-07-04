@@ -62,7 +62,7 @@ bds::Velocity bds::separation(Boid const& boid_1,
 
   Velocity sep_vel =
       std::accumulate(neighbours.begin(), neighbours.end(), Velocity{0, 0},
-                      [&boid_1, ds, s](Velocity acc, Boid const& boid_2) {
+                      [&boid_1](Velocity acc, Boid const& boid_2) {
                         acc.vx += (boid_2.position().x - boid_1.position().x);
                         acc.vy += (boid_2.position().y - boid_1.position().y);
 
@@ -99,7 +99,7 @@ bds::Velocity bds::cohesion(Boid const& boid_1, std::vector<Boid> const& flock,
   }
   Position mass_c =
       std::accumulate(neighbours.begin(), neighbours.end(), Position{0, 0},
-                      [&boid_1, c](Position acc, Boid const& boid_2) {
+                      [&boid_1](Position acc, Boid const& boid_2) {
                         acc.x += boid_2.position().x;
                         acc.y += boid_2.position().y;
                         return acc;
