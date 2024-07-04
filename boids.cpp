@@ -140,7 +140,7 @@ bds::Velocity bds::follow(Boid const& predator, std::vector<Boid> const& flock,
 }
 
 // Funzione che limita la velocità dei Boids
-void bds::velocitylimit(Boid& boid, double Vmax)
+void bds::velocityLimit(Boid& boid, double Vmax)
 {
   double V{boid.absoluteVelocity()};
 
@@ -150,7 +150,7 @@ void bds::velocitylimit(Boid& boid, double Vmax)
 }
 
 // Funzione della forza di repulsione dei Boids
-bds::Velocity bds::edgeforce(Boid const& boid, unsigned int width,
+bds::Velocity bds::edgeForce(Boid const& boid, unsigned int width,
                              unsigned int height)
 {
   double x{boid.position().x};
@@ -172,17 +172,17 @@ void bds::applyRules(Boid& boid, double a, double c, double s, double d,
                      Boid& predator)
 {
   boid.setVelocity(
-      boid.velocity() + edgeforce(boid, windowWidth, windowHeight)
+      boid.velocity() + edgeForce(boid, windowWidth, windowHeight)
       + alignment(boid, flock, d, a) + separation(boid, flock, ds, s)
       + cohesion(boid, flock, d, c) + escape(predator, boid, d, e));
 }
 
 // Funzione che applica le regole che determinano il movimento del predatore
-void bds::RulesPred(Boid& predator, std::vector<Boid> const& flock, double f,
+void bds::rulesPred(Boid& predator, std::vector<Boid> const& flock, double f,
                     unsigned int windowWidth, unsigned int windowHeight)
 {
   predator.setVelocity(predator.velocity() + follow(predator, flock, f)
-                       + edgeforce(predator, windowWidth, windowHeight));
+                       + edgeForce(predator, windowWidth, windowHeight));
 }
 
 // Funzione che elimina i Boids che sono stati mangiati dal predatore

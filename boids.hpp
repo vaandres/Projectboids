@@ -56,12 +56,12 @@ Velocity cohesion(const Boid&, const std::vector<Boid>&, double, double);
 Velocity escape(const Boid&, const Boid&, double, double);
 Velocity follow(const Boid&, const std::vector<Boid>&, double);
 void eat(const Boid&, std::vector<Boid>&, double);
-Velocity edgeforce(const Boid&, unsigned int, unsigned int);
+Velocity edgeForce(const Boid&, unsigned int, unsigned int);
 void applyRules(Boid&, double, double, double, double, double, double,
                 unsigned int, unsigned int, const std::vector<Boid>&, Boid&);
-void velocitylimit(Boid&, double);
+void velocityLimit(Boid&, double);
 Statistics stats(const std::vector<Boid>&);
-void RulesPred(Boid&, const std::vector<Boid>&, double, unsigned int,
+void rulesPred(Boid&, const std::vector<Boid>&, double, unsigned int,
                unsigned int);
 
 } // namespace bds

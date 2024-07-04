@@ -27,16 +27,16 @@ TEST_CASE("Testing absoluteVelocity()")
   CHECK(b3.absoluteVelocity() == doctest::Approx(48.7647).epsilon(0.0001));
 }
 
-TEST_CASE("Testing velocitylimit")
+TEST_CASE("Testing velocityLimit")
 {
   double Vmax{3};
   bds::Boid b{0, 0, 1, 1};
-  bds::velocitylimit(b, Vmax);
+  bds::velocityLimit(b, Vmax);
   CHECK(b.velocity().vx == 1);
   CHECK(b.velocity().vy == 1);
 
   b.setVelocity({-3, 4});
-  bds::velocitylimit(b, Vmax);
+  bds::velocityLimit(b, Vmax);
   CHECK(b.velocity().vx == doctest::Approx(-1.8));
   CHECK(b.velocity().vy == doctest::Approx(2.4));
   CHECK(b.absoluteVelocity() == 3);
@@ -195,28 +195,28 @@ TEST_CASE("Testing cohesion function")
   }
 }
 
-TEST_CASE("Testing edgeforce function")
+TEST_CASE("Testing edgeForce function")
 {
-  SUBCASE("Testing edgeforce function with Boid inside the window")
+  SUBCASE("Testing edgeForce function with Boid inside the window")
   {
     bds::Boid b1{90, 80, -1.3, -2.};
     bds::Boid b2{500 - 90, 330 - 80, 0, 0};
     unsigned int w{500};
     unsigned int h{330};
-    auto edge_force_b1 = bds::edgeforce(b1, w, h);
-    auto edge_force_b2 = bds::edgeforce(b2, w, h);
+    auto edge_force_b1 = bds::edgeForce(b1, w, h);
+    auto edge_force_b2 = bds::edgeForce(b2, w, h);
     CHECK(edge_force_b1.vx == doctest::Approx(0.385).epsilon(0.001));
     CHECK(edge_force_b1.vy == doctest::Approx(1).epsilon(0.001));
     CHECK(edge_force_b1.vx == -edge_force_b2.vx);
     CHECK(edge_force_b1.vy == -edge_force_b2.vy);
   }
 
-  SUBCASE("Testing edgeforce function with Boid outside the window")
+  SUBCASE("Testing edgeForce function with Boid outside the window")
   {
     bds::Boid b1{465, 290, 6.5, 2.};
     unsigned int w{500};
     unsigned int h{330};
-    auto edge_force = bds::edgeforce(b1, w, h);
+    auto edge_force = bds::edgeForce(b1, w, h);
     CHECK(edge_force.vx == doctest::Approx(-72.89).epsilon(0.01));
     CHECK(edge_force.vy == doctest::Approx(-45.2).epsilon(0.01));
   }
