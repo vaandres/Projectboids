@@ -15,9 +15,9 @@ int main()
   bool Predator_on{true};
   double e = (Predator_on) ? 2 : 0;
   double f{2.5};
-  double Vmax{10 / bds::conv_fac}; // non cambiare la parte /bds::conv_fac
-  const double range{8};           //[NON MODIFICARE]
-  const double pred_coeff{1.3};
+  double const Vmax{10 / bds::conv_fac}; // non cambiare
+  double const range{8};                 //[NON MODIFICARE]
+  double pred_coeff{1.3};
 
   // Lettura dei parametri con cin
   if (cin_on) {
@@ -26,8 +26,8 @@ int main()
     if (Predator_on == true) {
       std::cout
           << "Inserire in ordine : numero di boids , d , ds , s , a , c , "
-             "e , f \n";
-      std::cin >> n >> d >> ds >> s >> a >> c >> e >> f;
+             "e , f , pred_coeff\n";
+      std::cin >> n >> d >> ds >> s >> a >> c >> e >> f >>pred_coeff;
     } else {
       std::cout
           << "Inserire in ordine : numero di boids , d , ds , s , a , c \n";
@@ -79,7 +79,7 @@ int main()
 
   // generazione del predatoratore
   bds::Boid predator{roll_diceX(eng), roll_diceY(eng), roll_diceVx(eng),
-                 roll_diceVy(eng)};
+                     roll_diceVy(eng)};
 
   assert(predator.position().x <= windowWidth);
   assert(predator.position().y <= windowHeight);
@@ -154,7 +154,7 @@ int main()
       sf::CircleShape predator_point(range - 4);
       predator_point.setFillColor(sf::Color::Red);
       predator_point.setPosition(static_cast<float>(predator.position().x),
-                             static_cast<float>(predator.position().y));
+                                 static_cast<float>(predator.position().y));
       window.draw(predator_point);
     }
 
