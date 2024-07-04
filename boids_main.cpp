@@ -6,8 +6,8 @@
 int main()
 {
   bool cin_on{false};  //modalità con gestione dei parametri tramite cin
-  int n{100};          //numero di boid nella separazione
-  double d{90};        //distanza di visione del boid
+  int n{0};          //numero di boid nella separazione
+  double d{900};        //distanza di visione del boid
   double ds{15};       //distanza di separazione
   double s{0.5};       //fattore di moltiplicazione per la regola di separazione
   double a{0.1};       //fattore di moltiplicazione per la regola di allineamento
@@ -15,7 +15,7 @@ int main()
   bool Predator_on{true};           //modalità con predatore
   double e = (Predator_on) ? 2 : 0; //fattore di moltiplicazione per la regola di fuga
   double f{2.5};                    //fattore di moltiplicazione per la regola di inseguimento  
-  double Vmax{6 / 0.0264583333};    //velocità massima
+  double Vmax{6 / 0.02236842105};    //velocità massima
   const double range{8};            //[NON MODIFICARE] distanza con cui i boids vengono mangiati dal predatore
   const double pred_coeff{1.3};     //percentuale della velocità del predatore rispetto alla vellocità massima
 
@@ -74,6 +74,7 @@ int main()
   bds::Boid pred{roll_diceX(eng), roll_diceY(eng), roll_diceVx(eng),
                  roll_diceVy(eng)};
 
+  bds::Boid bpoiu{500,500,0,0};
 
   //inizio gameloop di sfml
   while (window.isOpen()
@@ -133,8 +134,8 @@ int main()
     if (Predator_on) {
       sf::CircleShape pred_point(4);
       pred_point.setFillColor(sf::Color::Red);
-      pred_point.setPosition(static_cast<float>(pred.position().x),
-                             static_cast<float>(pred.position().y));
+      pred_point.setPosition(static_cast<float>(bpoiu.position().x),
+                             static_cast<float>(bpoiu.position().y));
       window.draw(pred_point);
     }
 
