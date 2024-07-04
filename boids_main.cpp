@@ -4,23 +4,20 @@
 #include <random>
 
 int main()
-{
-  bool cin_on{false}; // modalità con gestione dei parametri tramite cin
-  int n{100};         // numero di boid nella separazione
-  double d{90};       // distanza di visione del boid
-  double ds{15};      // distanza di separazione
-  double s{0.5};      // fattore di moltiplicazione per la regola di separazione
-  double a{0.1};  // fattore di moltiplicazione per la regola di allineamento
-  double c{0.05}; // fattore di moltiplicazione per la regola di coesione
-  bool Predator_on{true}; // modalità con predatore
-  double e =
-      (Predator_on) ? 2 : 0; // fattore di moltiplicazione per la regola di fuga
-  double f{2.5}; // fattore di moltiplicazione per la regola di inseguimento
-  double Vmax{6 / 0.0264583333}; // velocità massima
-  const double range{8}; //[NON MODIFICARE] distanza con cui i boids vengono
-                         //mangiati dal predatore
-  const double pred_coeff{1.3}; // percentuale della velocità del predatore
-                                // rispetto alla vellocità massima
+{ // parametri in input
+  bool cin_on{false};
+  int n{10};
+  double d{90};
+  double ds{15};
+  double s{0.5};
+  double a{0.1};
+  double c{0.05};
+  bool Predator_on{true};
+  double e = (Predator_on) ? 2 : 0;
+  double f{2.5};
+  double Vmax{10 / 0.0264583333};
+  const double range{8}; //[NON MODIFICARE]
+  const double pred_coeff{1.3};
 
   // Lettura dei parametri con cin
   if (cin_on) {
@@ -68,7 +65,7 @@ int main()
   // loop di generazione dei boids
   for (int i = 0; i < n; i++) {
     bds::Boid boid_i{roll_diceX(eng), roll_diceY(eng), roll_diceVx(eng),
-                     roll_diceVy(eng)}; // implicita conv double int
+                     roll_diceVy(eng)};
     flock.push_back(boid_i);
   }
 
