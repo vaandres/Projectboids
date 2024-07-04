@@ -196,7 +196,7 @@ void bds::eat(Boid const& predator, std::vector<Boid>& flock, double range)
 }
 
 // Funzione che calcola le statistiche dello stormo
-bds::Statistics bds::stats(std::vector<bds::Boid> const& flock)
+bds::Statistics bds::stats(std::vector<Boid> const& flock)
 {
   double dis_mean{};
   double dis_sigma{};
