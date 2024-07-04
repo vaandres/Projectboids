@@ -45,6 +45,7 @@ class Boid
   double absoluteVelocity() const;
 };
 
+//Classe per le statistiche
 struct Statistics
 {
   double dist_mean;
@@ -52,6 +53,8 @@ struct Statistics
   double speed_mean;
   double speed_err;
 };
+
+//Dichiarazione delle funzioni del namespace
 
 double dist(const Boid&, const Boid&);
 std::vector<Boid> neighbours(const Boid&, const std::vector<Boid>&, double);
