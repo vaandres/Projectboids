@@ -25,7 +25,7 @@ double bds::Boid::absoluteVelocity() const
 void bds::Boid::updatePosition()
 {
   position_.x += velocity_.vx / framerate;
-  position_.y += velocity_.vy / framerate; // magic number
+  position_.y += velocity_.vy / framerate;
 }
 
 // Funzione cambio velocità del Boid
@@ -158,7 +158,7 @@ bds::Velocity bds::edgeForce(Boid const& boid, unsigned int width,
   double vy{0};
 
   vx = (std::pow(1.1, -x + 80)
-        - std::pow(1.1, (x - width + 80))); // magic number
+        - std::pow(1.1, (x - width + 80)));
   vy = (std::pow(1.1, -y + 80) - std::pow(1.1, (y - height + 80)));
 
   return Velocity{vx, vy};
