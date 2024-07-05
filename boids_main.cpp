@@ -14,13 +14,12 @@ int main()
     double s{0.5};
     double a{0.1};
     double c{0.05};
-    bool Predator_on{false};
+    bool Predator_on{true};
     double e = (Predator_on) ? 2 : 0;
     double f{2.5};
-    double const Vmax{10 / bds::conv_fac}; // non cambiare
-    double const range{8};                 //[NON MODIFICARE]
     double pred_coeff{1.3};
-
+    double const range{8};                 //[NON MODIFICARE]
+    double const Vmax{10 / bds::conv_fac}; // non cambiare
     // Lettura dei parametri con cin
     if (cin_on) {
       std::cout << "Scegliere la modalità con (1) o senza predatore (0): \n";
@@ -44,10 +43,6 @@ int main()
     // selezione del font per la scrittura delle statistiche dei boids
     sf::Font font;
     font.loadFromFile("./Nexa-Heavy.ttf");
-
-    if (!font.loadFromFile("./Nexa-Heavy.ttf")) {
-      throw std::runtime_error("Impossibile caricare il font.");
-    }
 
     // creazione della finestra di sfml grafica
     unsigned int windowWidth = (1) * sf::VideoMode::getDesktopMode().width - 40;
