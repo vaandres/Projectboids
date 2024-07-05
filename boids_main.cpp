@@ -53,19 +53,23 @@ int main()
   window2.setPosition(sf::Vector2i(static_cast<int>(windowWidth) - 220,
                                    static_cast<int>(windowHeight) - 200));
 
-  // generazione delle variabili per lo spawn dei boids
+  // generazione delle variabili per lo spawn dei boids e predatore
   std::random_device r;
   std::default_random_engine eng(r());
   std::vector<bds::Boid> flock;
   std::uniform_real_distribution<> roll_diceX(20, windowWidth - 20);
   std::uniform_real_distribution<> roll_diceY(20, windowHeight - 20);
-  std::uniform_real_distribution<> roll_diceVx(-Vmax / 2, Vmax / 2);
-  std::uniform_real_distribution<> roll_diceVy(-Vmax / 2, Vmax / 2);
+  std::uniform_real_distribution<> roll_diceVx_boid(-Vmax / 2, Vmax / 2);
+  std::uniform_real_distribution<> roll_diceVy_boid(-Vmax / 2, Vmax / 2);
+  std::uniform_real_distribution<> roll_diceVx_pred(-Vmax * pred_coeff / 2,
+                                                    Vmax * pred_coeff / 2);
+  std::uniform_real_distribution<> roll_diceVy_pred(-Vmax * pred_coeff / 2,
+                                                    Vmax * pred_coeff / 2);
 
   // loop di generazione dei boids
   for (int i = 0; i < n; i++) {
-    bds::Boid boid_i{roll_diceX(eng), roll_diceY(eng), roll_diceVx(eng),
-                     roll_diceVy(eng)};
+    bds::Boid boid_i{roll_diceX(eng), roll_diceY(eng), roll_diceVx_boid(eng),
+                     roll_diceVy_boid(eng)};
 
     assert(boid_i.position().x <= windowWidth);
     assert(boid_i.position().y <= windowHeight);
@@ -78,8 +82,8 @@ int main()
   }
 
   // generazione del predatoratore
-  bds::Boid predator{roll_diceX(eng), roll_diceY(eng), roll_diceVx(eng),
-                     roll_diceVy(eng)};
+  bds::Boid predator{roll_diceX(eng), roll_diceY(eng), roll_diceVx_pred(eng),
+                     roll_diceVy_pred(eng)};
 
   assert(predator.position().x <= windowWidth);
   assert(predator.position().y <= windowHeight);
