@@ -45,6 +45,10 @@ int main()
     sf::Font font;
     font.loadFromFile("./Nexa-Heavy.ttf");
 
+    if (!font.loadFromFile("./Nexa-Heavy.ttf")) {
+      throw std::runtime_error("Impossibile caricare il font.");
+    }
+
     // creazione della finestra di sfml grafica
     unsigned int windowWidth = (1) * sf::VideoMode::getDesktopMode().width - 40;
     unsigned int windowHeight =
@@ -192,6 +196,9 @@ int main()
   } catch (const std::exception& ex) {
     std::cerr << "Errore: " << ex.what() << '\n';
     return 1;
+  } catch (...) {
+    std::cerr << "Errore imprevisto" << '\n';
+    return 2;
   }
 
   return 0;
