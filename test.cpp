@@ -550,3 +550,6 @@ TEST_CASE("Testing operator/ on Velocity")
   CHECK(c.vx == -2.5);
   CHECK(c.vy == -1);
 }
+
+
+

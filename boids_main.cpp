@@ -195,11 +195,9 @@ int main()
     }
   } catch (const std::exception& ex) {
     std::cerr << "Errore: " << ex.what() << '\n';
-    return 1;
+    return EXIT_FAILURE;
   } catch (...) {
     std::cerr << "Errore imprevisto" << '\n';
-    return 2;
+    return EXIT_FAILURE;
   }
-
-  return 0;
 }
