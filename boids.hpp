@@ -37,6 +37,7 @@ class Boid
       : position_{x, y}
       , velocity_{vx, vy}
   {}
+  Boid() = default;
 
   Position position() const;
   Velocity velocity() const;

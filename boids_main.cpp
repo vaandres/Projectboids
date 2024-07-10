@@ -62,7 +62,8 @@ int main()
     // generazione delle variabili per lo spawn dei boids e predatore
     std::random_device r;
     std::default_random_engine eng(r());
-    std::vector<bds::Boid> flock;
+    std::vector<bds::Boid> flock(
+        static_cast<std::vector<bds::Boid>::size_type>(n));
     std::uniform_real_distribution<> roll_diceX(20, windowWidth - 20);
     std::uniform_real_distribution<> roll_diceY(20, windowHeight - 20);
     std::uniform_real_distribution<> roll_diceVx_boid(-Vmax / 2, Vmax / 2);
@@ -77,18 +78,17 @@ int main()
     auto generate_boid = [&]() {
       bds::Boid boid{roll_diceX(eng), roll_diceY(eng), roll_diceVx_boid(eng),
                      roll_diceVy_boid(eng)};
+
+      assert(boid.position().x <= windowWidth);
+      assert(boid.position().y <= windowHeight);
+      assert(boid.position().x >= 0);
+      assert(boid.position().y >= 0);
+      assert(boid.absoluteVelocity() <= Vmax);
+
       return boid;
     };
 
     std::generate(flock.begin(), flock.end(), generate_boid);
-    assert(std::all_of(flock.begin(), flock.end(), [&](bds::Boid& boid_i) {
-      return boid_i.position().x <= windowWidth
-          && boid_i.position().y <= windowHeight && boid_i.position().x >= 0
-          && boid_i.position().y >= 0;
-    }));
-    assert(std::all_of(flock.begin(), flock.end(), [&](bds::Boid& boid_i) {
-      return boid_i.absoluteVelocity() <= Vmax;
-    }));
 
     // generazione del predatoratore
     bds::Boid predator{roll_diceX(eng), roll_diceY(eng), roll_diceVx_pred(eng),
@@ -118,19 +118,6 @@ int main()
       // loop di cambio di posizione dei boids. La velocità dei boids viene
       // modificata con la funzione applyRules, successivamente è limitata con
       // velocitylimit ed in infine la posizione è aggiornata con updatePosition
-      /*for (bds::Boid& boid_i : flock) {
-        bds::applyRules(boid_i, a, c, s, d, ds, e, windowWidth, windowHeight,
-                        flock, predator);
-
-        bds::velocityLimit(boid_i, Vmax);
-        assert(boid_i.absoluteVelocity() <= Vmax + 0.0001);
-
-        boid_i.updatePosition();
-        assert(boid_i.position().x <= windowWidth);
-        assert(boid_i.position().y <= windowHeight);
-        assert(boid_i.position().x >= 0);
-        assert(boid_i.position().y >= 0);
-      }*/
       std::for_each(flock.begin(), flock.end(), [&](bds::Boid& boid_i) {
         bds::applyRules(boid_i, a, c, s, d, ds, e, windowWidth, windowHeight,
                         flock, predator);
