@@ -15,7 +15,7 @@ int main()
     double a{0.1};
     double c{0.05};
     bool Predator_on{true};
-    double e = (Predator_on) ? 2 : 0;
+    double e{2};
     double f{2.5};
     double pred_coeff{1.3};
     double const range{8};                 //[NON MODIFICARE]
@@ -33,6 +33,7 @@ int main()
         std::cout
             << "Inserire in ordine : numero di boids , d , ds , s , a , c \n";
         std::cin >> n >> d >> ds >> s >> a >> c;
+        e = 0;
       }
       if (std::cin.fail()) {
         throw std::invalid_argument(
@@ -176,7 +177,7 @@ int main()
 
       // loop della finetra di statistica
       if (window2.isOpen()) {
-        bds::Statistics data = bds::stats(flock);
+        bds::Statistics data = bds::stats(flock, d);
         window2.clear(sf::Color::White);
         sf::Text text;
 

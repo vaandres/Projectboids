@@ -59,6 +59,7 @@ struct Statistics
 
 double dist(const Boid&, const Boid&);
 std::vector<Boid> neighbours(const Boid&, const std::vector<Boid>&, double);
+bool are_neighbors(const Boid&, const Boid&, double);
 Velocity separation(const Boid&, const std::vector<Boid>&, double, double);
 Velocity alignment(const Boid&, const std::vector<Boid>&, double, double);
 Velocity cohesion(const Boid&, const std::vector<Boid>&, double, double);
@@ -69,7 +70,7 @@ Velocity edgeForce(const Boid&, unsigned int, unsigned int);
 void applyRules(Boid&, double, double, double, double, double, double,
                 unsigned int, unsigned int, const std::vector<Boid>&, Boid&);
 void velocityLimit(Boid&, double);
-Statistics stats(const std::vector<Boid>&);
+Statistics stats(const std::vector<Boid>&, double);
 void rulesPred(Boid&, const std::vector<Boid>&, double, unsigned int,
                unsigned int);
 
