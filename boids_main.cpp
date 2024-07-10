@@ -59,37 +59,40 @@ int main()
     window2.setPosition(sf::Vector2i(static_cast<int>(windowWidth) - 220,
                                      static_cast<int>(windowHeight) - 200));
 
-  // generazione delle variabili per lo spawn dei boids e predatore
-  std::random_device r;
-  std::default_random_engine eng(r());
-  std::vector<bds::Boid> flock;
-  std::uniform_real_distribution<> roll_diceX(20, windowWidth - 20);
-  std::uniform_real_distribution<> roll_diceY(20, windowHeight - 20);
-  std::uniform_real_distribution<> roll_diceVx_boid(-Vmax / 2, Vmax / 2);
-  std::uniform_real_distribution<> roll_diceVy_boid(-Vmax / 2, Vmax / 2);
-  std::uniform_real_distribution<> roll_diceVx_pred(-Vmax * pred_coeff / 2,
-                                                    Vmax * pred_coeff / 2);
-  std::uniform_real_distribution<> roll_diceVy_pred(-Vmax * pred_coeff / 2,
-                                                    Vmax * pred_coeff / 2);
+    // generazione delle variabili per lo spawn dei boids e predatore
+    std::random_device r;
+    std::default_random_engine eng(r());
+    std::vector<bds::Boid> flock;
+    std::uniform_real_distribution<> roll_diceX(20, windowWidth - 20);
+    std::uniform_real_distribution<> roll_diceY(20, windowHeight - 20);
+    std::uniform_real_distribution<> roll_diceVx_boid(-Vmax / 2, Vmax / 2);
+    std::uniform_real_distribution<> roll_diceVy_boid(-Vmax / 2, Vmax / 2);
+    std::uniform_real_distribution<> roll_diceVx_pred(-Vmax * pred_coeff / 2,
+                                                      Vmax * pred_coeff / 2);
+    std::uniform_real_distribution<> roll_diceVy_pred(-Vmax * pred_coeff / 2,
+                                                      Vmax * pred_coeff / 2);
 
-  // loop di generazione dei boids
-  for (int i = 0; i < n; i++) {
-    bds::Boid boid_i{roll_diceX(eng), roll_diceY(eng), roll_diceVx_boid(eng),
+    // loop di generazione dei boids
+
+    auto generate_boid = [&]() {
+      bds::Boid boid{roll_diceX(eng), roll_diceY(eng), roll_diceVx_boid(eng),
                      roll_diceVy_boid(eng)};
+      return boid;
+    };
 
-      assert(boid_i.position().x <= windowWidth);
-      assert(boid_i.position().y <= windowHeight);
-      assert(boid_i.position().x >= 0);
-      assert(boid_i.position().y >= 0);
+    std::generate(flock.begin(), flock.end(), generate_boid);
+    assert(std::all_of(flock.begin(), flock.end(), [&](bds::Boid& boid_i) {
+      return boid_i.position().x <= windowWidth
+          && boid_i.position().y <= windowHeight && boid_i.position().x >= 0
+          && boid_i.position().y >= 0;
+    }));
+    assert(std::all_of(flock.begin(), flock.end(), [&](bds::Boid& boid_i) {
+      return boid_i.absoluteVelocity() <= Vmax;
+    }));
 
-      assert(boid_i.absoluteVelocity() <= Vmax);
-
-      flock.push_back(boid_i);
-    }
-
-  // generazione del predatoratore
-  bds::Boid predator{roll_diceX(eng), roll_diceY(eng), roll_diceVx_pred(eng),
-                     roll_diceVy_pred(eng)};
+    // generazione del predatoratore
+    bds::Boid predator{roll_diceX(eng), roll_diceY(eng), roll_diceVx_pred(eng),
+                       roll_diceVy_pred(eng)};
 
     assert(predator.position().x <= windowWidth);
     assert(predator.position().y <= windowHeight);
@@ -115,7 +118,7 @@ int main()
       // loop di cambio di posizione dei boids. La velocità dei boids viene
       // modificata con la funzione applyRules, successivamente è limitata con
       // velocitylimit ed in infine la posizione è aggiornata con updatePosition
-      for (bds::Boid& boid_i : flock) {
+      /*for (bds::Boid& boid_i : flock) {
         bds::applyRules(boid_i, a, c, s, d, ds, e, windowWidth, windowHeight,
                         flock, predator);
 
@@ -127,7 +130,20 @@ int main()
         assert(boid_i.position().y <= windowHeight);
         assert(boid_i.position().x >= 0);
         assert(boid_i.position().y >= 0);
-      }
+      }*/
+      std::for_each(flock.begin(), flock.end(), [&](bds::Boid& boid_i) {
+        bds::applyRules(boid_i, a, c, s, d, ds, e, windowWidth, windowHeight,
+                        flock, predator);
+
+        bds::velocityLimit(boid_i, Vmax);
+        assert(boid_i.absoluteVelocity() <= Vmax + 0.0001);
+
+        boid_i.updatePosition();
+        assert(boid_i.position().x <= windowWidth);
+        assert(boid_i.position().y <= windowHeight);
+        assert(boid_i.position().x >= 0);
+        assert(boid_i.position().y >= 0);
+      });
 
       // cambio di posizione del predatore. La velocità del predatore è
       // modificata con la funzione RulesPred, successivamente è limitata con
