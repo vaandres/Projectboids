@@ -155,13 +155,13 @@ int main()
       window.clear(sf::Color::White);
 
       // i boids vengono disegnati sulla finestra grafica
-      for (bds::Boid& b : flock) {
+      std::for_each(flock.begin(), flock.end(), [&](bds::Boid& boid_i) {
         sf::CircleShape Boid_point(2);
         Boid_point.setFillColor(sf::Color::Black);
-        Boid_point.setPosition(static_cast<float>(b.position().x),
-                               static_cast<float>(b.position().y));
+        Boid_point.setPosition(static_cast<float>(boid_i.position().x),
+                               static_cast<float>(boid_i.position().y));
         window.draw(Boid_point);
-      }
+      });
 
       // il predatore viene disegnato sulla finestra grafica
       if (Predator_on) {
@@ -183,11 +183,11 @@ int main()
 
         // Stampa delle statistiche sulla finestra
         text.setFont(font);
-        text.setString("Avarage velocity: " + std::to_string(data.speed_mean)
-                       + " cm/s " + "\n\n" + "Standard deviation: "
+        text.setString("Distanza media: " + std::to_string(data.speed_mean)
+                       + " cm/s " + "\n\n" + "Deviazione standard: "
                        + std::to_string(data.speed_err) + " cm/s " + "\n\n"
-                       + "Avarage distance: " + std::to_string(data.dist_mean)
-                       + " cm " + "\n\n" + "Standard deviation: "
+                       + "Velocità media: " + std::to_string(data.dist_mean)
+                       + " cm " + "\n\n" + "Deviazione standard: "
                        + std::to_string(data.dist_err) + " cm ");
         text.setCharacterSize(7);
         text.setFillColor(sf::Color::Black);
