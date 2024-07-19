@@ -25,9 +25,8 @@ int main()
       std::cout << "Scegliere la modalità con (1) o senza predatore (0): \n";
       std::cin >> Predator_on;
       if (Predator_on == true) {
-        std::cout
-            << "Inserire in ordine : numero di boids , d , ds , s , a , c , "
-               "e , f , pred_coeff\n";
+        std::cout << "Inserire in ordine : numero di boids , d , ds , s , a , "
+                     "c , e , f , pred_coeff \n";
         std::cin >> n >> d >> ds >> s >> a >> c >> e >> f >> pred_coeff;
       } else {
         std::cout
@@ -36,6 +35,12 @@ int main()
         e = 0;
       }
       if (std::cin.fail()) {
+        throw std::invalid_argument(
+            "Input non valido. Si prega di inserire i valori corretti.");
+      }
+
+      if (n < 0 || d < 0 || ds < 0 || s < 0 || a < 0 || c < 0 || e < 0 || f < 0
+          || pred_coeff < 0) {
         throw std::invalid_argument(
             "Input non valido. Si prega di inserire i valori corretti.");
       }
@@ -80,11 +85,11 @@ int main()
       bds::Boid boid{roll_diceX(eng), roll_diceY(eng), roll_diceVx_boid(eng),
                      roll_diceVy_boid(eng)};
 
-      assert(boid.position().x <= windowWidth);
-      assert(boid.position().y <= windowHeight);
-      assert(boid.position().x >= 0);
-      assert(boid.position().y >= 0);
-      assert(boid.absoluteVelocity() <= Vmax);
+      assert(boid.get_position().x <= windowWidth);
+      assert(boid.get_position().y <= windowHeight);
+      assert(boid.get_position().x >= 0);
+      assert(boid.get_position().y >= 0);
+      assert(boid.absolute_velocity() <= Vmax);
 
       return boid;
     };
@@ -95,12 +100,12 @@ int main()
     bds::Boid predator{roll_diceX(eng), roll_diceY(eng), roll_diceVx_pred(eng),
                        roll_diceVy_pred(eng)};
 
-    assert(predator.position().x <= windowWidth);
-    assert(predator.position().y <= windowHeight);
-    assert(predator.position().x >= 0);
-    assert(predator.position().y >= 0);
+    assert(predator.get_position().x <= windowWidth);
+    assert(predator.get_position().y <= windowHeight);
+    assert(predator.get_position().x >= 0);
+    assert(predator.get_position().y >= 0);
 
-    assert(predator.absoluteVelocity() <= Vmax * pred_coeff);
+    assert(predator.absolute_velocity() <= Vmax * pred_coeff);
 
     // inizio gameloop di sfml
     while (window.isOpen() | window2.isOpen()) {
@@ -117,36 +122,39 @@ int main()
       }
 
       // loop di cambio di posizione dei boids. La velocità dei boids viene
-      // modificata con la funzione applyRules, successivamente è limitata con
-      // velocitylimit ed in infine la posizione è aggiornata con updatePosition
+      // modificata con la funzione apply_rules_boids, successivamente è
+      // limitata con velocity_limit ed in infine la posizione è aggiornata con
+      // updatePosition
       std::for_each(flock.begin(), flock.end(), [&](bds::Boid& boid_i) {
-        bds::applyRules(boid_i, a, c, s, d, ds, e, windowWidth, windowHeight,
-                        flock, predator);
+        bds::apply_rules_boids(boid_i, a, c, s, d, ds, e, windowWidth,
+                               windowHeight, flock, predator);
 
-        bds::velocityLimit(boid_i, Vmax);
-        assert(boid_i.absoluteVelocity() <= Vmax + 0.0001);
+        bds::velocity_limit(boid_i, Vmax);
+        assert(boid_i.absolute_velocity() <= Vmax + 0.0001);
 
-        boid_i.updatePosition();
-        assert(boid_i.position().x <= windowWidth);
-        assert(boid_i.position().y <= windowHeight);
-        assert(boid_i.position().x >= 0);
-        assert(boid_i.position().y >= 0);
+        boid_i.update_position();
+        assert(boid_i.get_position().x <= windowWidth);
+        assert(boid_i.get_position().y <= windowHeight);
+        assert(boid_i.get_position().x >= 0);
+        assert(boid_i.get_position().y >= 0);
       });
 
       // cambio di posizione del predatore. La velocità del predatore è
-      // modificata con la funzione RulesPred, successivamente è limitata con
-      // velocitylimit ed in infine la posizione è aggiornata con updatePosition
+      // modificata con la funzione apply_rules_predator, successivamente è
+      // limitata con velocity_limit ed in infine la posizione è aggiornata con
+      // updatePosition
       if (Predator_on) {
-        bds::rulesPred(predator, flock, f, windowWidth, windowHeight);
+        bds::apply_rules_predator(predator, flock, f, windowWidth,
+                                  windowHeight);
 
-        bds::velocityLimit(predator, Vmax * pred_coeff);
-        assert(predator.absoluteVelocity() <= Vmax * pred_coeff + 0.0001);
+        bds::velocity_limit(predator, Vmax * pred_coeff);
+        assert(predator.absolute_velocity() <= Vmax * pred_coeff + 0.0001);
 
-        predator.updatePosition();
-        assert(predator.position().x <= windowWidth);
-        assert(predator.position().y <= windowHeight);
-        assert(predator.position().x >= 0);
-        assert(predator.position().y >= 0);
+        predator.update_position();
+        assert(predator.get_position().x <= windowWidth);
+        assert(predator.get_position().y <= windowHeight);
+        assert(predator.get_position().x >= 0);
+        assert(predator.get_position().y >= 0);
 
         bds::eat(predator, flock, range);
       }
@@ -158,8 +166,8 @@ int main()
       std::for_each(flock.begin(), flock.end(), [&](bds::Boid& boid_i) {
         sf::CircleShape Boid_point(2);
         Boid_point.setFillColor(sf::Color::Black);
-        Boid_point.setPosition(static_cast<float>(boid_i.position().x),
-                               static_cast<float>(boid_i.position().y));
+        Boid_point.setPosition(static_cast<float>(boid_i.get_position().x),
+                               static_cast<float>(boid_i.get_position().y));
         window.draw(Boid_point);
       });
 
@@ -167,8 +175,9 @@ int main()
       if (Predator_on) {
         sf::CircleShape predator_point(range - 4);
         predator_point.setFillColor(sf::Color::Red);
-        predator_point.setPosition(static_cast<float>(predator.position().x),
-                                   static_cast<float>(predator.position().y));
+        predator_point.setPosition(
+            static_cast<float>(predator.get_position().x),
+            static_cast<float>(predator.get_position().y));
         window.draw(predator_point);
       }
 
