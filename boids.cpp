@@ -170,16 +170,21 @@ bds::Velocity bds::edge_force(Boid const& boid, unsigned int width,
 }
 
 // Funzione che applica le regole che determinano il movimento del boid
-void bds::apply_rules_boids(Boid& boid, double a, double c, double s, double d,
-                            double ds, double e, unsigned int windowWidth,
-                            unsigned int windowHeight,
-                            std::vector<Boid> const& flock, Boid& predator)
+bds::Velocity bds::new_vel(Boid& boid, double a, double c, double s, double d,
+                           double ds, double e, unsigned int windowWidth,
+                           unsigned int windowHeight,
+                           std::vector<Boid> const& flock, Boid& predator)
 {
   auto neighbours = bds::neighbours(boid, flock, d);
-  boid.set_velocity(boid.get_velocity()
-                    + edge_force(boid, windowWidth, windowHeight)
-                    + alignment(boid, neighbours, a) + separation(boid, neighbours, ds, s)
-                    + cohesion(boid, neighbours, c) + escape(predator, boid, d, e));
+  return edge_force(boid, windowWidth, windowHeight)
+       + alignment(boid, neighbours, a) + separation(boid, neighbours, ds, s)
+       + cohesion(boid, neighbours, c) + escape(predator, boid, d, e);
+  /*  boid.set_velocity(boid.get_velocity()
+                     + edge_force(boid, windowWidth, windowHeight)
+                     + alignment(boid, neighbours, a) + separation(boid,
+     neighbours, ds, s)
+                     + cohesion(boid, neighbours, c) + escape(predator, boid, d,
+     e)); */
 }
 
 // Funzione che applica le regole che determinano il movimento del predatore

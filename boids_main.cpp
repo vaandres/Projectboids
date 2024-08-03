@@ -7,7 +7,7 @@ int main()
 {
   try {
     // parametri in input
-    bool cin_on{true};
+    bool cin_on{false};
     int n{100};
     double d{90};
     double ds{15};
@@ -48,7 +48,7 @@ int main()
 
     // selezione del font per la scrittura delle statistiche dei boids
     sf::Font font;
-    font.loadFromFile("./Nexa-Heavy.ttf");
+    font.loadFromFile("../Nexa-Heavy.ttf");
 
     // creazione della finestra di sfml grafica
     unsigned int windowWidth = (1) * sf::VideoMode::getDesktopMode().width - 40;
@@ -125,39 +125,48 @@ int main()
       // modificata con la funzione apply_rules_boids, successivamente è
       // limitata con velocity_limit ed in infine la posizione è aggiornata con
       // updatePosition
+      std::vector<bds::Velocity> velocities;
       std::for_each(flock.begin(), flock.end(), [&](bds::Boid& boid_i) {
-        bds::apply_rules_boids(boid_i, a, c, s, d, ds, e, windowWidth,
-                               windowHeight, flock, predator);
+        velocities.push_back(new_vel(
+            boid_i, a, c, s, d, ds, e, windowWidth, windowHeight, flock,
+            predator)); // da sommare poi a tutte le velocita e poi undate pos
+        /*        bds::apply_rules_boids(boid_i, a, c, s, d, ds, e, windowWidth,
+                                      windowHeight, flock, predator); */
 
-        bds::velocity_limit(boid_i, Vmax);
+        bds::velocity_limit(boid_i, Vmax); // va dopo
         assert(boid_i.absolute_velocity() <= Vmax + 0.0001);
 
-        boid_i.update_position();
+       // boid_i.update_position(); // va dopo
         assert(boid_i.get_position().x <= windowWidth);
         assert(boid_i.get_position().y <= windowHeight);
         assert(boid_i.get_position().x >= 0);
         assert(boid_i.get_position().y >= 0);
       });
-
-      // cambio di posizione del predatore. La velocità del predatore è
-      // modificata con la funzione apply_rules_predator, successivamente è
-      // limitata con velocity_limit ed in infine la posizione è aggiornata con
-      // updatePosition
-      if (Predator_on) {
-        bds::apply_rules_predator(predator, flock, f, windowWidth,
-                                  windowHeight);
-
-        bds::velocity_limit(predator, Vmax * pred_coeff);
-        assert(predator.absolute_velocity() <= Vmax * pred_coeff + 0.0001);
-
-        predator.update_position();
-        assert(predator.get_position().x <= windowWidth);
-        assert(predator.get_position().y <= windowHeight);
-        assert(predator.get_position().x >= 0);
-        assert(predator.get_position().y >= 0);
-
-        bds::eat(predator, flock, range);
+      int i=0;
+      for (auto t= flock.begin(); t != flock.end(); t++,i++){
+            (*t).set_velocity((*t).get_velocity()+velocities[i]);
+        (*t).update_position();
       }
+
+        // cambio di posizione del predatore. La velocità del predatore è
+        // modificata con la funzione apply_rules_predator, successivamente è
+        // limitata con velocity_limit ed in infine la posizione è aggiornata
+        // con updatePosition
+        if (Predator_on) {
+          bds::apply_rules_predator(predator, flock, f, windowWidth,
+                                    windowHeight);
+
+          bds::velocity_limit(predator, Vmax * pred_coeff);
+          assert(predator.absolute_velocity() <= Vmax * pred_coeff + 0.0001);
+
+          predator.update_position();
+          assert(predator.get_position().x <= windowWidth);
+          assert(predator.get_position().y <= windowHeight);
+          assert(predator.get_position().x >= 0);
+          assert(predator.get_position().y >= 0);
+
+          bds::eat(predator, flock, range);
+        }
 
       // la finestra grafica viene colorata di bianco
       window.clear(sf::Color::White);
