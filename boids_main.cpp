@@ -126,7 +126,6 @@ int main()
       // modificata con la funzione apply_rules_boids, successivamente è
       // limitata con velocity_limit ed in infine la posizione è aggiornata con
       // updatePosition
-      std::vector<bds::Velocity> velocities;
       std::for_each(flock.begin(), flock.end(), [&](bds::Boid& boid_i) {
         new_vel(
             boid_i, a, c, s, d, ds, e, windowWidth, windowHeight, copy_of_flock,
