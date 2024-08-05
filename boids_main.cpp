@@ -12,8 +12,8 @@ int main()
     double d{90};
     double ds{15};
     double s{0.5};
-    double a{0.1};
-    double c{0.05};
+    double a{0.09};
+    double c{0.005};
     bool Predator_on{true};
     double e{2};
     double f{2.5};
@@ -95,6 +95,7 @@ int main()
     };
 
     std::generate(flock.begin(), flock.end(), generate_boid);
+    std::vector<bds::Boid> copy_of_flock{flock};
 
     // generazione del predatoratore
     bds::Boid predator{roll_diceX(eng), roll_diceY(eng), roll_diceVx_pred(eng),
@@ -127,46 +128,45 @@ int main()
       // updatePosition
       std::vector<bds::Velocity> velocities;
       std::for_each(flock.begin(), flock.end(), [&](bds::Boid& boid_i) {
-        velocities.push_back(new_vel(
-            boid_i, a, c, s, d, ds, e, windowWidth, windowHeight, flock,
-            predator)); // da sommare poi a tutte le velocita e poi undate pos
+        new_vel(
+            boid_i, a, c, s, d, ds, e, windowWidth, windowHeight, copy_of_flock,
+            predator); // da sommare poi a tutte le velocita e poi undate pos
         /*        bds::apply_rules_boids(boid_i, a, c, s, d, ds, e, windowWidth,
                                       windowHeight, flock, predator); */
 
         bds::velocity_limit(boid_i, Vmax); // va dopo
         assert(boid_i.absolute_velocity() <= Vmax + 0.0001);
 
-       // boid_i.update_position(); // va dopo
+        boid_i.update_position();
+
+        // boid_i.update_position(); // va dopo
         assert(boid_i.get_position().x <= windowWidth);
         assert(boid_i.get_position().y <= windowHeight);
         assert(boid_i.get_position().x >= 0);
         assert(boid_i.get_position().y >= 0);
       });
-      int i=0;
-      for (auto t= flock.begin(); t != flock.end(); t++,i++){
-            (*t).set_velocity((*t).get_velocity()+velocities[i]);
-        (*t).update_position();
+
+      copy_of_flock = flock;
+
+      // cambio di posizione del predatore. La velocità del predatore è
+      // modificata con la funzione apply_rules_predator, successivamente è
+      // limitata con velocity_limit ed in infine la posizione è aggiornata
+      // con updatePosition
+      if (Predator_on) {
+        bds::apply_rules_predator(predator, flock, f, windowWidth,
+                                  windowHeight);
+
+        bds::velocity_limit(predator, Vmax * pred_coeff);
+        assert(predator.absolute_velocity() <= Vmax * pred_coeff + 0.0001);
+
+        predator.update_position();
+        assert(predator.get_position().x <= windowWidth);
+        assert(predator.get_position().y <= windowHeight);
+        assert(predator.get_position().x >= 0);
+        assert(predator.get_position().y >= 0);
+
+        bds::eat(predator, flock, range);
       }
-
-        // cambio di posizione del predatore. La velocità del predatore è
-        // modificata con la funzione apply_rules_predator, successivamente è
-        // limitata con velocity_limit ed in infine la posizione è aggiornata
-        // con updatePosition
-        if (Predator_on) {
-          bds::apply_rules_predator(predator, flock, f, windowWidth,
-                                    windowHeight);
-
-          bds::velocity_limit(predator, Vmax * pred_coeff);
-          assert(predator.absolute_velocity() <= Vmax * pred_coeff + 0.0001);
-
-          predator.update_position();
-          assert(predator.get_position().x <= windowWidth);
-          assert(predator.get_position().y <= windowHeight);
-          assert(predator.get_position().x >= 0);
-          assert(predator.get_position().y >= 0);
-
-          bds::eat(predator, flock, range);
-        }
 
       // la finestra grafica viene colorata di bianco
       window.clear(sf::Color::White);

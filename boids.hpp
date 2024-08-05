@@ -67,7 +67,7 @@ Velocity escape(const Boid&, const Boid&, double, double);
 Velocity follow(const Boid&, const std::vector<Boid>&, double);
 void eat(const Boid&, std::vector<Boid>&, double);
 Velocity edge_force(const Boid&, unsigned int, unsigned int);
-Velocity new_vel(Boid&, double, double, double, double, double, double,
+void new_vel(Boid&, double, double, double, double, double, double,
                        unsigned int, unsigned int, const std::vector<Boid>&,
                        Boid&);
 void velocity_limit(Boid&, double);
