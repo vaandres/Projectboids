@@ -127,7 +127,7 @@ int main()
       // limitata con velocity_limit ed in infine la posizione è aggiornata con
       // updatePosition
       std::for_each(flock.begin(), flock.end(), [&](bds::Boid& boid_i) {
-        new_vel(
+        apply_rules(
             boid_i, a, c, s, d, ds, e, windowWidth, windowHeight, copy_of_flock,
             predator); // da sommare poi a tutte le velocita e poi undate pos
         /*        bds::apply_rules_boids(boid_i, a, c, s, d, ds, e, windowWidth,
