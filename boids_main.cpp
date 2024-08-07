@@ -15,7 +15,7 @@ int main()
     double a{0.09};
     double c{0.005};
     bool Predator_on{true};
-    double e{2};
+    double e=(Predator_on)?2:0;
     double f{2.5};
     double pred_coeff{1.3};
     double const range{8};                 //[NON MODIFICARE]
@@ -48,7 +48,7 @@ int main()
 
     // selezione del font per la scrittura delle statistiche dei boids
     sf::Font font;
-    font.loadFromFile("../Nexa-Heavy.ttf");
+    font.loadFromFile("./Nexa-Heavy.ttf");
 
     // creazione della finestra di sfml grafica
     unsigned int windowWidth = (1) * sf::VideoMode::getDesktopMode().width - 40;
