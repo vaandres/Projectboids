@@ -62,55 +62,57 @@ bool bds::are_neighbors(bds::Boid const& boid_1, bds::Boid const& boid_2,
   return distance(boid_1, boid_2) < d;
 }
 
+// Base rules alternative
+std::array<bds::Velocity, 3>
+bds::accumulator(Boid const& boid_1, std::vector<Boid> const& neighbours,
+                 double ds)
+{
+  std::array<Velocity, 3> accumulated =
+      std::accumulate( // perchè non serve bds nel corpo dell funz?
+          neighbours.begin(), neighbours.end(), std::array<Velocity, 3>{},
+          [&boid_1, ds](std::array<Velocity, 3> acc, Boid const& boid_2) {
+            if (distance(boid_1, boid_2) < ds) {
+              acc[0].vx += (boid_2.get_position().x - boid_1.get_position().x);
+              acc[0].vy += (boid_2.get_position().y - boid_1.get_position().y);
+            }
+            acc[1] = acc[1] + boid_2.get_velocity();
+            acc[2].vx += boid_2.get_position().x; // cheat in raltà posizioni
+            acc[2].vy += boid_2.get_position().y;
+            return acc;
+          });
+  return accumulated;
+}
+
 // Regola di separazione
-bds::Velocity bds::separation(Boid const& boid_1,
-                              std::vector<Boid> const& neighbours, double ds,
+bds::Velocity bds::separation(std::array<bds::Velocity, 3> const& accumulated,
                               double s)
 {
-  Velocity sep_vel = std::accumulate(
-      neighbours.begin(), neighbours.end(), Velocity{0, 0},
-      [&boid_1, ds](Velocity acc, Boid const& boid_2) {
-        if (distance(boid_1, boid_2) < ds) {
-          acc.vx += (boid_2.get_position().x - boid_1.get_position().x);
-          acc.vy += (boid_2.get_position().y - boid_1.get_position().y);
-        }
-        return acc;
-      });
+  Velocity sep_vel = accumulated[0];
 
   return sep_vel * -s;
 }
 
-// Regola di allineamento
 bds::Velocity bds::alignment(Boid const& boid_1,
-                             std::vector<Boid> const& neighbours, double a)
+                             std::vector<Boid> const& neighbours,
+                             std::array<bds::Velocity, 3> const& accumulated,
+                             double a)
 {
   if (neighbours.empty())
     return {0, 0};
-  Velocity alig_vel =
-      std::accumulate(neighbours.begin(), neighbours.end(), Velocity{0, 0},
-                      [](Velocity acc, Boid const& boid_2) {
-                        return acc + boid_2.get_velocity();
-                      })
-          / static_cast<double>(neighbours.size())
-      - boid_1.get_velocity();
+  Velocity alig_vel = accumulated[1] / static_cast<double>(neighbours.size())
+                    - boid_1.get_velocity();
   return alig_vel * a;
 }
 
-// Regola di coesione
 bds::Velocity bds::cohesion(Boid const& boid_1,
-                            std::vector<Boid> const& neighbours, double c)
+                            std::vector<Boid> const& neighbours,std::array<bds::Velocity, 3> const& accumulated, double c)
 {
   if (neighbours.empty()) {
     return {0, 0};
   }
   Position mass_c =
-      std::accumulate(neighbours.begin(), neighbours.end(), Position{0, 0},
-                      [&boid_1](Position acc, Boid const& boid_2) {
-                        acc.x += boid_2.get_position().x;
-                        acc.y += boid_2.get_position().y;
-                        return acc;
-                      })
-      / static_cast<double>(neighbours.size());
+     {accumulated[2].vx, accumulated[2].vy};
+   mass_c = mass_c / static_cast<double>(neighbours.size());
   Velocity coh_vel{0, 0};
   coh_vel.vx = (mass_c.x - boid_1.get_position().x);
   coh_vel.vy = (mass_c.y - boid_1.get_position().y);
@@ -121,8 +123,11 @@ bds::Velocity bds::cohesion(Boid const& boid_1,
 bds::Velocity bds::escape(Boid const& predator, Boid const& boid, double d,
                           double e)
 {
+  
   std::vector<Boid> pred = {predator};
-  return separation(boid, pred, d, e);
+  auto accumulated = accumulator(boid, pred, 0);
+  return separation(accumulated, e);
+
 }
 
 // Regola di inseguimento
@@ -176,13 +181,11 @@ void bds::apply_rules(Boid& boid, double a, double c, double s, double d,
                       Boid& predator)
 {
   auto neighbours = bds::neighbours(boid, flock, d);
-  // return edge_force(boid, windowWidth, windowHeight)
-  //      + alignment(boid, neighbours, a) + separation(boid, neighbours, ds, s)
-  //      + cohesion(boid, neighbours, c) + escape(predator, boid, d, e);
+ auto accumulated = accumulator(boid, neighbours, ds);
   boid.set_velocity(
       boid.get_velocity() + edge_force(boid, windowWidth, windowHeight)
-      + alignment(boid, neighbours, a) + separation(boid, neighbours, ds, s)
-      + cohesion(boid, neighbours, c) + escape(predator, boid, d, e));
+      + alignment(boid, neighbours,accumulated, a) + separation(accumulated, s)
+      + cohesion(boid, neighbours,accumulated, c) + escape(predator, boid, d, e) );
 }
 
 // Funzione che applica le regole che determinano il movimento del predatore

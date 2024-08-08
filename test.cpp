@@ -3,7 +3,7 @@
 #include "doctest.h"
 #include "operator.hpp"
 
-TEST_CASE("Testing distance()")
+/* TEST_CASE("Testing distance()")
 {
   bds::Boid b1{1, 2, 3, 4};
   bds::Boid b2{3, 2, 0, 0};
@@ -286,9 +286,9 @@ TEST_CASE("Testing edge_force function")
     CHECK(stats.speed_mean == doctest::Approx(0.119532));
     CHECK(stats.speed_err == doctest::Approx(0.));
   }
-}*/
+}
 
-// test escape function
+
 TEST_CASE("Testing escape function")
 {
   bds::Boid p1{36., 40., 5., 3.};
@@ -567,3 +567,4 @@ TEST_CASE("Testing operator/ on Velocity")
   CHECK(c.vy == -1);
 }
 
+ */

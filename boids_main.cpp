@@ -7,14 +7,14 @@ int main()
 {
   try {
     // parametri in input
-    bool cin_on{true};
-    int n{100};
+    bool cin_on{false};
+    int n{700};
     double d{90};
     double ds{15};
     double s{0.5};
-    double a{0.09};
-    double c{0.005};
-    bool Predator_on{true};
+    double a{0.1};
+    double c{0.015};
+    bool Predator_on{false};
     double e = (Predator_on) ? 2 : 0;
     double f{2.5};
     double pred_coeff{1.3};
