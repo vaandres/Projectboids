@@ -238,7 +238,7 @@ TEST_CASE("Testing edge_force function")
   }
 }
 
-/*TEST_CASE("Testing stats")
+TEST_CASE("Testing stats")
 {
   bds::Boid b1{0, 70, 2.4, 2};
   bds::Boid b2{64, 21, -4, -2.1};
@@ -286,7 +286,7 @@ TEST_CASE("Testing edge_force function")
     CHECK(stats.speed_mean == doctest::Approx(0.119532));
     CHECK(stats.speed_err == doctest::Approx(0.));
   }
-}*/
+}
 
 // test escape function
 TEST_CASE("Testing escape function")

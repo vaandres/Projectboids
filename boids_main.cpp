@@ -194,16 +194,16 @@ int main()
 
       // loop della finetra di statistica
       if (window2.isOpen()) {
-        bds::Statistics data = bds::stats(flock, d);
+        bds::Statistics data = bds::stats(flock);
         window2.clear(sf::Color::White);
         sf::Text text;
 
         // Stampa delle statistiche sulla finestra
         text.setFont(font);
-        text.setString("Distanza media: " + std::to_string(data.speed_mean)
+        text.setString("Velocità media: " + std::to_string(data.speed_mean)
                        + " cm/s " + "\n\n" + "Deviazione standard: "
                        + std::to_string(data.speed_err) + " cm/s " + "\n\n"
-                       + "Velocità media: " + std::to_string(data.dist_mean)
+                       + "Distanza media: " + std::to_string(data.dist_mean)
                        + " cm " + "\n\n" + "Deviazione standard: "
                        + std::to_string(data.dist_err) + " cm ");
         text.setCharacterSize(7);

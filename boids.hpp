@@ -59,7 +59,6 @@ struct Statistics
 
 double distance(const Boid&, const Boid&);
 std::vector<Boid> neighbours(const Boid&, const std::vector<Boid>&, double);
-bool are_neighbors(const Boid&, const Boid&, double);
 Velocity separation(const Boid&, const std::vector<Boid>&, double, double);
 Velocity alignment(const Boid&, const std::vector<Boid>&, double);
 Velocity cohesion(const Boid&, const std::vector<Boid>&, double);
@@ -68,10 +67,9 @@ Velocity follow(const Boid&, const std::vector<Boid>&, double);
 void eat(const Boid&, std::vector<Boid>&, double);
 Velocity edge_force(const Boid&, unsigned int, unsigned int);
 void apply_rules(Boid&, double, double, double, double, double, double,
-                       unsigned int, unsigned int, const std::vector<Boid>&,
-                       Boid&);
+                 unsigned int, unsigned int, const std::vector<Boid>&, Boid&);
 void velocity_limit(Boid&, double);
-Statistics stats(const std::vector<Boid>&, double);
+Statistics stats(const std::vector<Boid>&);
 void apply_rules_predator(Boid&, const std::vector<Boid>&, double, unsigned int,
                           unsigned int);
 

@@ -55,13 +55,6 @@ std::vector<bds::Boid> bds::neighbours(Boid const& boid_1,
   return neighbours;
 }
 
-// Funzione che verifica se due Boids sono vicini
-bool bds::are_neighbors(bds::Boid const& boid_1, bds::Boid const& boid_2,
-                        double d)
-{
-  return distance(boid_1, boid_2) < d;
-}
-
 // Regola di separazione
 bds::Velocity bds::separation(Boid const& boid_1,
                               std::vector<Boid> const& neighbours, double ds,
@@ -205,14 +198,13 @@ void bds::eat(Boid const& predator, std::vector<Boid>& flock, double range)
 }
 
 // Funzione che calcola le statistiche dello stormo
-bds::Statistics bds::stats(std::vector<Boid> const& flock, double d)
+bds::Statistics bds::stats(std::vector<Boid> const& flock)
 {
   int n_boids = static_cast<int>(flock.size());
   double sum_dist{};
   double sum_dist2{};
   double sum_speed{};
   double sum_speed2{};
-  int neighbours_count{};
 
   if (n_boids == 0)
     return {0., 0., 0., 0.};
@@ -228,18 +220,6 @@ bds::Statistics bds::stats(std::vector<Boid> const& flock, double d)
                    * conv_fac * conv_fac;
       }
     }
-    // sum_dist of the distance between the  neighbours boids
-
-    /*for (auto b1_iter = flock.begin(); b1_iter != flock.end(); ++b1_iter) {
-      for (auto b2_iter = b1_iter + 1; b2_iter != flock.end(); ++b2_iter) {
-        if (are_neighbors(*b1_iter, *b2_iter, d)) {
-          double dist = distance(*b1_iter, *b2_iter);
-          sum_dist += dist * conv_fac;
-          sum_dist2 += dist * dist * conv_fac * conv_fac;
-          neighbours_count++;
-        }
-      }
-    }*/
 
     std::array<double, 2> speeds = std::accumulate(
         flock.begin(), flock.end(), std::array<double, 2>{},
@@ -250,26 +230,12 @@ bds::Statistics bds::stats(std::vector<Boid> const& flock, double d)
         });
 
     sum_speed  = speeds[0] * conv_fac;
-    sum_speed2 = speeds[1] * conv_fac;
-    /*
-        sum_speed = std::accumulate(flock.begin(), flock.end(), 0.0,
-                                    [](double acc, Boid const& boid) {
-                                      return acc + boid.absolute_velocity();
-                                    })
-                  * conv_fac;
-
-        sum_speed2 = std::accumulate(flock.begin(), flock.end(), 0.0,
-                                     [](double acc, Boid const& boid) {
-                                       return acc
-                                            + boid.absolute_velocity()
-                                                  * boid.absolute_velocity();
-                                     })
-                   * conv_fac * conv_fac; */
+    sum_speed2 = speeds[1] * conv_fac * conv_fac;
   }
 
-  const double dist_mean = sum_dist / neighbours_count;
+  const double dist_mean = sum_dist / (n_boids * (n_boids - 1) / 2);
   const double dist_err =
-      std::sqrt(std::abs(sum_dist2 / neighbours_count - dist_mean * dist_mean));
+      std::sqrt(std::abs(sum_dist2 / (n_boids * (n_boids - 1) / 2) - dist_mean * dist_mean));
   const double speed_mean = sum_speed / n_boids;
   const double speed_err =
       std::sqrt(std::abs(sum_speed2 / n_boids - speed_mean * speed_mean));
