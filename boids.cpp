@@ -221,16 +221,16 @@ bds::Statistics bds::stats(std::vector<Boid> const& flock, double d)
     return {0., 0., flock[0].absolute_velocity() * conv_fac, 0.};
   }
   if (n_boids > 1) {
-    /*for (auto b1_iter = flock.begin(); b1_iter != flock.end(); ++b1_iter) {
+    for (auto b1_iter = flock.begin(); b1_iter != flock.end(); ++b1_iter) {
       for (auto b2_iter = b1_iter + 1; b2_iter != flock.end(); ++b2_iter) {
         sum_dist += distance(*b1_iter, *b2_iter) * conv_fac;
         sum_dist2 += distance(*b1_iter, *b2_iter) * distance(*b1_iter, *b2_iter)
                    * conv_fac * conv_fac;
       }
-    }*/
+    }
     // sum_dist of the distance between the  neighbours boids
 
-    for (auto b1_iter = flock.begin(); b1_iter != flock.end(); ++b1_iter) {
+    /*for (auto b1_iter = flock.begin(); b1_iter != flock.end(); ++b1_iter) {
       for (auto b2_iter = b1_iter + 1; b2_iter != flock.end(); ++b2_iter) {
         if (are_neighbors(*b1_iter, *b2_iter, d)) {
           double dist = distance(*b1_iter, *b2_iter);
@@ -239,7 +239,7 @@ bds::Statistics bds::stats(std::vector<Boid> const& flock, double d)
           neighbours_count++;
         }
       }
-    }
+    }*/
 
     std::array<double, 2> speeds = std::accumulate(
         flock.begin(), flock.end(), std::array<double, 2>{},
