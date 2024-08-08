@@ -7,7 +7,7 @@ int main()
 {
   try {
     // parametri in input
-    bool cin_on{false};
+    bool cin_on{true};
     int n{100};
     double d{90};
     double ds{15};
@@ -15,7 +15,7 @@ int main()
     double a{0.09};
     double c{0.005};
     bool Predator_on{true};
-    double e=(Predator_on)?2:0;
+    double e = (Predator_on) ? 2 : 0;
     double f{2.5};
     double pred_coeff{1.3};
     double const range{8};                 //[NON MODIFICARE]
@@ -32,7 +32,6 @@ int main()
         std::cout
             << "Inserire in ordine : numero di boids , d , ds , s , a , c \n";
         std::cin >> n >> d >> ds >> s >> a >> c;
-        e = 0;
       }
       if (std::cin.fail()) {
         throw std::invalid_argument(
@@ -95,7 +94,6 @@ int main()
     };
 
     std::generate(flock.begin(), flock.end(), generate_boid);
-    std::vector<bds::Boid> copy_of_flock{flock};
 
     // generazione del predatoratore
     bds::Boid predator{roll_diceX(eng), roll_diceY(eng), roll_diceVx_pred(eng),
@@ -126,6 +124,8 @@ int main()
       // modificata con la funzione apply_rules_boids, successivamente è
       // limitata con velocity_limit ed in infine la posizione è aggiornata con
       // updatePosition
+      std::vector<bds::Boid> copy_of_flock{flock};
+
       std::for_each(flock.begin(), flock.end(), [&](bds::Boid& boid_i) {
         apply_rules(
             boid_i, a, c, s, d, ds, e, windowWidth, windowHeight, copy_of_flock,

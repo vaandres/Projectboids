@@ -567,12 +567,3 @@ TEST_CASE("Testing operator/ on Velocity")
   CHECK(c.vy == -1);
 }
 
-/*TEST_CASE("Testing throws")
-{
-  SUBCASE("Checking throws for negative values input")
-  {}
-  SUBCASE("Checking throws for char input")
-  {}
-  SUBCASE("Checking correct functioning")
-  {}
-}*/
