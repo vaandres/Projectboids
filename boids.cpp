@@ -105,14 +105,15 @@ bds::Velocity bds::alignment(Boid const& boid_1,
 }
 
 bds::Velocity bds::cohesion(Boid const& boid_1,
-                            std::vector<Boid> const& neighbours,std::array<bds::Velocity, 3> const& accumulated, double c)
+                            std::vector<Boid> const& neighbours,
+                            std::array<bds::Velocity, 3> const& accumulated,
+                            double c)
 {
   if (neighbours.empty()) {
     return {0, 0};
   }
-  Position mass_c =
-     {accumulated[2].vx, accumulated[2].vy};
-   mass_c = mass_c / static_cast<double>(neighbours.size());
+  Position mass_c = {accumulated[2].vx, accumulated[2].vy};
+  mass_c          = mass_c / static_cast<double>(neighbours.size());
   Velocity coh_vel{0, 0};
   coh_vel.vx = (mass_c.x - boid_1.get_position().x);
   coh_vel.vy = (mass_c.y - boid_1.get_position().y);
@@ -123,11 +124,9 @@ bds::Velocity bds::cohesion(Boid const& boid_1,
 bds::Velocity bds::escape(Boid const& predator, Boid const& boid, double d,
                           double e)
 {
-  
   std::vector<Boid> pred = {predator};
-  auto accumulated = accumulator(boid, pred, 0);
+  auto accumulated = accumulator(boid, pred, d);
   return separation(accumulated, e);
-
 }
 
 // Regola di inseguimento
@@ -180,12 +179,13 @@ void bds::apply_rules(Boid& boid, double a, double c, double s, double d,
                       unsigned int windowHeight, std::vector<Boid> const& flock,
                       Boid& predator)
 {
-  auto neighbours = bds::neighbours(boid, flock, d);
- auto accumulated = accumulator(boid, neighbours, ds);
+  auto neighbours  = bds::neighbours(boid, flock, d);
+  auto accumulated = accumulator(boid, neighbours, ds);
   boid.set_velocity(
       boid.get_velocity() + edge_force(boid, windowWidth, windowHeight)
-      + alignment(boid, neighbours,accumulated, a) + separation(accumulated, s)
-      + cohesion(boid, neighbours,accumulated, c) + escape(predator, boid, d, e) );
+      + alignment(boid, neighbours, accumulated, a) + separation(accumulated, s)
+      + cohesion(boid, neighbours, accumulated, c)
+      + escape(predator, boid, d, e));
 }
 
 // Funzione che applica le regole che determinano il movimento del predatore
