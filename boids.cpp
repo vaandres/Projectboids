@@ -62,13 +62,13 @@ bool bds::are_neighbors(bds::Boid const& boid_1, bds::Boid const& boid_2,
   return distance(boid_1, boid_2) < d;
 }
 
-// Base rules alternative
+// Funzione che calcola la somma delle velocità e delle posizioni dei vicini per l'esecuzione delle regole
 std::array<bds::Velocity, 3>
 bds::accumulator(Boid const& boid_1, std::vector<Boid> const& neighbours,
                  double ds)
 {
   std::array<Velocity, 3> accumulated =
-      std::accumulate( // perchè non serve bds nel corpo dell funz?
+      std::accumulate( 
           neighbours.begin(), neighbours.end(), std::array<Velocity, 3>{},
           [&boid_1, ds](std::array<Velocity, 3> acc, Boid const& boid_2) {
             if (distance(boid_1, boid_2) < ds) {
@@ -76,7 +76,7 @@ bds::accumulator(Boid const& boid_1, std::vector<Boid> const& neighbours,
               acc[0].vy += (boid_2.get_position().y - boid_1.get_position().y);
             }
             acc[1] = acc[1] + boid_2.get_velocity();
-            acc[2].vx += boid_2.get_position().x; // cheat in raltà posizioni
+            acc[2].vx += boid_2.get_position().x; 
             acc[2].vy += boid_2.get_position().y;
             return acc;
           });
@@ -254,20 +254,6 @@ bds::Statistics bds::stats(std::vector<Boid> const& flock, double d)
 
     sum_speed  = speeds[0] * conv_fac;
     sum_speed2 = speeds[1] * conv_fac;
-    /*
-        sum_speed = std::accumulate(flock.begin(), flock.end(), 0.0,
-                                    [](double acc, Boid const& boid) {
-                                      return acc + boid.absolute_velocity();
-                                    })
-                  * conv_fac;
-
-        sum_speed2 = std::accumulate(flock.begin(), flock.end(), 0.0,
-                                     [](double acc, Boid const& boid) {
-                                       return acc
-                                            + boid.absolute_velocity()
-                                                  * boid.absolute_velocity();
-                                     })
-                   * conv_fac * conv_fac; */
   }
 
   const double dist_mean = sum_dist / neighbours_count;
