@@ -59,9 +59,10 @@ struct Statistics
 
 double distance(const Boid&, const Boid&);
 std::vector<Boid> neighbours(const Boid&, const std::vector<Boid>&, double);
-Velocity separation(const Boid&, const std::vector<Boid>&, double, double);
-Velocity alignment(const Boid&, const std::vector<Boid>&, double);
-Velocity cohesion(const Boid&, const std::vector<Boid>&, double);
+std::array<Velocity,3>accumulator(const Boid&, const std::vector<Boid>&, double);
+Velocity separation( std::array<Velocity,3> const&, double);
+Velocity alignment(Boid const&,std::vector<Boid> const&,std::array<Velocity,3>const&, double);
+Velocity cohesion(Boid const&,std::vector<Boid> const&,std::array<Velocity,3>const&, double); 
 Velocity escape(const Boid&, const Boid&, double, double);
 Velocity follow(const Boid&, const std::vector<Boid>&, double);
 void eat(const Boid&, std::vector<Boid>&, double);

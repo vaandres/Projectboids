@@ -7,13 +7,13 @@ int main()
 {
   try {
     // parametri in input
-    bool cin_on{true};
-    int n{100};
+    bool cin_on{false};
+    int n{300};
     double d{90};
     double ds{15};
     double s{0.5};
-    double a{0.09};
-    double c{0.005};
+    double a{0.1};
+    double c{0.015};
     bool Predator_on{true};
     double e = (Predator_on) ? 2 : 0;
     double f{2.5};
@@ -129,16 +129,13 @@ int main()
       std::for_each(flock.begin(), flock.end(), [&](bds::Boid& boid_i) {
         apply_rules(
             boid_i, a, c, s, d, ds, e, windowWidth, windowHeight, copy_of_flock,
-            predator); // da sommare poi a tutte le velocita e poi undate pos
-        /*        bds::apply_rules_boids(boid_i, a, c, s, d, ds, e, windowWidth,
-                                      windowHeight, flock, predator); */
+            predator); 
 
-        bds::velocity_limit(boid_i, Vmax); // va dopo
+        bds::velocity_limit(boid_i, Vmax); 
         assert(boid_i.absolute_velocity() <= Vmax + 0.0001);
 
         boid_i.update_position();
 
-        // boid_i.update_position(); // va dopo
         assert(boid_i.get_position().x <= windowWidth);
         assert(boid_i.get_position().y <= windowHeight);
         assert(boid_i.get_position().x >= 0);
