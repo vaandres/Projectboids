@@ -122,15 +122,15 @@ int main()
 
       std::vector<bds::Velocity> velocities;
       std::for_each(flock.begin(), flock.end(), [&](bds::Boid& boid_i) {
-        velocities.push_back(new_vel(boid_i, a, c, s, d, ds, e, windowWidth,
+        velocities.push_back(vel_increment(boid_i, a, c, s, d, ds, e, windowWidth,
                                      windowHeight, flock, predator, Predator_on));
       });
 
       std::transform(flock.begin(), flock.end(), velocities.begin(),
-                     flock.begin(), [&](bds::Boid& boid_i, bds::Velocity& vel) {
+                     flock.begin(), [&](bds::Boid& boid_i, bds::Velocity& vel_incr) {
 
-                       bds::Velocity newvel = boid_i.get_velocity() + vel;
-                       boid_i.set_velocity(newvel);
+                       bds::Velocity new_vel = boid_i.get_velocity() + vel_incr;
+                       boid_i.set_velocity(new_vel);
                        velocity_limit(boid_i, Vmax);
                        assert(boid_i.absolute_velocity() <= Vmax + 0.0001);
 

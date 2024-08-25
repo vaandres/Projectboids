@@ -167,7 +167,7 @@ bds::Velocity bds::edge_force(Boid const& boid, unsigned int width,
 }
 
 // Funzione che calcola l'incremento di velocità dei Boids
-bds::Velocity bds::new_vel(Boid& boid, double a, double c, double s, double d,
+bds::Velocity bds::vel_increment(Boid& boid, double a, double c, double s, double d,
                            double ds, double e, unsigned int windowWidth,
                            unsigned int windowHeight,
                            std::vector<Boid> const& flock, Boid& predator,
@@ -175,17 +175,14 @@ bds::Velocity bds::new_vel(Boid& boid, double a, double c, double s, double d,
 {
   auto neighbours  = bds::neighbours(boid, flock, d);
   auto accumulated = accumulator(boid, neighbours, ds);
+  Velocity new_vel = edge_force(boid, windowWidth, windowHeight)
+                   + alignment(boid, neighbours, accumulated, a)
+                   + separation(accumulated, s)
+                   + cohesion(boid, neighbours, accumulated, c);
   if (Predator_on) {
-    return edge_force(boid, windowWidth, windowHeight)
-         + alignment(boid, neighbours, accumulated, a)
-         + separation(accumulated, s)
-         + cohesion(boid, neighbours, accumulated, c)
-         + escape(predator, boid, d, e);
+    return new_vel + escape(predator, boid, d, e);
   } else {
-    return edge_force(boid, windowWidth, windowHeight)
-         + alignment(boid, neighbours, accumulated, a)
-         + separation(accumulated, s)
-         + cohesion(boid, neighbours, accumulated, c);
+    return new_vel;
   }
 };
 
