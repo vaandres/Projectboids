@@ -166,30 +166,28 @@ bds::Velocity bds::edge_force(Boid const& boid, unsigned int width,
   return Velocity{vx, vy};
 }
 
-// Funzione che applica le regole che determinano il movimento del boid
-void bds::apply_rules(Boid& boid, double a, double c, double s, double d,
-                      double ds, double e, unsigned int windowWidth,
-                      unsigned int windowHeight, std::vector<Boid> const& flock,
-                      Boid& predator, bool Predator_on)
+// Funzione che calcola l'incremento di velocità dei Boids
+bds::Velocity bds::new_vel(Boid& boid, double a, double c, double s, double d,
+                           double ds, double e, unsigned int windowWidth,
+                           unsigned int windowHeight,
+                           std::vector<Boid> const& flock, Boid& predator,
+                           bool Predator_on)
 {
   auto neighbours  = bds::neighbours(boid, flock, d);
   auto accumulated = accumulator(boid, neighbours, ds);
-
   if (Predator_on) {
-    boid.set_velocity(boid.get_velocity()
-                      + edge_force(boid, windowWidth, windowHeight)
-                      + alignment(boid, neighbours, accumulated, a)
-                      + separation(accumulated, s)
-                      + cohesion(boid, neighbours, accumulated, c)
-                      + escape(predator, boid, d, e));
+    return edge_force(boid, windowWidth, windowHeight)
+         + alignment(boid, neighbours, accumulated, a)
+         + separation(accumulated, s)
+         + cohesion(boid, neighbours, accumulated, c)
+         + escape(predator, boid, d, e);
   } else {
-    boid.set_velocity(boid.get_velocity()
-                      + edge_force(boid, windowWidth, windowHeight)
-                      + alignment(boid, neighbours, accumulated, a)
-                      + separation(accumulated, s)
-                      + cohesion(boid, neighbours, accumulated, c));
+    return edge_force(boid, windowWidth, windowHeight)
+         + alignment(boid, neighbours, accumulated, a)
+         + separation(accumulated, s)
+         + cohesion(boid, neighbours, accumulated, c);
   }
-}
+};
 
 // Funzione che applica le regole che determinano il movimento del predatore
 void bds::apply_rules_predator(Boid& predator, std::vector<Boid> const& flock,

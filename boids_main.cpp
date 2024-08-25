@@ -15,7 +15,7 @@ int main()
     double a{0.1};
     double c{0.015};
     bool Predator_on{true};
-    double e {2};
+    double e{2};
     double f{2.5};
     double pred_coeff{1.3};
     double const range{8};                 //[NON MODIFICARE]
@@ -40,8 +40,8 @@ int main()
 
       if (n < 0 || d < 0 || ds < 0 || s < 0 || a < 0 || c < 0 || e < 0 || f < 0
           || pred_coeff < 0) {
-        throw std::invalid_argument(
-            "Input non valido (parametri negativi). Si prega di inserire i valori corretti.");
+        throw std::invalid_argument("Input non valido (parametri negativi). Si "
+                                    "prega di inserire i valori corretti.");
       }
     }
 
@@ -120,34 +120,28 @@ int main()
         }
       }
 
-      // loop di cambio di posizione dei boids. La velocità dei boids viene
-      // modificata con la funzione apply_rules_boids, successivamente è
-      // limitata con velocity_limit ed in infine la posizione è aggiornata con
-      // updatePosition
-      std::vector<bds::Boid> copy_of_flock{flock};
-
+      std::vector<bds::Velocity> velocities;
       std::for_each(flock.begin(), flock.end(), [&](bds::Boid& boid_i) {
-        apply_rules(
-            boid_i, a, c, s, d, ds, e, windowWidth, windowHeight, copy_of_flock,
-            predator, Predator_on); 
-
-        bds::velocity_limit(boid_i, Vmax); 
-        assert(boid_i.absolute_velocity() <= Vmax + 0.0001);
-
-        boid_i.update_position();
-
-        assert(boid_i.get_position().x <= windowWidth);
-        assert(boid_i.get_position().y <= windowHeight);
-        assert(boid_i.get_position().x >= 0);
-        assert(boid_i.get_position().y >= 0);
+        velocities.push_back(new_vel(boid_i, a, c, s, d, ds, e, windowWidth,
+                                     windowHeight, flock, predator, Predator_on));
       });
 
-      copy_of_flock = flock;
+      std::transform(flock.begin(), flock.end(), velocities.begin(),
+                     flock.begin(), [&](bds::Boid& boid_i, bds::Velocity& vel) {
 
-      // cambio di posizione del predatore. La velocità del predatore è
-      // modificata con la funzione apply_rules_predator, successivamente è
-      // limitata con velocity_limit ed in infine la posizione è aggiornata
-      // con updatePosition
+                       bds::Velocity newvel = boid_i.get_velocity() + vel;
+                       boid_i.set_velocity(newvel);
+                       velocity_limit(boid_i, Vmax);
+                       assert(boid_i.absolute_velocity() <= Vmax + 0.0001);
+
+                       boid_i.update_position();
+                        assert(boid_i.get_position().x <= windowWidth);
+                        assert(boid_i.get_position().y <= windowHeight);
+                        assert(boid_i.get_position().x >= 0);
+                        assert(boid_i.get_position().y >= 0);
+                       return boid_i;
+                     });
+
       if (Predator_on) {
         bds::apply_rules_predator(predator, flock, f, windowWidth,
                                   windowHeight);

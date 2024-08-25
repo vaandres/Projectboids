@@ -59,20 +59,23 @@ struct Statistics
 
 double distance(const Boid&, const Boid&);
 std::vector<Boid> neighbours(const Boid&, const std::vector<Boid>&, double);
-std::array<Velocity,3>accumulator(const Boid&, const std::vector<Boid>&, double);
-Velocity separation( std::array<Velocity,3> const&, double);
-Velocity alignment(Boid const&,std::vector<Boid> const&,std::array<Velocity,3>const&, double);
-Velocity cohesion(Boid const&,std::vector<Boid> const&,std::array<Velocity,3>const&, double); 
+std::array<Velocity, 3> accumulator(const Boid&, const std::vector<Boid>&,
+                                    double);
+Velocity separation(std::array<Velocity, 3> const&, double);
+Velocity alignment(Boid const&, std::vector<Boid> const&,
+                   std::array<Velocity, 3> const&, double);
+Velocity cohesion(Boid const&, std::vector<Boid> const&,
+                  std::array<Velocity, 3> const&, double);
 Velocity escape(const Boid&, const Boid&, double, double);
 Velocity follow(const Boid&, const std::vector<Boid>&, double);
 void eat(const Boid&, std::vector<Boid>&, double);
 Velocity edge_force(const Boid&, unsigned int, unsigned int);
-void apply_rules(Boid&, double, double, double, double, double, double,
-                 unsigned int, unsigned int, const std::vector<Boid>&, Boid&, bool);
 void velocity_limit(Boid&, double);
 Statistics stats(const std::vector<Boid>&);
 void apply_rules_predator(Boid&, const std::vector<Boid>&, double, unsigned int,
                           unsigned int);
+Velocity new_vel(Boid&, double, double, double, double, double, double,
+                 unsigned int, unsigned int, const std::vector<Boid>&, Boid&, bool);
 
 } // namespace bds
 
