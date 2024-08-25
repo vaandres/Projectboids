@@ -55,24 +55,24 @@ std::vector<bds::Boid> bds::neighbours(Boid const& boid_1,
   return neighbours;
 }
 
-// Funzione che calcola la somma delle velocità e delle posizioni dei vicini per l'esecuzione delle regole
+// Funzione che calcola la somma delle velocità e delle posizioni dei vicini per
+// l'esecuzione delle regole
 std::array<bds::Velocity, 3>
 bds::accumulator(Boid const& boid_1, std::vector<Boid> const& neighbours,
                  double ds)
 {
-  std::array<Velocity, 3> accumulated =
-      std::accumulate( 
-          neighbours.begin(), neighbours.end(), std::array<Velocity, 3>{},
-          [&boid_1, ds](std::array<Velocity, 3> acc, Boid const& boid_2) {
-            if (distance(boid_1, boid_2) < ds) {
-              acc[0].vx += (boid_2.get_position().x - boid_1.get_position().x);
-              acc[0].vy += (boid_2.get_position().y - boid_1.get_position().y);
-            }
-            acc[1] = acc[1] + boid_2.get_velocity();
-            acc[2].vx += boid_2.get_position().x; 
-            acc[2].vy += boid_2.get_position().y;
-            return acc;
-          });
+  std::array<Velocity, 3> accumulated = std::accumulate(
+      neighbours.begin(), neighbours.end(), std::array<Velocity, 3>{},
+      [&boid_1, ds](std::array<Velocity, 3> acc, Boid const& boid_2) {
+        if (distance(boid_1, boid_2) < ds) {
+          acc[0].vx += (boid_2.get_position().x - boid_1.get_position().x);
+          acc[0].vy += (boid_2.get_position().y - boid_1.get_position().y);
+        }
+        acc[1] = acc[1] + boid_2.get_velocity();
+        acc[2].vx += boid_2.get_position().x;
+        acc[2].vy += boid_2.get_position().y;
+        return acc;
+      });
   return accumulated;
 }
 
@@ -118,7 +118,7 @@ bds::Velocity bds::escape(Boid const& predator, Boid const& boid, double d,
                           double e)
 {
   std::vector<Boid> pred = {predator};
-  auto accumulated = accumulator(boid, pred, d);
+  auto accumulated       = accumulator(boid, pred, d);
   return separation(accumulated, e);
 }
 
@@ -170,15 +170,25 @@ bds::Velocity bds::edge_force(Boid const& boid, unsigned int width,
 void bds::apply_rules(Boid& boid, double a, double c, double s, double d,
                       double ds, double e, unsigned int windowWidth,
                       unsigned int windowHeight, std::vector<Boid> const& flock,
-                      Boid& predator)
+                      Boid& predator, bool Predator_on)
 {
   auto neighbours  = bds::neighbours(boid, flock, d);
   auto accumulated = accumulator(boid, neighbours, ds);
-  boid.set_velocity(
-      boid.get_velocity() + edge_force(boid, windowWidth, windowHeight)
-      + alignment(boid, neighbours, accumulated, a) + separation(accumulated, s)
-      + cohesion(boid, neighbours, accumulated, c)
-      + escape(predator, boid, d, e));
+
+  if (Predator_on) {
+    boid.set_velocity(boid.get_velocity()
+                      + edge_force(boid, windowWidth, windowHeight)
+                      + alignment(boid, neighbours, accumulated, a)
+                      + separation(accumulated, s)
+                      + cohesion(boid, neighbours, accumulated, c)
+                      + escape(predator, boid, d, e));
+  } else {
+    boid.set_velocity(boid.get_velocity()
+                      + edge_force(boid, windowWidth, windowHeight)
+                      + alignment(boid, neighbours, accumulated, a)
+                      + separation(accumulated, s)
+                      + cohesion(boid, neighbours, accumulated, c));
+  }
 }
 
 // Funzione che applica le regole che determinano il movimento del predatore
@@ -236,9 +246,9 @@ bds::Statistics bds::stats(std::vector<Boid> const& flock)
     sum_speed2 = speeds[1] * conv_fac * conv_fac;
   }
 
-  const double dist_mean = sum_dist / (n_boids * (n_boids - 1) / 2);
-  const double dist_err =
-      std::sqrt(std::abs(sum_dist2 / (n_boids * (n_boids - 1) / 2) - dist_mean * dist_mean));
+  const double dist_mean  = sum_dist / (n_boids * (n_boids - 1) / 2);
+  const double dist_err   = std::sqrt(std::abs(
+      sum_dist2 / (n_boids * (n_boids - 1) / 2) - dist_mean * dist_mean));
   const double speed_mean = sum_speed / n_boids;
   const double speed_err =
       std::sqrt(std::abs(sum_speed2 / n_boids - speed_mean * speed_mean));

@@ -7,7 +7,7 @@ int main()
 {
   try {
     // parametri in input
-    bool cin_on{false};
+    bool cin_on{true};
     int n{300};
     double d{90};
     double ds{15};
@@ -15,11 +15,11 @@ int main()
     double a{0.1};
     double c{0.015};
     bool Predator_on{true};
-    double e = (Predator_on) ? 2 : 0;
+    double e {2};
     double f{2.5};
     double pred_coeff{1.3};
     double const range{8};                 //[NON MODIFICARE]
-    double const Vmax{10 / bds::conv_fac}; // non cambiare
+    double const Vmax{30 / bds::conv_fac}; // non cambiare
     // Lettura dei parametri con cin
     if (cin_on) {
       std::cout << "Scegliere la modalità con (1) o senza predatore (0): \n";
@@ -41,7 +41,7 @@ int main()
       if (n < 0 || d < 0 || ds < 0 || s < 0 || a < 0 || c < 0 || e < 0 || f < 0
           || pred_coeff < 0) {
         throw std::invalid_argument(
-            "Input non valido. Si prega di inserire i valori corretti.");
+            "Input non valido (parametri negativi). Si prega di inserire i valori corretti.");
       }
     }
 
@@ -129,7 +129,7 @@ int main()
       std::for_each(flock.begin(), flock.end(), [&](bds::Boid& boid_i) {
         apply_rules(
             boid_i, a, c, s, d, ds, e, windowWidth, windowHeight, copy_of_flock,
-            predator); 
+            predator, Predator_on); 
 
         bds::velocity_limit(boid_i, Vmax); 
         assert(boid_i.absolute_velocity() <= Vmax + 0.0001);
