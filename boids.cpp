@@ -167,11 +167,12 @@ bds::Velocity bds::edge_force(Boid const& boid, unsigned int width,
 }
 
 // Funzione che calcola l'incremento di velocità dei Boids
-bds::Velocity bds::vel_increment(Boid& boid, double a, double c, double s, double d,
-                           double ds, double e, unsigned int windowWidth,
-                           unsigned int windowHeight,
-                           std::vector<Boid> const& flock, Boid& predator,
-                           bool Predator_on)
+bds::Velocity bds::vel_increment(Boid& boid, double a, double c, double s,
+                                 double d, double ds, double e,
+                                 unsigned int windowWidth,
+                                 unsigned int windowHeight,
+                                 std::vector<Boid> const& flock, Boid& predator,
+                                 bool Predator_on)
 {
   auto neighbours  = bds::neighbours(boid, flock, d);
   auto accumulated = accumulator(boid, neighbours, ds);

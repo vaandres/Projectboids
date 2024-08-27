@@ -19,7 +19,7 @@ int main()
     double f{2.5};
     double pred_coeff{1.3};
     double const range{8};                 //[NON MODIFICARE]
-    double const Vmax{30 / bds::conv_fac}; // non cambiare
+    double const Vmax{10 / bds::conv_fac}; // non cambiare
     // Lettura dei parametri con cin
     if (cin_on) {
       std::cout << "Scegliere la modalità con (1) o senza predatore (0): \n";
@@ -119,26 +119,28 @@ int main()
           window2.close();
         }
       }
-
+      // Aggiornamento della posizione e delle velocità dei boids e del
+      // predatore
       std::vector<bds::Velocity> velocities;
       std::for_each(flock.begin(), flock.end(), [&](bds::Boid& boid_i) {
-        velocities.push_back(vel_increment(boid_i, a, c, s, d, ds, e, windowWidth,
-                                     windowHeight, flock, predator, Predator_on));
+        velocities.push_back(vel_increment(boid_i, a, c, s, d, ds, e,
+                                           windowWidth, windowHeight, flock,
+                                           predator, Predator_on));
       });
 
       std::transform(flock.begin(), flock.end(), velocities.begin(),
-                     flock.begin(), [&](bds::Boid& boid_i, bds::Velocity& vel_incr) {
-
+                     flock.begin(),
+                     [&](bds::Boid& boid_i, bds::Velocity& vel_incr) {
                        bds::Velocity new_vel = boid_i.get_velocity() + vel_incr;
                        boid_i.set_velocity(new_vel);
                        velocity_limit(boid_i, Vmax);
                        assert(boid_i.absolute_velocity() <= Vmax + 0.0001);
 
                        boid_i.update_position();
-                        assert(boid_i.get_position().x <= windowWidth);
-                        assert(boid_i.get_position().y <= windowHeight);
-                        assert(boid_i.get_position().x >= 0);
-                        assert(boid_i.get_position().y >= 0);
+                       assert(boid_i.get_position().x <= windowWidth);
+                       assert(boid_i.get_position().y <= windowHeight);
+                       assert(boid_i.get_position().x >= 0);
+                       assert(boid_i.get_position().y >= 0);
                        return boid_i;
                      });
 

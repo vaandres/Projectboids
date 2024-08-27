@@ -75,7 +75,8 @@ Statistics stats(const std::vector<Boid>&);
 void apply_rules_predator(Boid&, const std::vector<Boid>&, double, unsigned int,
                           unsigned int);
 Velocity vel_increment(Boid&, double, double, double, double, double, double,
-                 unsigned int, unsigned int, const std::vector<Boid>&, Boid&, bool);
+                       unsigned int, unsigned int, const std::vector<Boid>&,
+                       Boid&, bool);
 
 } // namespace bds
 
