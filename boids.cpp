@@ -92,7 +92,7 @@ bds::Velocity bds::alignment(Boid const& boid_1,
 {
   if (neighbours.empty())
     return {0, 0};
-  Velocity alig_vel = accumulated[1] / static_cast<double>(neighbours.size())
+  Velocity alig_vel = accumulated[1] / static_cast<double>(neighbours.size())*1.07
                     - boid_1.get_velocity();
   return alig_vel * a;
 }

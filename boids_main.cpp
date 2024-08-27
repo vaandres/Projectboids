@@ -8,7 +8,7 @@ int main()
   try {
     // parametri in input
     bool cin_on{true};
-    int n{300};
+    int n{150};
     double d{90};
     double ds{15};
     double s{0.5};
@@ -19,7 +19,7 @@ int main()
     double f{2.5};
     double pred_coeff{1.3};
     double const range{8};                 //[NON MODIFICARE]
-    double const Vmax{10 / bds::conv_fac}; // non cambiare
+    double const Vmax{7/ bds::conv_fac}; // non cambiare
     // Lettura dei parametri con cin
     if (cin_on) {
       std::cout << "Scegliere la modalità con (1) o senza predatore (0): \n";

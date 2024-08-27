@@ -160,8 +160,8 @@ TEST_CASE("Testing alignment function")
     auto accumulated   = bds::accumulator(b1, neighbours, d);
     auto alignment_vel = bds::alignment(b1, neighbours,accumulated, a);
 
-    CHECK(alignment_vel.vx == doctest::Approx(0.29).epsilon(0.01));
-    CHECK(alignment_vel.vy == doctest::Approx(0.88).epsilon(0.01));
+    CHECK(alignment_vel.vx == doctest::Approx(0.33).epsilon(0.01));
+    CHECK(alignment_vel.vy == doctest::Approx(0.95).epsilon(0.01));
   }
 
   SUBCASE("Testing alignment function with no neighbours")
