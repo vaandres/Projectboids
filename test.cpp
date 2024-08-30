@@ -118,9 +118,9 @@ TEST_CASE("Testing separation function")
     double ds{4};
     double s{0.2};
 
-    auto neighbours = bds::neighbours(b1, flock, d);
+    auto neighbours  = bds::neighbours(b1, flock, d);
     auto accumulated = bds::accumulator(b1, neighbours, ds);
-    auto sep_vel    = bds::separation(accumulated, s);
+    auto sep_vel     = bds::separation(accumulated, s);
     CHECK(sep_vel.vx == doctest::Approx(-0.70));
     CHECK(sep_vel.vy == doctest::Approx(-0.44));
   }
@@ -131,9 +131,9 @@ TEST_CASE("Testing separation function")
     double ds{1};
     double s{0.4};
 
-    auto neighbours = bds::neighbours(b1, flock, d);
+    auto neighbours  = bds::neighbours(b1, flock, d);
     auto accumulated = bds::accumulator(b1, neighbours, ds);
-    auto sep_vel    = bds::separation(accumulated, s);
+    auto sep_vel     = bds::separation(accumulated, s);
     CHECK(sep_vel.vx == doctest::Approx(0.));
     CHECK(sep_vel.vy == doctest::Approx(0.));
   }
@@ -158,7 +158,7 @@ TEST_CASE("Testing alignment function")
 
     auto neighbours    = bds::neighbours(b1, flock, d);
     auto accumulated   = bds::accumulator(b1, neighbours, d);
-    auto alignment_vel = bds::alignment(b1, neighbours,accumulated, a);
+    auto alignment_vel = bds::alignment(b1, neighbours, accumulated, a);
 
     CHECK(alignment_vel.vx == doctest::Approx(0.33).epsilon(0.01));
     CHECK(alignment_vel.vy == doctest::Approx(0.95).epsilon(0.01));
@@ -171,7 +171,7 @@ TEST_CASE("Testing alignment function")
 
     auto neighbours    = bds::neighbours(b1, flock, d);
     auto accumulated   = bds::accumulator(b1, neighbours, d);
-    auto alignment_vel = bds::alignment(b1, neighbours,accumulated, a);
+    auto alignment_vel = bds::alignment(b1, neighbours, accumulated, a);
 
     CHECK(alignment_vel.vx == 0);
     CHECK(alignment_vel.vy == 0);
@@ -195,9 +195,9 @@ TEST_CASE("Testing cohesion function")
     double d{7};
     double c{0.5};
 
-    auto neighbours = bds::neighbours(b1, flock, d);
+    auto neighbours  = bds::neighbours(b1, flock, d);
     auto accumulated = bds::accumulator(b1, neighbours, d);
-    auto coh_vel    = bds::cohesion(b1, neighbours,accumulated, c);
+    auto coh_vel     = bds::cohesion(b1, neighbours, accumulated, c);
 
     CHECK(coh_vel.vx == doctest::Approx(-2.06).epsilon(0.01));
     CHECK(coh_vel.vy == doctest::Approx(-0.44).epsilon(0.01));
@@ -208,9 +208,9 @@ TEST_CASE("Testing cohesion function")
     double d{1};
     double c{0.5};
 
-    auto neighbours = bds::neighbours(b1, flock, d);
+    auto neighbours  = bds::neighbours(b1, flock, d);
     auto accumulated = bds::accumulator(b1, neighbours, d);
-    auto coh_vel    = bds::cohesion(b1, neighbours,accumulated, c);
+    auto coh_vel     = bds::cohesion(b1, neighbours, accumulated, c);
 
     CHECK(coh_vel.vx == doctest::Approx(0.).epsilon(0.01));
     CHECK(coh_vel.vy == doctest::Approx(0.).epsilon(0.01));
@@ -571,5 +571,3 @@ TEST_CASE("Testing operator/ on Velocity")
   CHECK(c.vx == -2.5);
   CHECK(c.vy == -1);
 }
-
- 

@@ -18,8 +18,8 @@ int main()
     double e{2};
     double f{2.5};
     double pred_coeff{1.3};
-    double const range{8};                 //[NON MODIFICARE]
-    double const Vmax{7/ bds::conv_fac}; // non cambiare
+    double const range{8};                //[NON MODIFICARE]
+    double const Vmax{7 / bds::conv_fac}; // non cambiare
     // Lettura dei parametri con cin
     if (cin_on) {
       std::cout << "Scegliere la modalità con (1) o senza predatore (0): \n";
@@ -71,18 +71,15 @@ int main()
         static_cast<std::vector<bds::Boid>::size_type>(n));
     std::uniform_real_distribution<> roll_diceX(20, windowWidth - 20);
     std::uniform_real_distribution<> roll_diceY(20, windowHeight - 20);
-    std::uniform_real_distribution<> roll_diceVx_boid(-Vmax / 2, Vmax / 2);
-    std::uniform_real_distribution<> roll_diceVy_boid(-Vmax / 2, Vmax / 2);
-    std::uniform_real_distribution<> roll_diceVx_pred(-Vmax * pred_coeff / 2,
-                                                      Vmax * pred_coeff / 2);
-    std::uniform_real_distribution<> roll_diceVy_pred(-Vmax * pred_coeff / 2,
-                                                      Vmax * pred_coeff / 2);
+    std::uniform_real_distribution<> roll_diceV_boid(-Vmax / 2, Vmax / 2);
+    std::uniform_real_distribution<> roll_diceV_pred(-Vmax * pred_coeff / 2,
+                                                     Vmax * pred_coeff / 2);
 
     // loop di generazione dei boids
 
     auto generate_boid = [&]() {
-      bds::Boid boid{roll_diceX(eng), roll_diceY(eng), roll_diceVx_boid(eng),
-                     roll_diceVy_boid(eng)};
+      bds::Boid boid{roll_diceX(eng), roll_diceY(eng), roll_diceV_boid(eng),
+                     roll_diceV_boid(eng)};
 
       assert(boid.get_position().x <= windowWidth);
       assert(boid.get_position().y <= windowHeight);
@@ -96,8 +93,8 @@ int main()
     std::generate(flock.begin(), flock.end(), generate_boid);
 
     // generazione del predatoratore
-    bds::Boid predator{roll_diceX(eng), roll_diceY(eng), roll_diceVx_pred(eng),
-                       roll_diceVy_pred(eng)};
+    bds::Boid predator{roll_diceX(eng), roll_diceY(eng), roll_diceV_pred(eng),
+                       roll_diceV_pred(eng)};
 
     assert(predator.get_position().x <= windowWidth);
     assert(predator.get_position().y <= windowHeight);
