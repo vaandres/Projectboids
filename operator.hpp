@@ -1,10 +1,10 @@
 #ifndef OPERATOR_HPP
 #define OPERATOR_HPP
 
+#include "boids.hpp"
 #include <array>
 #include <cassert>
 #include <vector>
-#include "boids.hpp"
 
 namespace bds {
 Velocity operator+(const Velocity&, const Velocity&);

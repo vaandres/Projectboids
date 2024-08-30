@@ -18,8 +18,8 @@ int main()
     double e{2};
     double f{2.5};
     double pred_coeff{1.3};
-    double const range{8};                 //[NON MODIFICARE]
-    double const Vmax{7/ bds::conv_fac}; // non cambiare
+    double const range{8};                //[NON MODIFICARE]
+    double const Vmax{7 / bds::conv_fac}; // non cambiare
     // Lettura dei parametri con cin
     if (cin_on) {
       std::cout << "Scegliere la modalità con (1) o senza predatore (0): \n";
